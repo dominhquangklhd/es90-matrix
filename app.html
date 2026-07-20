@@ -423,8 +423,15 @@ button{font-family:inherit;}
 #categoryCompareCard .win-badge,#categoryCompareCard .loss-badge{margin-bottom:5px;padding:3px 12px;font-size:10px;}
 
 /* ===== ES90 대기고객 선택 (실시간 예약현황) ===== */
-.waitlist-heading-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.waitlist-heading-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
 .waitlist-heading-row .note-text{margin:0;}
+#panel1 .waitlist-heading-row .card-title{display:flex;align-items:center;height:23px;min-height:23px;margin:0!important;line-height:23px!important;}
+.waitlist-update-stamp{display:inline-flex;align-items:center;gap:5px;height:23px;margin:0 0 0 2px;padding:0 8px 0 6px;border:1px solid #ced9e1;border-radius:999px;background:linear-gradient(180deg,#fbfcfd 0%,#f2f6f8 100%);color:#526b7f;font-size:9.8px;font-weight:700;line-height:1;white-space:nowrap;box-shadow:0 1px 4px rgba(48,74,94,.08);}
+.waitlist-update-icon{display:grid;place-items:center;width:15px;height:15px;color:#688094;}
+.waitlist-update-icon svg{width:14px;height:14px;display:block;stroke:currentColor;}
+.waitlist-update-copy{display:flex;align-items:center;gap:4px;}
+.waitlist-update-label{color:var(--orange-deep);font-size:8px;font-weight:900;letter-spacing:.4px;}
+.waitlist-update-time{color:#36536b;font-variant-numeric:tabular-nums;}
 .waitlist-total-row{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
 .waitlist-total-num{font-size:44px;font-weight:900;color:#b8460a;line-height:1;letter-spacing:-0.5px;}
 .waitlist-total-unit{font-size:18px;font-weight:700;margin-left:2px;}
@@ -16603,7 +16610,7 @@ function renderApp(){
         <div class="brand-mark">
           <div>
             <div class="brand-word" style="font-family:'Paperlogy','VolvoCentum SemiBold','VolvoCentum',sans-serif;letter-spacing:0.1px;">Volvo ES90 경쟁력분석 매트릭스</div>
-            <div class="brand-tagline">볼보 공식 딜러사 소속 영업직원만 ES90 상담 시 본 프로그램을 사용할 수 있습니다.</div>
+            <div class="brand-tagline">볼보 공식 딜러사 소속 영업직원만 ES90 상담 시 이용가능합니다.</div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
@@ -16698,15 +16705,16 @@ function showPanel(n){
 // ---------------- STEP 1: ES90 trim ----------------
 // item: ES90 실시간 예약(잔여계약) 현황 — 대기고객의 선택 섹션에 쓰임. 추후 실데이터 연동 시 이 객체만 교체하면 됨.
 const RESERVATION_DATA = {
-  total: 816,
+  total: 817,
   byTrim: [
-    {trim:'Twin Motor Ultra', count:461},
-    {trim:'Single Motor Ultra', count:274},
+    {trim:'Twin Motor Ultra', count:463},
+    {trim:'Single Motor Ultra', count:273},
     {trim:'Twin Motor Performance Ultra', count:52},
     {trim:'Single Motor Plus', count:22},
     {trim:'Twin Motor Plus', count:7}
   ]
 };
+const RESERVATION_UPDATED_AT = '2026.07.21 03:21';
 const TRIM_GROUPS = [
   {
     label: 'PLUS 트림(2종)',
@@ -16732,7 +16740,13 @@ function renderStep1(){
     <div class="trim-split-wrap" id="trimGroupWrap"></div>
 
     <div class="card waitlist-card" id="waitlistCard">
-      <div class="waitlist-heading-row"><div class="card-title">ES90 대기고객 선택</div><div class="note-text">실시간 예약 현황 — 트림별 선택 비율</div></div>
+      <div class="waitlist-heading-row">
+        <div class="card-title">ES90 대기고객 선택</div>
+        <div class="waitlist-update-stamp" title="마지막 작업 완료 시각" aria-label="마지막 작업 완료 ${RESERVATION_UPDATED_AT}">
+          <span class="waitlist-update-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-width="1.8"/><path d="M12 7.5V12l3.2 2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="waitlist-update-copy"><span class="waitlist-update-label">UPDATE</span><span class="waitlist-update-time">${RESERVATION_UPDATED_AT} 기준</span></span>
+        </div>
+      </div>
       <div class="subsidy-guide" aria-label="전기차 보조금 차량 가격별 지급 기준">
         <table>
           <thead><tr><th>차량 기본가격</th><th>국비 보조금</th><th>지자체 보조금</th><th>총 보조금 적용</th></tr></thead>
