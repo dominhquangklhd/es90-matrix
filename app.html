@@ -1256,7 +1256,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-17 00:00",
+    "updated": "2026-07-21 00:00",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -16937,10 +16937,7 @@ const RESERVATION_DATA = {
   ]
 };
 function getDocumentUpdatedAt(){
-  const modified = new Date(document.lastModified);
-  const date = Number.isNaN(modified.getTime()) ? new Date() : modified;
-  const pad = value => String(value).padStart(2,'0');
-  return `${date.getFullYear()}.${pad(date.getMonth()+1)}.${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  return D.meta.updated.split(' ')[0];
 }
 const RESERVATION_UPDATED_AT = getDocumentUpdatedAt();
 const TRIM_GROUPS = [
@@ -16970,7 +16967,7 @@ function renderStep1(){
     <div class="card waitlist-card" id="waitlistCard">
       <div class="waitlist-heading-row">
         <div class="card-title">ES90 대기고객 선택</div>
-        <div class="waitlist-update-stamp" title="마지막 작업 완료 시각" aria-label="마지막 작업 완료 ${RESERVATION_UPDATED_AT}">
+        <div class="waitlist-update-stamp" title="마지막 업데이트 날짜" aria-label="마지막 업데이트 ${RESERVATION_UPDATED_AT}">
           <span class="waitlist-update-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-width="1.8"/><path d="M12 7.5V12l3.2 2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           <span class="waitlist-update-copy"><span class="waitlist-update-label">UPDATE</span><span class="waitlist-update-time">${RESERVATION_UPDATED_AT} 기준</span></span>
         </div>
