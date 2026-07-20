@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#1c3d5a"/>
+  <circle cx="256" cy="256" r="188" fill="none" stroke="#c9a96a" stroke-width="14"/>
+  <text x="256" y="205" text-anchor="middle" fill="#fd6408" font-family="Arial,sans-serif" font-size="52" font-weight="800" letter-spacing="8">VOLVO</text>
+  <text x="256" y="308" text-anchor="middle" fill="#ffffff" font-family="Arial,sans-serif" font-size="104" font-weight="900">ES90</text>
+  <text x="256" y="360" text-anchor="middle" fill="#c7d3dd" font-family="Arial,sans-serif" font-size="26">경쟁력 분석</text>
+</svg>

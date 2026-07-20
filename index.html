@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#1c3d5a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ES90 분석">
+  <title>Volvo ES90 경쟁력 분석</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/es90-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/es90-icon.svg">
+  <style>
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;background:#f4f6f8;overflow:hidden}
+    #app{display:block;width:100%;height:100%;border:0;background:#fff}
+    #status{position:fixed;z-index:10;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(17,40,61,.94);color:#fff;font:600 13px/1.2 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .2s}
+    #status.show{opacity:1}
+  </style>
+</head>
+<body>
+  <iframe id="app" title="Volvo ES90 경쟁력 분석 앱"></iframe>
+  <div id="status" role="status" aria-live="polite"></div>
+  <script>
+    const appFrame = document.getElementById('app');
+    const statusEl = document.getElementById('status');
+
+    function showStatus(message, duration = 2400) {
+      statusEl.textContent = message;
+      statusEl.classList.add('show');
+      window.clearTimeout(showStatus.timer);
+      showStatus.timer = window.setTimeout(() => statusEl.classList.remove('show'), duration);
+    }
+
+    async function loadLatestApp() {
+      let version = Date.now().toString();
+      try {
+        const response = await fetch('./version.json', { cache: 'no-store' });
+        if (response.ok) version = (await response.json()).version || version;
+      } catch (_) {
+        version = localStorage.getItem('es90-app-version') || 'offline';
+      }
+
+      const previous = localStorage.getItem('es90-app-version');
+      localStorage.setItem('es90-app-version', version);
+      appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
+      if (previous && previous !== version) showStatus('최신 버전을 자동으로 적용했습니다.');
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(registration => {
+        registration.update();
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') registration.update();
+        });
+      }).catch(() => showStatus('온라인 상태에서 자동 업데이트가 활성화됩니다.'));
+    }
+
+    window.addEventListener('online', loadLatestApp);
+    loadLatestApp();
+  </script>
+</body>
+</html>
