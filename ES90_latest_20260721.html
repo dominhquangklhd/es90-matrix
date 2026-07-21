@@ -68,6 +68,10 @@ button{font-family:inherit;}
 .meta-pill b{color:#fff;font-weight:600;}
 .update-btn{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:12px;padding:7px 14px;border-radius:20px;cursor:pointer;transition:background .15s;}
 .update-btn:hover{background:rgba(255,255,255,0.22);}
+.logout-btn{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border:1px solid rgba(255,255,255,.28);border-radius:20px;background:rgba(255,255,255,.08);color:#fff;font-size:11px;font-weight:650;cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap;}
+.logout-btn:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.48);}
+.logout-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+@media(max-width:640px){.topbar-inner{padding:0 8px}.meta-pill{display:none}.logout-btn{width:32px;padding:0;justify-content:center}.logout-btn span{display:none}}
 
 /* ===== Progress Steps ===== */
 .steps-wrap{padding:16px 20px 0;}
@@ -481,8 +485,9 @@ button{font-family:inherit;}
 .vbar-nums{font-size:10px;color:var(--ink-faint);text-align:center;margin-bottom:4px;line-height:1.4;}
 .vbar-nums b{color:var(--ink);}
 .vbar-label{font-size:10.5px;color:var(--ink-soft);text-align:center;line-height:1.3;font-weight:500;}
-.summary-total-label{display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;}
-.spec-summary .summary-total-label .compare-badge{min-width:40px;height:18px;padding:0 6px;font-size:8.5px;}
+.summary-total-label{display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;line-height:18px;}
+.summary-total-label>span{display:inline-flex;align-items:center;height:18px;line-height:18px;}
+.spec-summary .summary-total-label .compare-badge{min-width:40px;height:18px;padding:0 6px;font-size:8.5px;line-height:1;}
 .vbar-legend{display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--ink-soft);justify-content:center;}
 .vbar-legend span{display:flex;align-items:center;gap:5px;}
 
@@ -16686,7 +16691,9 @@ function analyzeCategories(es90Trim, brandKey, compTrim){
   if(!bd) return [];
   return bd.categories.map(cat=>{
     const items = (cat.category==='Interior & Seats' ? sortInteriorSeats(cat.items) : cat.category==='Telematics' ? sortTelematics(cat.items) : sortItemsKorean(cat.items)).map(it=>{
-      const ev = it.es90[es90Trim];
+      const isSelectedEsAirOption = it.name.trim()==='에어 서스펜션 및 액티브 섀시'
+        && SELECTED_ES_AIR_SUSPENSION_TRIMS.has(es90Trim);
+      const ev = isSelectedEsAirOption ? true : it.es90[es90Trim];
       const cv = it.competitor[compTrim];
       return {name: it.name, es90: ev, comp: cv, category:cat.category};
     });
@@ -16918,6 +16925,7 @@ function renderApp(){
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <div class="meta-pill">매트릭스 최신 업데이트 <b id="matrixUpdatedDate">${D.meta.updated.split(' ')[0]}</b></div>
+          <button class="logout-btn" type="button" onclick="logoutToLogin()" aria-label="로그아웃"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H6.5A1.5 1.5 0 0 0 5 6.5v11A1.5 1.5 0 0 0 6.5 19H10"/><path d="M13 8l4 4-4 4M17 12H9"/></svg><span>로그아웃</span></button>
         </div>
       </div>
     </div>
@@ -17468,10 +17476,8 @@ if(score.priceDiff !== null){
           }).join('')}
         </div>
         ${(()=>{
-          const esPct = Math.round(score.esPct*1000)/10;
-          const compPct = Math.round(score.compPct*1000)/10;
-          const gapPct = Math.round(Math.abs(esPct-compPct)*10)/10;
-          const esLeads = esPct >= compPct;
+          const optionGap = Math.abs(score.esTotal-score.compTotal);
+          const optionWinner = score.esTotal===score.compTotal ? '동일' : (score.esTotal>score.compTotal ? `ES90 ${es90TrimMenuDisplay(es90Trim)}` : compLabel(compName, compTrim));
           const esH = Math.max(score.maxTotal? score.esTotal/score.maxTotal*100:0, 6);
           const compH = Math.max(score.maxTotal? score.compTotal/score.maxTotal*100:0, 6);
           return `
@@ -17484,12 +17490,12 @@ if(score.priceDiff !== null){
                   <div class="vbar-track"><div class="vbar-fill v" data-h="${esH}" style="height:0%;"></div></div>
                   <div class="vbar-track"><div class="vbar-fill c" data-h="${compH}" style="height:0%;"></div></div>
                 </div>
-                <div class="vbar-label summary-total-label"><span class="compare-badge is-yes">비교 O</span><span>총 ${score.maxTotal}개 중</span></div>
+                <div class="vbar-label summary-total-label"><span>총 ${score.maxTotal}개</span><span class="compare-badge is-yes">비교 O</span><span>항목 중</span></div>
               </div>
               <div class="spec-summary-gap">
-                ${esLeads? `<div class="win-badge">경쟁력 우위</div>` : `<div class="loss-badge">경쟁력 열위</div>`}
-                <div class="spec-summary-gapnum${esLeads?'':' is-loss'}">${esLeads?'+':'-'}${gapPct}%p</div>
-                <div class="spec-summary-gapsub">ES90 ${esPct}% <span style="opacity:.5;">vs</span> ${compName} ${compPct}%</div>
+                <div class="win-badge">${optionGap ? `우위 항목 +${optionGap}개` : '우위 항목 동일'}</div>
+                <div class="spec-summary-winner-trim">${optionWinner}</div>
+                <div class="spec-summary-gapsub">ES90 ${score.esTotal}개 <span style="opacity:.5;">vs</span> ${compName} ${score.compTotal}개</div>
               </div>
             </div>
           </div>`;
@@ -17706,7 +17712,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
       es: esSpec.drive_type||'확인 불가', comp: compSpec?(compSpec.drive_type||'확인 불가'):'확인 불가', compare:true, lowerBetter:false},
     {label:'1회 충전 주행거리', esVal:esSpec.range_km!=null? esSpec.range_km:null,     compVal:compSpec?compSpec.range_km:null,
       es: esSpec.range_km!=null? `<span style="color:var(--ink);">${esSpec.range_km}km (WLTP 기준)</span>`:'확인 불가',
-      comp: compSpec&&compSpec.range_km!=null? compSpec.range_km+'km'+(brandKey==='Polestar 3'&&compTrim==='Rear motor'?' (WLTP 기준)':''):(['Hyundai','BMW 6 Series GT'].includes(brandKey)?'해당 없음':'확인 불가'), compare:true, lowerBetter:false},
+      comp: compSpec&&compSpec.range_km!=null? compSpec.range_km+'km'+(brandKey==='Polestar 3'&&compTrim==='Rear motor'?' (WLTP 기준)':''):(['Hyundai','BMW 6 Series GT'].includes(brandKey)?'해당 없음':'확인 불가'), compare:true, score:false, lowerBetter:false},
     {label:'최고 출력',        esVal:esSpec.power_ps,     compVal:compSpec?compSpec.power_ps:null,
       es: esSpec.power_ps!=null? esSpec.power_ps+'ps':'확인 불가', comp: compSpec&&compSpec.power_ps!=null? compSpec.power_ps+'ps':'확인 불가', compare:true, lowerBetter:false},
     {label:'최대 토크',        esVal:esSpec.torque_kgm,   compVal:compSpec?compSpec.torque_kgm:null,
@@ -17748,13 +17754,14 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     };
   };
 
-  // item 4,7: ES90 승/패 집계 (7개 핵심 항목 기준)
+  // ES90 승/패 집계 (주행거리는 표기만 하고 결과 산식에서 제외)
   let esWins=0, compWins=0;
-  coreRows.forEach(r=>{
+  const scoredRows = coreRows.filter(r=>r.score!==false);
+  scoredRows.forEach(r=>{
     const {esBetter,compBetter} = compareCoreRow(r);
     if(esBetter) esWins++; else if(compBetter) compWins++;
   });
-  const total = coreRows.length;
+  const total = scoredRows.length;
   const winCountGap = Math.abs(esWins-compWins);
   const winnerTrimLabel = esWins===compWins
     ? '동일'
@@ -17804,12 +17811,12 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
               <div class="vbar-track"><div class="vbar-fill v" data-h="${esH}" style="height:0%;"></div></div>
               <div class="vbar-track"><div class="vbar-fill c" data-h="${compH}" style="height:0%;"></div></div>
             </div>
-            <div class="vbar-label summary-total-label"><span class="compare-badge is-yes">비교 O</span><span>총 ${total}개 중</span></div>
+            <div class="vbar-label summary-total-label"><span>총 ${coreRows.length}개</span><span class="compare-badge is-yes">비교 O</span><span>항목 중</span></div>
           </div>
           <div class="spec-summary-gap">
             <div class="win-badge">${winCountGap ? `우위 항목 +${winCountGap}개` : '우위 항목 동일'}</div>
             <div class="spec-summary-winner-trim">${winnerTrimLabel}</div>
-            <div class="spec-summary-gapsub">ES90 ${esWins}개 <span style="opacity:.5;">vs</span> ${compLabel(compName, compTrim)} ${compWins}개</div>
+            <div class="spec-summary-gapsub">ES90 ${esWins}개 <span style="opacity:.5;">vs</span> ${compName} ${compWins}개</div>
           </div>
         </div>
       </div>
@@ -18736,6 +18743,24 @@ function closeLoginCover(){
   const cover = document.getElementById('loginCover');
   if(cover) cover.hidden = true;
   document.body.classList.remove('cover-open');
+}
+
+function logoutToLogin(){
+  if(!window.confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?')) return;
+  localStorage.removeItem('es90_cdsid_session');
+  resetAll();
+  const cover = document.getElementById('loginCover');
+  const visual = document.querySelector('.login-cover-visual');
+  const input = document.getElementById('loginAccessId');
+  const message = document.getElementById('loginCoverMessage');
+  visual?.classList.remove('lights-on');
+  cover?.classList.remove('is-leaving');
+  if(cover) cover.hidden = false;
+  document.body.classList.add('cover-open');
+  if(input) input.value = '';
+  if(message) message.textContent = '';
+  window.scrollTo({top:0,behavior:'auto'});
+  setTimeout(()=>input?.focus(),50);
 }
 
 const AUTHORIZED_CDSID_HASHES = new Set([
