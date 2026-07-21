@@ -18469,7 +18469,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
         <div class="unified-option-list">${purchaseGroupsHtml}${emptyState}</div>
         <div class="pkg-calc-col" id="unifiedCalcBox"></div>
       </div>
-      ${packageEntries.length?'<div class="spec-excluded-note" style="margin-top:12px;"><span class="note-flag">🚧</span><span>패키지를 구성하는 여러 옵션 중 1개만 개별 구매하는 것은 불가</span></div>':''}
+      ${packageEntries.length?'<div class="spec-excluded-note" style="margin-top:12px;"><span class="note-flag">🚧</span><span>패키지 구성옵션 중 1개만 개별 구매하는 것은 불가</span></div>':''}
     </div>`;
 }
 
@@ -18577,7 +18577,7 @@ function renderPkgBox(cat){
         </div>
         <div class="pkg-calc-col" id="pkgCalcBox"></div>
       </div>
-      <div class="spec-excluded-note" style="margin-top:12px;"><span class="note-flag">🚧</span><span>패키지를 구성하는 여러 옵션 중 1개만 개별 구매하는 것은 불가</span></div>
+      <div class="spec-excluded-note" style="margin-top:12px;"><span class="note-flag">🚧</span><span>패키지 구성옵션 중 1개만 개별 구매하는 것은 불가</span></div>
     </div>`;
   updatePkgCalc();
 }
