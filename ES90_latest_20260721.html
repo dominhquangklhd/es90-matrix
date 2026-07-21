@@ -17481,7 +17481,7 @@ if(score.priceDiff !== null){
             const ePct = c.total? Math.round(c.es90Count/c.total*100):0;
             const cPct = c.total? Math.round(c.compCount/c.total*100):0;
             return `
-            <div class="vbar-col" data-cat="${c.category}" style="cursor:pointer;" onclick="jumpToCategory('${c.category.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+            <div class="vbar-col" data-cat="${c.category}" style="cursor:pointer;" onclick="selectOptionCategory('${c.category.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
               <div class="vbar-nums"><b>${c.es90Count}</b>:${c.compCount}</div>
               <div class="vbar-track-pair">
                 <div class="vbar-track"><div class="vbar-fill v" data-h="${Math.max(ePct,6)}" style="height:0%;"></div></div>
