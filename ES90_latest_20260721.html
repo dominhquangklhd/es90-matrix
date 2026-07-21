@@ -520,7 +520,8 @@ button{font-family:inherit;}
 
 /* item 1: narrower spec table columns; item 3: side-by-side summary panel */
 .spec-compare-wrap{display:flex;gap:16px;align-items:stretch;}
-.spec-compare-wrap .table-scroll{flex:1.5;min-width:0;}
+.spec-table-column{flex:1.5;min-width:0;}
+.spec-table-column .table-scroll{width:100%;}
 .opt-table.spec-table{table-layout:fixed;}
 .opt-table.spec-table th:first-child, .opt-table.spec-table td.opt-name{width:30%;}
 .opt-table.spec-table th:not(:first-child), .opt-table.spec-table td.opt-val{width:35%;font-size:12px;}
@@ -959,6 +960,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 #performanceCompareCard .opt-table tbody td{padding:7px 9px;}
 #performanceCompareCard .color-legend{margin-top:8px;}
 #performanceCompareCard .spec-excluded-note{margin-bottom:6px!important;}
+#performanceCompareCard .table-scroll>.vbar-legend{margin-top:0;padding:8px 10px 9px;border-top:1px solid var(--line-soft);}
 #performanceCompareCard .spec-summary{padding:11px 10px;}
 #performanceCompareCard .spec-summary-inner{flex:1;justify-content:center;padding:14px 13px;}
 #performanceCompareCard .spec-summary-title{margin-bottom:10px;font-size:13px;}
@@ -17644,6 +17646,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
 
   return `
     <div class="spec-compare-wrap">
+      <div class="spec-table-column">
       <div class="table-scroll"><table class="opt-table spec-table">
         <thead><tr><th>항목</th><th>ES90 ${es90TrimDisplay(es90Trim)}</th><th>${compLabel(compName, compTrim)}</th></tr></thead>
         <tbody>
@@ -17663,6 +17666,11 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
           }).join('')}
         </tbody>
       </table>
+      <div class="vbar-legend">
+        <span><div class="leg-dot" style="background:var(--navy);"></div>ES90 ${es90TrimDisplay(es90Trim)}</span>
+        <span><div class="leg-dot" style="background:#c3cad2;"></div>${compLabel(compName, compTrim)}</span>
+      </div>
+      </div>
       <div class="color-legend">
         <span>🚧</span>
         <span><span class="compare-badge is-yes">비교 O</span> 분석 포함</span>
@@ -17689,10 +17697,6 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
           </div>
         </div>
       </div>
-    </div>
-    <div class="vbar-legend">
-      <span><div class="leg-dot" style="background:var(--navy);"></div>ES90 ${es90TrimDisplay(es90Trim)}</span>
-      <span><div class="leg-dot" style="background:#c3cad2;"></div>${compLabel(compName, compTrim)}</span>
     </div>
   `;
 }
