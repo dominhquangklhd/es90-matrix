@@ -265,7 +265,12 @@ button{font-family:inherit;}
 /* item 9,10,12,15: rounded-square category cards for strengths/weaknesses */
 .cat-card-grid{display:flex;gap:10px;align-items:stretch;}
 .cat-card{flex:1 1 0;min-width:0;border-radius:16px;padding:0 12px 12px;min-height:110px;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line-soft);overflow:hidden;transition:box-shadow .15s,transform .1s,opacity .25s;}
-.cat-card:hover{box-shadow:0 0 0 2px var(--orange);transform:translateY(-1px);}
+.cat-card:hover{box-shadow:0 3px 10px rgba(19,51,75,.10);transform:translateY(-1px);}
+.cat-card.option-analysis-pinned{border-color:#ef4b32!important;box-shadow:0 0 0 2px #ef4b32,0 4px 14px rgba(239,75,50,.18)!important;opacity:1!important;}
+.cat-card-list li.option-analysis-item-pinned{margin:2px -5px;padding:3px 5px 3px 14px;border:1.5px solid #ef4b32;border-radius:7px;background:rgba(239,75,50,.07);color:var(--ink);font-weight:700;}
+.cat-card-list li.option-analysis-item-pinned::before{left:5px;top:10px;background:#ef4b32;opacity:1;}
+.opt-table tr.option-analysis-source{cursor:pointer;}
+.opt-table tr.option-analysis-source:hover td{background:#fff8f3;}
 .cat-card.dimmed .cat-card-head{opacity:.6;}
 .cat-card.dimmed{opacity:.88;}
 .cat-card.dimmed .cat-card-list{color:#9aa5b1;}
@@ -1102,9 +1107,9 @@ body.cover-open{overflow:hidden;}
 .login-cover.is-leaving{opacity:0;transform:scale(1.008);pointer-events:none;}
 .login-cover-visual{position:absolute;inset:0;display:block;overflow:hidden;padding:0;background:#102f47;isolation:isolate;}
 .login-cover-visual:after{content:"";position:absolute;z-index:-3;inset:-2px;background:url('assets/es90-login-cover-v3.png') center center/cover no-repeat;opacity:.76;filter:brightness(.68) contrast(.96) saturate(1.05);}
-.login-headlight-layer{position:absolute;z-index:-2;inset:-2px;background:url('assets/es90-login-headlights-only-v3.png') center center/cover no-repeat;opacity:0;filter:brightness(1.28) contrast(1.12) saturate(.72);transition:opacity .18s ease;pointer-events:none;}
-.login-cover-visual.lights-on .login-headlight-layer{opacity:.98;animation:headlightsIgnite .78s ease-out both;}
-@keyframes headlightsIgnite{0%{opacity:0;filter:brightness(.78) contrast(1.08) saturate(.90);}34%{opacity:1;filter:brightness(1.02) contrast(1.18) saturate(.90);}100%{opacity:.98;filter:brightness(.92) contrast(1.15) saturate(.90);}}
+.login-headlight-layer{position:absolute;z-index:-2;inset:-2px;background:url('assets/es90-login-cover-lights-on-v3-led.png') center center/cover no-repeat;opacity:0;filter:brightness(1.04) contrast(1.06) saturate(.76);transition:opacity .14s ease;pointer-events:none;}
+.login-cover-visual.lights-on .login-headlight-layer{opacity:1;animation:headlightsIgnite .92s cubic-bezier(.18,.76,.22,1) both;}
+@keyframes headlightsIgnite{0%{opacity:0;filter:brightness(.78) contrast(1.04) saturate(.76);}18%{opacity:.58;filter:brightness(1.22) contrast(1.12) saturate(.76);}42%{opacity:1;filter:brightness(1.10) contrast(1.09) saturate(.76);}100%{opacity:1;filter:brightness(1.04) contrast(1.06) saturate(.76);}}
 .login-cover-visual:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse 150px 62px at 50% 32px,rgba(7,27,42,.58),transparent 100%),linear-gradient(180deg,rgba(8,29,45,.76) 0,rgba(8,29,45,.60) 54px,rgba(8,29,45,.38) 104px,rgba(8,29,45,.16) 154px,transparent 218px),linear-gradient(90deg,rgba(7,28,44,.66) 0%,rgba(10,37,57,.27) 42%,rgba(8,30,47,.48) 100%),linear-gradient(180deg,transparent 0%,transparent 55%,rgba(7,27,42,.80) 100%);pointer-events:none;}
 .login-cover-grid{display:none;}
 .login-cover-brand,.login-cover-main{position:relative;z-index:1;}
@@ -1208,25 +1213,34 @@ body.cover-open{overflow:hidden;}
 .login-cover-main{top:35%;right:clamp(110px,calc(12vw + 40px),240px);bottom:auto;width:400px;transform:translateY(-50%);}
 .login-cover-kicker{width:auto;margin:0 0 7px;color:#fff;font-size:10px;font-weight:750;letter-spacing:1.65px;text-align:left;text-transform:uppercase;white-space:nowrap;}
 .login-cover-title{position:relative;display:block;width:auto;margin:0 0 0 -32px;font-size:94px;font-weight:650;line-height:.92;letter-spacing:-3.5px;text-align:left;text-indent:0;white-space:nowrap;}
-.login-meteors{position:absolute;z-index:1;inset:-8px -5px -7px -8px;display:block;overflow:hidden;pointer-events:none;}
-.login-meteors b{position:absolute;display:block;border-radius:999px;background:linear-gradient(90deg,rgba(255,137,88,.98) 0%,rgba(255,93,33,.76) 20%,rgba(242,89,26,.30) 58%,rgba(242,89,26,0) 100%);transform:rotate(-32deg);transform-origin:right center;filter:drop-shadow(0 0 2.5px rgba(255,103,43,.34));animation:meteorFall 4.8s cubic-bezier(.2,.7,.25,1) infinite;}
-.login-meteors b:after{content:"";position:absolute;left:-2px;top:50%;width:4px;height:4px;border-radius:50%;background:#ff8b59;box-shadow:0 0 5px rgba(255,103,43,.68);transform:translateY(-50%);}
-.login-meteors b:nth-child(1){top:-4px;right:9px;width:88px;height:3.4px;opacity:.94;animation-delay:-.4s;}
-.login-meteors b:nth-child(1):after{width:8px;height:8px;border-radius:0;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);}
-.login-meteors b:nth-child(2){top:11px;right:85px;width:48px;height:1px;opacity:.50;animation-delay:-3.2s;}
-.login-meteors b:nth-child(3){top:29px;right:137px;width:72px;height:2.1px;opacity:.72;animation-delay:-1.9s;}
-.login-meteors b:nth-child(4){top:48px;right:196px;width:36px;height:.8px;opacity:.38;animation-delay:-4.1s;}
-.login-meteors b:nth-child(5){top:61px;right:43px;width:62px;height:1.5px;opacity:.60;animation-delay:-2.6s;}
-.login-meteors b:nth-child(6){top:78px;right:124px;width:29px;height:.7px;opacity:.30;animation-delay:-1.1s;}
-.login-meteors b:nth-child(2):after{width:3px;height:3px;}
-.login-meteors b:nth-child(3):after{width:5.5px;height:5.5px;}
-.login-meteors b:nth-child(4):after{width:2.5px;height:2.5px;}
-.login-meteors b:nth-child(5):after{width:4px;height:4px;}
-.login-meteors b:nth-child(6):after{width:2px;height:2px;}
+.login-meteors{position:absolute;z-index:1;inset:-8px -5px -7px -8px;display:block;overflow:visible;pointer-events:none;}
+.login-meteors b{position:absolute;display:block;border-radius:999px;background:linear-gradient(90deg,rgba(255,137,88,.98) 0%,rgba(255,93,33,.76) 20%,rgba(242,89,26,.30) 58%,rgba(242,89,26,0) 100%);background-size:100% 100%;background-repeat:no-repeat;background-position:left center;transform:rotate(-36deg);transform-origin:left center;filter:drop-shadow(0 0 2.5px rgba(255,103,43,.34));animation:meteorFall 7.2s linear infinite;}
+.login-meteors b:not(.hero-meteor):after,.login-meteors b:not(.hero-meteor):before{content:"";position:absolute;top:50%;border-radius:0;clip-path:polygon(50% 0,61% 35%,98% 38%,69% 59%,79% 96%,50% 74%,21% 96%,31% 59%,2% 38%,39% 35%);transform:translateY(-50%);}
+.login-meteors b:not(.hero-meteor):after{left:-4px;width:9px;height:9px;background:#fff;box-shadow:0 0 5px rgba(255,255,255,.68),0 0 8px rgba(255,111,58,.35);}
+.login-meteors b:not(.hero-meteor):before{z-index:1;left:-2.5px;width:6px;height:6px;background:#ff7a43;}
+.login-meteors b:nth-child(1){--meteor-opacity:.88;--meteor-fade:.42;top:0;right:18px;width:84px;height:2.8px;animation-delay:-.5s;}
+.login-meteors b:nth-child(2){--meteor-opacity:.62;--meteor-fade:.30;top:34px;right:142px;width:66px;height:1.8px;animation-delay:-3.8s;}
+.login-meteors b:nth-child(3){--meteor-opacity:.48;--meteor-fade:.22;top:68px;right:58px;width:50px;height:1.2px;animation-delay:-2.1s;}
+.login-meteors b.hero-meteor{z-index:3;top:-2px;right:-50px;width:220px;height:4px;opacity:0;transform-origin:left center;animation:heroMeteorFall 10.8s linear 1s infinite;filter:drop-shadow(0 0 4px rgba(255,120,66,.55));}
+.login-meteors b.hero-meteor:after,.login-meteors b.hero-meteor:before{content:"";position:absolute;top:50%;left:-7px;border-radius:0;clip-path:polygon(50% 0,61% 35%,98% 38%,69% 59%,79% 96%,50% 74%,21% 96%,31% 59%,2% 38%,39% 35%);transform:translateY(-50%);}
+.login-meteors b.hero-meteor:after{width:17px;height:17px;background:#fff;box-shadow:0 0 7px rgba(255,255,255,.85),0 0 13px rgba(255,111,58,.42);}
+.login-meteors b.hero-meteor:before{z-index:1;left:-4.5px;width:12px;height:12px;background:#ff7a43;box-shadow:none;}
 @keyframes meteorFall{
-  0%,70%,100%{transform:translate(0,0) rotate(-32deg);filter:drop-shadow(0 0 2px rgba(255,103,43,.24));}
-  76%{transform:translate(-5px,3px) rotate(-32deg);filter:drop-shadow(0 0 5px rgba(255,103,43,.52));}
-  86%{transform:translate(-14px,9px) rotate(-32deg);filter:drop-shadow(0 0 2px rgba(255,103,43,.24));}
+  0%,48%{opacity:0;background-size:100% 100%;transform:translate(20px,-16px) rotate(-36deg);}
+  54%{opacity:var(--meteor-opacity);background-size:100% 100%;transform:translate(12px,-10px) rotate(-36deg);}
+  74%{opacity:var(--meteor-opacity);background-size:100% 100%;transform:translate(-18px,14px) rotate(-36deg);}
+  84%{opacity:var(--meteor-opacity);background-size:72% 100%;transform:translate(-34px,27px) rotate(-36deg);}
+  92%{opacity:var(--meteor-fade);background-size:28% 100%;transform:translate(-47px,38px) rotate(-36deg);}
+  97%,100%{opacity:0;background-size:0 100%;transform:translate(-56px,45px) rotate(-36deg);}
+}
+@keyframes heroMeteorFall{
+  0%,42%{opacity:0;background-size:100% 100%;transform:translate(70px,-10px) rotate(-27deg);}
+  46%{opacity:1;background-size:100% 100%;transform:translate(62px,-6px) rotate(-27deg);}
+  72%{opacity:1;background-size:100% 100%;transform:translate(-76px,58px) rotate(-27deg);}
+  82%{opacity:1;background-size:80% 100%;transform:translate(-128px,82px) rotate(-27deg);}
+  90%{opacity:.92;background-size:36% 100%;transform:translate(-170px,101px) rotate(-27deg);}
+  96%{opacity:.28;background-size:0 100%;transform:translate(-194px,112px) rotate(-27deg);}
+  100%{opacity:0;background-size:0 100%;transform:translate(-202px,116px) rotate(-27deg);}
 }
 @media(prefers-reduced-motion:reduce){.login-meteors b{animation:none;}}
 .login-cover-subtitle{width:auto;margin-top:3px;color:#fff;font-size:29px;font-weight:600;line-height:1.18;letter-spacing:.55px;text-align:left;white-space:nowrap;}
@@ -1285,7 +1299,7 @@ body.cover-open{overflow:hidden;}
     <div class="login-cover-brand"><img src="assets/volvo-wordmark-white.png" alt="Volvo"></div>
     <div class="login-cover-main">
       <div class="login-cover-kicker">Volvo Sales Consultant Only</div>
-      <h1 class="login-cover-title">ES90<i class="login-meteors" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b></i></h1>
+      <h1 class="login-cover-title">ES90<i class="login-meteors" aria-hidden="true"><b></b><b></b><b></b><b class="hero-meteor"></b></i></h1>
       <div class="login-cover-subtitle">경쟁력 분석 매트릭스</div>
       <div class="login-cover-accent" aria-hidden="true"></div>
       <p class="login-cover-desc">ES90과 주요 경쟁 모델을 한눈에 비교·분석합니다.</p>
@@ -16867,11 +16881,12 @@ function groupByCategoryOrdered(items){
 // ---- render category cards for strengths/weaknesses (item 9,10,12,15) ----
 function renderCatOptionCards(items, tone){
   const groups = groupByCategoryOrdered(items);
+  const escapeAttr = value=>String(value||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
   return `<div class="cat-card-grid ${tone}">
     ${groups.map(g=>`
       <div class="cat-card" data-catkey="${g.key}" style="cursor:pointer;" onclick="highlightCatCard('${g.key.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
         <div class="cat-card-head">${g.category}</div>
-        ${g.entries.length ? `<ul class="cat-card-list">${g.entries.map(e=>`<li>${e.name}${e.badge?` <span class="ug-badge">${e.badge}</span>`:''}</li>`).join('')}</ul>` : `<div class="cat-card-empty">해당 없음</div>`}
+        ${g.entries.length ? `<ul class="cat-card-list">${g.entries.map(e=>`<li data-analysis-item="${escapeAttr(e.name)}">${e.name}${e.badge?` <span class="ug-badge">${e.badge}</span>`:''}</li>`).join('')}</ul>` : `<div class="cat-card-empty">해당 없음</div>`}
       </div>
     `).join('')}
   </div>`;
@@ -17865,6 +17880,53 @@ function syncCatCardDim(key){
   });
 }
 
+let PINNED_OPTION_ANALYSIS = null;
+function normalizeAnalysisItemName(value){
+  return String(value||'')
+    .replace(/[\u200B-\u200D\u2066-\u2069\uFEFF]/g,'')
+    .replace(/[“”]/g,'"')
+    .replace(/\s+/g,' ')
+    .trim()
+    .toLowerCase();
+}
+function clearPinnedOptionAnalysis(){
+  document.querySelectorAll('.cat-card.option-analysis-pinned').forEach(card=>card.classList.remove('option-analysis-pinned'));
+  document.querySelectorAll('.cat-card-list li.option-analysis-item-pinned').forEach(item=>item.classList.remove('option-analysis-item-pinned'));
+}
+function applyPinnedOptionAnalysis(scrollToMatch=false){
+  clearPinnedOptionAnalysis();
+  const selection = PINNED_OPTION_ANALYSIS;
+  if(!selection) return;
+  const currentContext = [STATE.es90Trim,STATE.brandKey,STATE.compTrim].join('|');
+  if(selection.context!==currentContext){
+    PINNED_OPTION_ANALYSIS = null;
+    return;
+  }
+  const itemName = normalizeAnalysisItemName(selection.itemName);
+  const cards = Array.from(document.querySelectorAll('.cat-card')).filter(card=>card.dataset.catkey===selection.categoryKey);
+  const exactMatches = [];
+  cards.forEach(card=>{
+    const item = Array.from(card.querySelectorAll('[data-analysis-item]'))
+      .find(node=>normalizeAnalysisItemName(node.dataset.analysisItem)===itemName);
+    if(item) exactMatches.push({card,item});
+  });
+  // 완전 일치하는 분석 항목만 강조한다. 부분 일치나 카테고리 추측으로 다른 카드를 선택하지 않는다.
+  if(exactMatches.length!==1) return;
+  const {card,item} = exactMatches[0];
+  card.classList.add('option-analysis-pinned');
+  item.classList.add('option-analysis-item-pinned');
+  if(scrollToMatch) smoothScrollToElement(card,'center',700);
+}
+function pinOptionAnalysisFromDetail(event,categoryKey,itemName){
+  if(event?.target?.closest('.option-jump,button,a,input,select')) return;
+  PINNED_OPTION_ANALYSIS = {
+    categoryKey,
+    itemName,
+    context:[STATE.es90Trim,STATE.brandKey,STATE.compTrim].join('|')
+  };
+  applyPinnedOptionAnalysis(true);
+}
+
 // item: clicking a category bar in "카테고리별 옵션비교" jumps to the matching tab in "카테고리별 상세옵션"
 // item: clicking a category card in "옵션구성 분석결과" keeps its color and tones down the other 7, then jumps to the matching tab
 function highlightCatCard(key){
@@ -18199,7 +18261,9 @@ function renderOptTable(cat){
 
         }
 
-        return `<tr class="${rowClass}" data-item-name="${escapeDataValue(it.name)}"${rowOptionName?` data-option-name="${escapeDataValue(rowOptionName)}"`:''}>
+        const inlineCategory = String(cat.category||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        const inlineItemName = String(it.name||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        return `<tr class="${rowClass} option-analysis-source" data-item-name="${escapeDataValue(it.name)}"${rowOptionName?` data-option-name="${escapeDataValue(rowOptionName)}"`:''} onclick="pinOptionAnalysisFromDetail(event,'${inlineCategory}','${inlineItemName}')">
           <td class="opt-name">${compareBadge}${displayName}</td>
           <td class="opt-val">${esCell}</td>
           <td class="opt-val">${compCell}</td>

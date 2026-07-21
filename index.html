@@ -19,7 +19,7 @@
   </style>
 </head>
 <body>
-  <iframe id="app" title="Volvo ES90 경쟁력 분석 앱"></iframe>
+  <iframe id="app" title="Volvo ES90 경쟁력 분석 도구"></iframe>
   <div id="status" role="status" aria-live="polite"></div>
   <script>
     const appFrame = document.getElementById('app');
@@ -44,10 +44,10 @@
       const previous = localStorage.getItem('es90-app-version');
       localStorage.setItem('es90-app-version', version);
       appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
-      if (previous && previous !== version) showStatus('최신 업데이트 반영완료');
+      if (previous && previous !== version) showStatus('최신 업데이트 반영 완료');
     }
 
-    const UPDATE_INTERVAL = 5 * 60 * 1000;
+    const UPDATE_INTERVAL = 60 * 1000;
     let pendingVersion = null;
     let updateCheckRunning = false;
 
@@ -67,7 +67,7 @@
       pendingVersion = null;
       localStorage.setItem('es90-app-version', version);
       appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
-      showStatus('최신 업데이트 반영완료', 3200);
+      showStatus('최신 업데이트 반영 완료', 3200);
     }
 
     async function checkLatestApp() {
@@ -86,10 +86,10 @@
           applyVersion(latestVersion);
         } else {
           pendingVersion = latestVersion;
-          showStatus('최신 버전이 준비되었습니다. Step 1에서 자동 적용됩니다.', 5200);
+          showStatus('최신 버전이 준비되었습니다. Step 1에서 자동으로 적용됩니다.', 5200);
         }
       } catch (_) {
-        // 네트워크가 복구되거나 다음 5분 확인 시 다시 시도한다.
+        // 네트워크가 복구되거나 다음 확인 시점에 다시 시도한다.
       } finally {
         updateCheckRunning = false;
       }
@@ -111,7 +111,7 @@
             checkLatestApp();
           }
         });
-      }).catch(() => showStatus('온라인 상태에서 자동 업데이트가 활성화됩니다.'));
+      }).catch(() => showStatus('오프라인 상태에서는 자동 업데이트가 제한됩니다.'));
     }
 
     window.addEventListener('online', checkLatestApp);
