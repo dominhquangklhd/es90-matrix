@@ -1301,7 +1301,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 16:44",
+    "updated": "2026-07-21 16:46",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18298,7 +18298,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
         <div class="unified-option-list">${purchaseGroupsHtml}${emptyState}</div>
         <div class="pkg-calc-col" id="unifiedCalcBox"></div>
       </div>
-      ${packageEntries.length?'<div class="pkg-disclaimer">옵션 패키지 내 특정 개별 옵션만 별도로 선택하는 것은 불가능하며 패키지 단위로 구매할 수 있습니다.</div>':''}
+      ${packageEntries.length?'<div class="spec-excluded-note" style="margin-top:12px;"><span class="note-flag">🚧</span><span>패키지를 구성하는 여러 옵션 중 1개만 개별 구매하는 것은 불가</span></div>':''}
     </div>`;
 }
 
@@ -18406,7 +18406,7 @@ function renderPkgBox(cat){
         </div>
         <div class="pkg-calc-col" id="pkgCalcBox"></div>
       </div>
-      <div class="pkg-disclaimer">⚠ 옵션 패키지 내 특정 개별 옵션만 따로 선택하는 것은 불가합니다(패키지 단위로만 구매 가능)</div>
+      <div class="spec-excluded-note" style="margin-top:12px;"><span class="note-flag">🚧</span><span>패키지를 구성하는 여러 옵션 중 1개만 개별 구매하는 것은 불가</span></div>
     </div>`;
   updatePkgCalc();
 }
