@@ -557,6 +557,7 @@ button{font-family:inherit;}
 .spec-summary .vbar-label{font-size:13px;}
 .spec-summary-gap{margin-top:18px;text-align:center;border-top:1px dashed var(--line-soft);padding-top:16px;width:100%;}
 .spec-summary-gapnum{font-size:38px;font-weight:900;color:var(--orange-deep);line-height:1.1;letter-spacing:-0.5px;}
+.spec-summary-winner-trim{font-size:18px;font-weight:900;color:var(--orange-deep);line-height:1.25;letter-spacing:-0.3px;word-break:keep-all;}
 .spec-summary-gapsub{font-size:13px;color:var(--ink-faint);margin-top:7px;font-weight:600;}
 .win-badge{display:inline-block;background:var(--orange-deep);color:#fff;font-size:11px;font-weight:700;padding:4px 15px;border-radius:999px;margin-bottom:7px;letter-spacing:0.2px;}
 .loss-badge{display:inline-block;background:rgb(37,99,235);color:#fff;font-size:11px;font-weight:700;padding:4px 15px;border-radius:999px;margin-bottom:7px;letter-spacing:0.2px;}
@@ -17754,10 +17755,10 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     if(esBetter) esWins++; else if(compBetter) compWins++;
   });
   const total = coreRows.length;
-  const esPct = Math.round(esWins/total*1000)/10;
-  const compPct = Math.round(compWins/total*1000)/10;
-  const gapPct = Math.round(Math.abs(esPct-compPct)*10)/10;
-  const esLeads = esPct >= compPct;
+  const winCountGap = Math.abs(esWins-compWins);
+  const winnerTrimLabel = esWins===compWins
+    ? '동일'
+    : (esWins>compWins ? `ES90 ${es90TrimMenuDisplay(es90Trim)}` : compLabel(compName, compTrim));
   const esH = Math.max(esWins/total*100, 6), compH = Math.max(compWins/total*100, 6);
 
   return `
@@ -17806,9 +17807,9 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
             <div class="vbar-label summary-total-label"><span class="compare-badge is-yes">비교 O</span><span>총 ${total}개 중</span></div>
           </div>
           <div class="spec-summary-gap">
-            ${esLeads? `<div class="win-badge">경쟁력 우위</div>` : `<div class="loss-badge">경쟁력 열위</div>`}
-            <div class="spec-summary-gapnum${esLeads?'':' is-loss'}">${esLeads?'+':'-'}${gapPct}%p</div>
-            <div class="spec-summary-gapsub">ES90 ${esPct}% <span style="opacity:.5;">vs</span> ${compName} ${compPct}%</div>
+            <div class="win-badge">${winCountGap ? `우위 항목 +${winCountGap}개` : '우위 항목 동일'}</div>
+            <div class="spec-summary-winner-trim">${winnerTrimLabel}</div>
+            <div class="spec-summary-gapsub">ES90 ${esWins}개 <span style="opacity:.5;">vs</span> ${compLabel(compName, compTrim)} ${compWins}개</div>
           </div>
         </div>
       </div>
