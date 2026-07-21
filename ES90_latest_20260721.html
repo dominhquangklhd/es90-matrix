@@ -1300,7 +1300,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 14:41",
+    "updated": "2026-07-21 14:46",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -17645,7 +17645,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
   const coreRows = [
     {label:'배터리 용량',      esVal:esSpec.battery_kwh,  compVal:compSpec?compSpec.battery_kwh:null,
       es: esSpec.battery_kwh!=null? esSpec.battery_kwh+'kWh':'확인 불가',
-      comp: compSpec&&compSpec.battery_kwh!=null? compSpec.battery_kwh+'kWh':'확인 불가', compare:true, lowerBetter:false},
+      comp: compSpec&&compSpec.battery_kwh!=null? compSpec.battery_kwh+'kWh':(brandKey==='BMW 6 Series GT'?'해당 없음':'확인 불가'), compare:true, lowerBetter:false},
     {label:'구동방식',         esVal:driveRank(esSpec.drive_type), compVal:compSpec?driveRank(compSpec.drive_type):null,
       es: esSpec.drive_type||'확인 불가', comp: compSpec?(compSpec.drive_type||'확인 불가'):'확인 불가', compare:true, lowerBetter:false},
     {label:'1회 충전 주행거리', esVal:esSpec.range_km!=null? esSpec.range_km:null,     compVal:compSpec?compSpec.range_km:null,
@@ -17672,6 +17672,9 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     {label:'배터리 제조사',     es: esSpec.battery_maker||'-', comp: compSpec?compSpec.battery_maker||'-':'-', compare:false},
   ];
   const rows = [...coreRows, ...excludedRows];
+  const formatSpecStatus = value => typeof value==='string'
+    ? value.replace(/해당 없음/g,'해당없음').replace(/확인 불가/g,'확인불가')
+    : value;
 
   const compareCoreRow = r => {
     if(r.rangeCompare){
@@ -17720,7 +17723,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
               ? '<span class="compare-badge is-yes">비교 O</span>'
               : '<span class="compare-badge is-no">비교 X</span>';
             const hideThumb = r.label==='1회 충전 주행거리';
-            return `<tr class="${excludedCls}"><td class="opt-name">${compareBadge}${r.label}</td><td class="opt-val ov-spec"><div class="ov-row"><span class="ov-win">${!hideThumb&&esWin?'👍':''}</span><div class="ov-row-val">${formatLiterUnit(r.es)}</div></div></td><td class="opt-val ov-spec"><div class="ov-row"><span class="ov-win">${!hideThumb&&compWin?'👍':''}</span><div class="ov-row-val">${formatLiterUnit(r.comp)}</div></div></td></tr>`;
+            return `<tr class="${excludedCls}"><td class="opt-name">${compareBadge}${r.label}</td><td class="opt-val ov-spec"><div class="ov-row"><span class="ov-win">${!hideThumb&&esWin?'👍':''}</span><div class="ov-row-val">${formatLiterUnit(formatSpecStatus(r.es))}</div></div></td><td class="opt-val ov-spec"><div class="ov-row"><span class="ov-win">${!hideThumb&&compWin?'👍':''}</span><div class="ov-row-val">${formatLiterUnit(formatSpecStatus(r.comp))}</div></div></td></tr>`;
           }).join('')}
         </tbody>
       </table>
