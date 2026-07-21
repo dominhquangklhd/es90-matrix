@@ -541,6 +541,17 @@ button{font-family:inherit;}
 .opt-table.spec-table{table-layout:fixed;}
 .opt-table.spec-table th:first-child, .opt-table.spec-table td.opt-name{width:30%;}
 .opt-table.spec-table th:not(:first-child), .opt-table.spec-table td.opt-val{width:35%;font-size:12px;}
+#performanceCompareCard .spec-table th:first-child,
+#performanceCompareCard .spec-table td.opt-name{text-align:left!important;}
+#performanceCompareCard .spec-table th:nth-child(2),
+#performanceCompareCard .spec-table th:nth-child(3),
+#performanceCompareCard .spec-table td.opt-val{text-align:center!important;}
+#performanceCompareCard .spec-table th:nth-child(2),
+#performanceCompareCard .spec-table th:nth-child(3){padding-left:16px!important;padding-right:16px!important;line-height:1.35;overflow-wrap:anywhere;}
+#performanceCompareCard .spec-table td.opt-val .ov-row{display:inline-flex;width:auto;max-width:100%;align-items:center;justify-content:center;vertical-align:middle;}
+#performanceCompareCard .spec-table td.opt-val .ov-row-val{flex:0 1 auto;min-width:0;text-align:center;line-height:1.35;overflow-wrap:anywhere;}
+#performanceCompareCard .spec-table td.opt-val .ov-win{width:auto;min-width:0;margin-right:4px;}
+#performanceCompareCard .spec-table td.opt-val .ov-win:empty{display:none;margin-right:0;}
 .spec-excluded{opacity:1;}
 .spec-excluded-note{font-size:10px;color:var(--amber);text-align:left;padding:6px 10px 0;font-weight:500;display:flex;align-items:flex-start;gap:14px;}
 .spec-excluded-note .note-flag{width:14px;flex:0 0 14px;text-align:center;}
