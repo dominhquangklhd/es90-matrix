@@ -18336,17 +18336,37 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
       options.every(option=>['스마트 비전 루프','파노라마 선루프'].includes(option.name));
     const isTeslaModelSAwdInteriorChoice = brandKey==='Tesla Model S' && compTrim==='AWD' && category==='인테리어·시트' && options.length===2 &&
       options.every(option=>['블랙 & 화이트 인테리어','크림 인테리어'].includes(option.name));
+    const isTeslaModelSPlaidInteriorGroup = brandKey==='Tesla Model S' && compTrim==='Plaid' && category==='인테리어·시트' && options.length===3 &&
+      options.every(option=>['블랙 & 화이트 인테리어','크림 인테리어','요크 스티어링 휠'].includes(option.name));
     if(isTeslaModelSAwdInteriorChoice){
       options = [...options].sort((a,b)=>a.name==='블랙 & 화이트 인테리어'?-1:b.name==='블랙 & 화이트 인테리어'?1:0);
     }
+    if(isTeslaModelSPlaidInteriorGroup){
+      const plaidInteriorOrder = {'블랙 & 화이트 인테리어':1,'크림 인테리어':2,'요크 스티어링 휠':3};
+      options = [...options].sort((a,b)=>plaidInteriorOrder[a.name]-plaidInteriorOrder[b.name]);
+    }
     const exclusiveChoiceGroup = isLeatherOnlyChoice ? 'leather' : (isHyundaiClimateRoofChoice ? 'climate-roof' : (isTeslaModelSAwdInteriorChoice ? 'tesla-model-s-awd-interior' : ''));
+    const paidOptionRows = options.map(option=>{
+      const isPlaidInteriorChoice = isTeslaModelSPlaidInteriorGroup && option.name!=='요크 스티어링 휠';
+      const optionChoiceGroup = isPlaidInteriorChoice ? 'tesla-model-s-plaid-interior' : exclusiveChoiceGroup;
+      const optionClass = isLeatherOnlyChoice ? ' exclusive-leather-btn' :
+        (isHyundaiClimateRoofChoice ? ' exclusive-climate-roof-btn' :
+        (isTeslaModelSAwdInteriorChoice ? ' exclusive-tesla-interior-btn' :
+        (isPlaidInteriorChoice ? ' exclusive-tesla-plaid-interior-btn' : '')));
+      const optionHandler = isLeatherOnlyChoice ? 'toggleExclusiveLeatherSelect' :
+        (isHyundaiClimateRoofChoice ? 'toggleExclusiveClimateRoofSelect' :
+        (isTeslaModelSAwdInteriorChoice ? 'toggleExclusiveTeslaInteriorSelect' :
+        (isPlaidInteriorChoice ? 'toggleExclusiveTeslaPlaidInteriorSelect' : 'toggleWheelSelect')));
+      return `<div class="pkg-item" data-option-name="${option.name.replace(/"/g,'&quot;')}" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${optionPurchaseDisplayName(option.name)}</span><button class="wheel-select-btn color-select-btn${optionClass}${SELECTED_WHEELS.has(option.name)?' active':''}" data-price="${option.prices[compTrim]}" data-option-name="${option.name.replace(/"/g,'&quot;')}"${optionChoiceGroup?` data-choice-group="${optionChoiceGroup}"`:''} onclick="${optionHandler}(this,'${option.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${option.prices[compTrim]})">${SELECTED_WHEELS.has(option.name)?'✓ 선택됨':`선택 시 +${fmtWon(option.prices[compTrim])} 추가`}</button></div></div>`;
+    }).join('');
+    const paidOptionHeadingSuffix = isTeslaModelSPlaidInteriorGroup ? ' (요크 스티어링 휠 외 택1)' : ((isHyundaiClimateRoofChoice||isTeslaModelSAwdInteriorChoice) ? ' (택1)' : '');
     purchaseEntries.push({rank:category==='기타 옵션'?categorySequence.length:categoryRank(category),index:2000+index,html:`
       <div class="option-category-group"${exclusiveChoiceGroup?` data-exclusive-choice="${exclusiveChoiceGroup}"`:''}>
         <div class="option-category-head">
-          <div class="option-category-main"><span class="option-category-chip">${category}</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'${detailCategory}','${options[0].name.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">Option 구매</span><span class="option-category-name">${category} 유상 옵션${isHyundaiClimateRoofChoice||isTeslaModelSAwdInteriorChoice?' (택1)':''}</span></div>
+          <div class="option-category-main"><span class="option-category-chip">${category}</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'${detailCategory}','${options[0].name.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">Option 구매</span><span class="option-category-name">${category} 유상 옵션${paidOptionHeadingSuffix}</span></div>
         </div>
         <div class="option-category-rows">
-          ${options.map(option=>`<div class="pkg-item" data-option-name="${option.name.replace(/"/g,'&quot;')}" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${optionPurchaseDisplayName(option.name)}</span><button class="wheel-select-btn color-select-btn${isLeatherOnlyChoice?' exclusive-leather-btn':''}${isHyundaiClimateRoofChoice?' exclusive-climate-roof-btn':''}${isTeslaModelSAwdInteriorChoice?' exclusive-tesla-interior-btn':''}${SELECTED_WHEELS.has(option.name)?' active':''}" data-price="${option.prices[compTrim]}" data-option-name="${option.name.replace(/"/g,'&quot;')}"${exclusiveChoiceGroup?` data-choice-group="${exclusiveChoiceGroup}"`:''} onclick="${isLeatherOnlyChoice?'toggleExclusiveLeatherSelect':(isHyundaiClimateRoofChoice?'toggleExclusiveClimateRoofSelect':(isTeslaModelSAwdInteriorChoice?'toggleExclusiveTeslaInteriorSelect':'toggleWheelSelect'))}(this,'${option.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${option.prices[compTrim]})">${SELECTED_WHEELS.has(option.name)?'✓ 선택됨':`선택 시 +${fmtWon(option.prices[compTrim])} 추가`}</button></div></div>`).join('')}
+          ${paidOptionRows}
         </div>
       </div>`});
   });
@@ -18563,6 +18583,22 @@ function toggleExclusiveClimateRoofSelect(btn, name, price){
 function toggleExclusiveTeslaInteriorSelect(btn, name, price){
   const wasActive = SELECTED_WHEELS.has(name);
   document.querySelectorAll('.exclusive-tesla-interior-btn[data-choice-group="tesla-model-s-awd-interior"]').forEach(other=>{
+    SELECTED_WHEELS.delete(other.dataset.optionName || '');
+    other.classList.remove('active');
+    other.textContent = optionSelectLabel(Number(other.dataset.price));
+  });
+  if(!wasActive){
+    SELECTED_WHEELS.set(name, price);
+    btn.classList.add('active');
+    btn.textContent = '✓ 선택됨';
+  }
+  updatePkgCalc();
+}
+
+// Tesla Model S Plaid는 인테리어 2종 중 하나만 선택하고, 요크 스티어링 휠은 별도로 추가할 수 있다.
+function toggleExclusiveTeslaPlaidInteriorSelect(btn, name, price){
+  const wasActive = SELECTED_WHEELS.has(name);
+  document.querySelectorAll('.exclusive-tesla-plaid-interior-btn[data-choice-group="tesla-model-s-plaid-interior"]').forEach(other=>{
     SELECTED_WHEELS.delete(other.dataset.optionName || '');
     other.classList.remove('active');
     other.textContent = optionSelectLabel(Number(other.dataset.price));
