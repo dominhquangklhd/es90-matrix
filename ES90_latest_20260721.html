@@ -357,6 +357,7 @@ button{font-family:inherit;}
 .ov-opt.option-jump::before{content:'👆';position:absolute;left:-5px;top:-6px;display:flex;align-items:center;justify-content:center;width:9px;height:9px;border:1px solid #efb98f;border-radius:50%;background:#fff8f2;font-size:6px;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.14);pointer-events:none;}
 .ov-opt.option-jump:hover{filter:brightness(.94);transform:translateY(-1px);}
 .ov-opt.es-air-option-toggle.is-selected{background:#f15a24;color:#fff;box-shadow:0 1px 4px rgba(241,90,36,.25);}
+.sound-spec-inline{white-space:nowrap;}
 .option-jump-highlight{animation:optionJumpHighlight 1.5s ease;}
 @keyframes optionJumpHighlight{0%,100%{box-shadow:none}20%,75%{box-shadow:0 0 0 3px rgba(245,91,31,.45)}}
 .opt-table tr.option-row-highlight td{animation:optionRowHighlight 1.8s ease;}
@@ -18086,6 +18087,11 @@ function renderOptTable(cat){
       }
     }
   };
+  function formatSoundSpecLine(detail){
+    if(typeof detail!=='string' || /<span\b|Option\s*구매/i.test(detail)) return detail;
+    const parts = detail.split(/<br\s*\/?\s*>|\n/i).map(part=>part.trim()).filter(Boolean);
+    return parts.length>1 ? `${parts[0]} (${parts.slice(1).join(' ')})` : detail;
+  }
   // item: 항목명 끝에 붙은 괄호 상세정보를 항목명에서 떼어내 체크마크 옆에 표기 — ES90 전 트림 공통 적용 (양쪽 공통 스펙)
   const ITEM_NAME_DETAIL = {
     '뒷좌석 폴딩시트(4:2:4)': {base:'뒷좌석 폴딩시트', detail:'(40:20:40)'},
@@ -18214,7 +18220,7 @@ function renderOptTable(cat){
           const soundDetail = SOUND_ES90_DETAIL[it.name.trim()];
           if(isSound){
             esCell = evTrue && soundDetail
-              ? `<span class="ov-spec">${soundDetail}</span>`
+              ? `<span class="ov-spec sound-spec-inline">${formatSoundSpecLine(soundDetail)}</span>`
               : renderCell(it.es90);
           } else if(isDisplay){
             // 디스플레이 항목 — 체크마크 없이 인치 값만 표시 (우열 판단 대상 아님)
@@ -18241,7 +18247,7 @@ function renderOptTable(cat){
           const compDisplayDetail = COMP_DISPLAY_DETAIL[STATE.brandKey] && COMP_DISPLAY_DETAIL[STATE.brandKey][it.name.trim()];
           if(isSound){
             compCell = compSoundDetail
-              ? `<span class="ov-spec">${compSoundDetail}</span>`
+              ? `<span class="ov-spec sound-spec-inline">${formatSoundSpecLine(compSoundDetail)}</span>`
               : renderCell(it.comp, STATE.brandKey, STATE.compTrim);
           } else if(isDisplay){
             compCell = cvTrue && compDisplayDetail
