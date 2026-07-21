@@ -18444,7 +18444,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
         (isPlaidInteriorChoice ? 'toggleExclusiveTeslaPlaidInteriorSelect' : 'toggleWheelSelect')));
       return `<div class="pkg-item" data-option-name="${option.name.replace(/"/g,'&quot;')}" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${optionPurchaseDisplayName(option.name)}</span><button class="wheel-select-btn color-select-btn${optionClass}${SELECTED_WHEELS.has(option.name)?' active':''}" data-price="${option.prices[compTrim]}" data-option-name="${option.name.replace(/"/g,'&quot;')}"${optionChoiceGroup?` data-choice-group="${optionChoiceGroup}"`:''} onclick="${optionHandler}(this,'${option.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${option.prices[compTrim]})">${SELECTED_WHEELS.has(option.name)?'✓ 선택됨':`선택 시 +${fmtWon(option.prices[compTrim])} 추가`}</button></div></div>`;
     }).join('');
-    const isPolestar3InteriorChoice = brandKey==='Polestar 3' && category==='인테리어·시트';
+    const isPolestar3InteriorChoice = String(brandKey).replace(/\s+/g,'')==='Polestar3' && detailCategory==='Interior';
     const paidOptionHeadingSuffix = isTeslaModelSPlaidInteriorGroup ? ' (요크 스티어링 휠 외 택1)' : ((isHyundaiClimateRoofChoice||isTeslaModelSAwdInteriorChoice||isPolestar3InteriorChoice) ? ' (택1)' : '');
     purchaseEntries.push({rank:category==='기타 옵션'?categorySequence.length:categoryRank(category),index:2000+index,html:`
       <div class="option-category-group"${exclusiveChoiceGroup?` data-exclusive-choice="${exclusiveChoiceGroup}"`:''}>
