@@ -18612,7 +18612,8 @@ function toggleColorSelect(btn, name, price){
   updatePkgCalc();
 }
 
-// 휠 및 기타 유상 옵션은 각각 독립적으로 선택/해제하며 모두 예상 차량가격에 합산
+// 휠 및 기타 유상 옵션은 각각 독립적으로 선택/해제한다.
+// 선택 금액은 참고용 추가내역에만 표시하고 차량 기본가격·상단 가격비교에는 합산하지 않는다.
 function toggleWheelSelect(btn, name, price){
   if(SELECTED_WHEELS.has(name)){
     SELECTED_WHEELS.delete(name);
@@ -18711,7 +18712,8 @@ function updatePkgCalc(){
   const wheelRows = Array.from(SELECTED_WHEELS, ([name, price])=>({name, price}));
   const wheelSum = wheelRows.reduce((sum, item)=>sum+item.price,0);
   const addSum = pkgSum + (SELECTED_COLOR.price||0) + wheelSum;
-  const newTotal = base + addSum;
+  // 경쟁모델 옵션 구매액은 참고 정보이며 공식 차량가격과 최종 가격차이에는 반영하지 않는다.
+  const displayedCompTotal = base;
 
   // item: 왼쪽에 볼보 ES90 트림/가격도 같은 톤앤매너로 표시 + 옵션 추가 시 줄어드는 격차 계산
   const esTrim = STATE.es90Trim;
@@ -18730,7 +18732,7 @@ function updatePkgCalc(){
       <div class="pkg-calc-vside" style="text-align:left;">
         <div class="pkg-calc-vlabel">${BRAND_DISPLAY_FULL[brandKey]||compName}</div>
         <div class="pkg-calc-vtrim">${compTrimDisplay(compTrim)}</div>
-        <div class="pkg-calc-vprice competitor-price">${fmtWon(newTotal)}</div>
+        <div class="pkg-calc-vprice competitor-price">${fmtWon(displayedCompTotal)}</div>
       </div>
     </div>
     <div class="pkg-calc-rows">
@@ -18739,13 +18741,13 @@ function updatePkgCalc(){
       ${SELECTED_COLOR.name? `<div class="pkg-calc-row"><span>${SELECTED_COLOR.name} 추가</span><span>+${fmtWon(SELECTED_COLOR.price)}</span></div>`:''}
       ${wheelRows.map(item=>`<div class="pkg-calc-row"><span>${optionPurchaseDisplayName(item.name)} 추가</span><span>+${fmtWon(item.price)}</span></div>`).join('')}
     </div>
-    <div class="pkg-calc-total"><span>합계</span><span>${fmtWon(newTotal)}</span></div>
+    <div class="pkg-calc-total"><span>선택 옵션 추가금액 (참고)</span><span>${addSum>0?`+${fmtWon(addSum)}`:fmtWon(0)}</span></div>
     ${(()=>{
       if(!esPrice || esPrice.total==null) return '';
-      const gap = Math.abs(newTotal - effectiveEsTotal);
-      const esCheaper = effectiveEsTotal < newTotal;
+      const gap = Math.abs(displayedCompTotal - effectiveEsTotal);
+      const esCheaper = effectiveEsTotal < displayedCompTotal;
       const competitorFullLabel = fullCompTrimLabel(brandKey, compTrim);
-      const samePrice = effectiveEsTotal===newTotal;
+      const samePrice = effectiveEsTotal===displayedCompTotal;
       const priceWinner = samePrice ? '동일 가격' : `${esCheaper ? `ES90 ${es90TrimCompact(esTrim)}` : competitorFullLabel} 가격우위`;
       return `<div class="pkg-calc-gapline"><span class="pkg-calc-gap-context">ES90 ${es90TrimCompact(esTrim)} 대비</span><span class="pkg-calc-gap-result"><b>${fmtWon(gap)}</b> 가격차이 발생<span class="pkg-calc-gap-winner">(${priceWinner})</span></span></div>`;
     })()}
@@ -18757,10 +18759,10 @@ function updatePkgCalc(){
   const unifiedBox = document.getElementById('unifiedCalcBox');
   if(unifiedBox) unifiedBox.innerHTML = panelHtml;
 
-  // item: 상단 히어로에는 옵션 뱃지를 노출하지 않음(계산 패널에서만 표시). 격차 배너만 새 총액 기준으로 갱신한다.
+  // 상단 가격과 가격차이는 공식 기본가격으로 고정한다. 옵션 선택액은 계산 패널의 참고 내역에만 표시한다.
   const heroGap = document.getElementById('heroGapBox');
   if(heroGap){
-    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, newTotal, esTrim, compName);
+    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, displayedCompTotal, esTrim, compName);
   }
   normalizeOptionPurchaseParenthesisSpacing();
 }

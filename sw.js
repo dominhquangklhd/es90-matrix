@@ -1,4 +1,4 @@
-const CACHE_NAME = 'es90-sales-app-v7';
+const CACHE_NAME = 'es90-sales-app-v8';
 const APP_SHELL = ['./', './index.html', './app.html', './manifest.webmanifest', './icons/es90-icon.svg', './assets/es90-login-cover-lights-on-v3-led.png'];
 
 self.addEventListener('install', event => {
