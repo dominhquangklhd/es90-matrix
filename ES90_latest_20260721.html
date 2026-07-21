@@ -16969,10 +16969,11 @@ function resetSelectionState(resetEs90){
 }
 
 let selectionToastTimer = null;
-function showSelectionToast(){
+function showSelectionToast(message='ES90 트림을 먼저 선택하세요'){
   const toast = document.getElementById('selectionToast');
   if(!toast) return;
   clearTimeout(selectionToastTimer);
+  toast.textContent = message;
   toast.classList.add('show');
   selectionToastTimer = setTimeout(()=>toast.classList.remove('show'),1800);
 }
@@ -16980,6 +16981,10 @@ function showSelectionToast(){
 function navigateToStep(n){
   if(n >= 2 && !STATE.es90Trim){
     showSelectionToast();
+    return;
+  }
+  if(n === 3 && (!STATE.brandKey || !STATE.compTrim)){
+    showSelectionToast('비교모델을 먼저 선택하세요');
     return;
   }
   if(n > STATE.maxStep || n === STATE.step) return;
