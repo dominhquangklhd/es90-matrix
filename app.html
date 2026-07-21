@@ -1298,7 +1298,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 15:24",
+    "updated": "2026-07-21 15:27",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18035,7 +18035,7 @@ function renderOptTable(cat){
     const colorPaidTotal = (brandKey==='Hyundai' && compTrim==='Black Ink') ? 0 : (colorInfo.paid || []).length;
     const colorFreeTotal = colorTotal!=null ? Math.max(colorTotal-colorPaidTotal, 0) : null;
     const competitorBodyColor = (brandKey==='Hyundai' && compTrim==='Black Ink')
-      ? `<span style="white-space:nowrap;">Black Ink 바디컬러 기본 1종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 외장 컬러')">Option 구매</span> <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
+      ? `<span style="white-space:nowrap;">기본 1종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 외장 컬러')">Option 구매</span> 1종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
       : colorTotal==null
         ? '확인 불가'
         : colorPaidTotal>0
