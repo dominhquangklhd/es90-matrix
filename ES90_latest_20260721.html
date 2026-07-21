@@ -185,6 +185,8 @@ button{font-family:inherit;}
 /* ===== Cards generic ===== */
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px;}
 .card-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.card-title-context{color:var(--ink-faint);font-size:12px;font-weight:400;letter-spacing:0;}
+.card-title-copy{display:inline-flex;align-items:baseline;min-width:0;}
 .card-title .ci{width:22px;height:22px;border-radius:7px;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 
 /* ===== Price comparison ===== */
@@ -17354,12 +17356,12 @@ if(score.priceDiff !== null){
     </div>
 
     <div class="card" id="performanceCompareCard">
-      <div class="card-title"><span class="ci">1</span>성능비교_경쟁모델과 제원 1:1 비교</div>
+      <div class="card-title"><span class="ci">1</span><span class="card-title-copy">성능비교<span class="card-title-context">_경쟁모델과 제원 1:1 비교</span></span></div>
       ${renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brandKey)}
     </div>
 
     <div class="card" id="categoryCompareCard" style="padding-bottom:6px;">
-      <div class="card-title"><span class="ci">2</span>옵션비교_경쟁모델과 옵션 1:1 비교</div>
+      <div class="card-title"><span class="ci">2</span><span class="card-title-copy">옵션비교<span class="card-title-context">_경쟁모델과 옵션 1:1 비교</span></span></div>
       <div class="cat-compare-wrap">
         <div class="vbar-wrap">
           ${cats.map(c=>{
