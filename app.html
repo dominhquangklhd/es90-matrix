@@ -18470,6 +18470,8 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
     </div>`;
 }
 
+const OPTION_LINK_SCROLL_DURATION = 950;
+
 function jumpToOptionPurchase(event, optionName){
   if(event){
     event.preventDefault();
@@ -18493,11 +18495,12 @@ function jumpToOptionPurchase(event, optionName){
   // 개별 유상 옵션 행이 찾아져도 해당 옵션을 담고 있는 그룹 카드 전체를 강조한다.
   const destination = target ? (target.closest('.option-category-group') || target) : card;
   requestAnimationFrame(()=>{
-    destination.scrollIntoView({behavior:'smooth', block:target?'center':'start'});
-    destination.classList.remove('option-jump-highlight');
-    void destination.offsetWidth;
-    destination.classList.add('option-jump-highlight');
-    setTimeout(()=>destination.classList.remove('option-jump-highlight'),1600);
+    smoothScrollToElement(destination,target?'center':'start',OPTION_LINK_SCROLL_DURATION,()=>{
+      destination.classList.remove('option-jump-highlight');
+      void destination.offsetWidth;
+      destination.classList.add('option-jump-highlight');
+      setTimeout(()=>destination.classList.remove('option-jump-highlight'),1600);
+    });
   });
 }
 
@@ -18516,7 +18519,7 @@ function jumpFromPurchaseToDetails(event, category, optionName){
     const targetRow = rows.find(row=>rowName(row)===targetName)
       || rows.find(row=>rowName(row).includes(targetName) || targetName.includes(rowName(row)));
     const destination = targetRow || detailCard;
-    smoothScrollToElement(destination, targetRow?'center':'start', 700, ()=>{
+    smoothScrollToElement(destination,targetRow?'center':'start',OPTION_LINK_SCROLL_DURATION,()=>{
       if(targetRow){
         targetRow.classList.remove('option-row-highlight');
         void targetRow.offsetWidth;
@@ -18543,10 +18546,10 @@ function smoothScrollToElement(element, block='start', duration=700, onComplete,
     return;
   }
   const startedAt = performance.now();
-  const easeInOutCubic = progress=>progress<.5 ? 4*progress*progress*progress : 1-Math.pow(-2*progress+2,3)/2;
+  const easeSmoothStop = progress=>progress*progress*progress*(progress*(progress*6-15)+10);
   const animate = now=>{
     const progress = Math.min((now-startedAt)/duration,1);
-    window.scrollTo(0,startY+(targetY-startY)*easeInOutCubic(progress));
+    window.scrollTo(0,startY+(targetY-startY)*easeSmoothStop(progress));
     if(progress<1) requestAnimationFrame(animate);
     else if(onComplete) onComplete();
   };
