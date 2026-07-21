@@ -160,6 +160,11 @@ button{font-family:inherit;}
 .hpi-label{font-size:10.5px;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:4px;letter-spacing:0.05px;}
 .hero-pkg-badge{display:inline-block;background:rgba(253,100,8,0.18);border:1px solid var(--orange);color:var(--orange);font-size:9.5px;font-weight:700;padding:1.5px 8px;border-radius:20px;margin-left:4px;vertical-align:middle;}
 .hpi-value{font-size:17px;color:#fff;font-weight:800;line-height:1.25;}
+.hpi-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;}
+.hpi-top .hpi-label{min-width:0;margin-bottom:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hero-trim-select{min-width:120px;max-width:62%;height:26px;padding:0 25px 0 9px;border:1px solid rgba(255,255,255,.24);border-radius:7px;background:rgba(255,255,255,.10) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ffffff' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center;color:#fff;font-size:9.5px;font-weight:700;line-height:1;appearance:none;-webkit-appearance:none;cursor:pointer;outline:none;}
+.hero-trim-select:hover,.hero-trim-select:focus{border-color:rgba(255,255,255,.52);background-color:rgba(255,255,255,.16);}
+.hero-trim-select option{background:#fff;color:var(--navy-deep);}
 .hero-price-vs{font-size:11px;color:rgba(255,255,255,.4);font-weight:700;flex-shrink:0;}
 .price-gap-banner{margin-top:16px;position:relative;padding-top:14px;border-top:1px dashed rgba(255,255,255,.14);}
 .price-gap-trim{color:rgba(255,255,255,0.6);font-size:14px;font-weight:700;margin-bottom:3px;}
@@ -17292,6 +17297,7 @@ function renderStep4(){
   const compPrice = getCompPrice(brandKey, compTrim);
   const esSpec = getES90Spec(es90Trim);
   const compSpec = getCompSpec(brandKey, compTrim);
+  const compTrimChoices = getAvailableCompTrimsSorted(brandKey);
 
   let valueLabel, valueClass;
   if(score.priceDiff !== null && score.priceDiff > 0){
@@ -17321,12 +17327,22 @@ if(score.priceDiff !== null){
       </div>
       <div class="hero-price-row">
         <div class="hero-price-item">
-          <div class="hpi-label">Volvo ES90 · ${es90TrimDisplay(es90Trim)}</div>
+          <div class="hpi-top">
+            <div class="hpi-label">Volvo ES90</div>
+            <select id="heroEsTrimSelect" class="hero-trim-select" aria-label="ES90 트림 변경">
+              ${D.meta.es90_trims.map(t=>`<option value="${t}"${t===es90Trim?' selected':''}>${es90TrimDisplay(t)}</option>`).join('')}
+            </select>
+          </div>
           <div class="hpi-value es90-price">${esPrice? fmtWonRange(esPrice.total, es90Trim):'가격 미정'}</div>
         </div>
         <div class="hero-price-vs">VS</div>
         <div class="hero-price-item">
-          <div class="hpi-label">${(compTrim==='EV' || compTrim==='Model Y L') ? (BRAND_ONLY[brandKey]?BRAND_ONLY[brandKey]+' · ':'')+compName : (BRAND_ONLY[brandKey]?BRAND_ONLY[brandKey]+' ':'')+compName+' · '+compTrimDisplay(compTrim)}</div>
+          <div class="hpi-top">
+            <div class="hpi-label">${(BRAND_ONLY[brandKey]?BRAND_ONLY[brandKey]+' · ':'')+compName}</div>
+            ${compTrimChoices.length>1?`<select id="heroCompTrimSelect" class="hero-trim-select" aria-label="경쟁차 트림 변경">
+              ${compTrimChoices.map(t=>`<option value="${t}"${t===compTrim?' selected':''}>${compTrimDisplay(t)}</option>`).join('')}
+            </select>`:''}
+          </div>
           <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.total):'가격 미확인'}</div>
         </div>
       </div>
@@ -17335,13 +17351,6 @@ if(score.priceDiff !== null){
 
     <div class="card" id="performanceCompareCard">
       <div class="card-title"><span class="ci">1</span>성능 비교</div>
-      <div class="trim-switch-row">
-        <span class="trim-switch-label">트림 변경:</span>
-        <select id="trimSwitchSelect" class="trim-switch-select">
-          <option value="${es90Trim}" selected hidden>ES90 ${es90TrimDisplay(es90Trim)}</option>
-          ${D.meta.es90_trims.filter(t=>t!==es90Trim).map(t=>`<option value="${t}">ES90 ${es90TrimDisplay(t)}</option>`).join('')}
-        </select>
-      </div>
       ${renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brandKey)}
     </div>
 
@@ -17501,10 +17510,17 @@ if(score.priceDiff !== null){
   renderUpgradeOptList(es90Trim);
   initBarAnimations();
 
-  const trimSel = document.getElementById('trimSwitchSelect');
-  if(trimSel){
-    trimSel.addEventListener('change', ()=>{
-      STATE.es90Trim = trimSel.value;
+  const heroEsTrimSelect = document.getElementById('heroEsTrimSelect');
+  if(heroEsTrimSelect){
+    heroEsTrimSelect.addEventListener('change', ()=>{
+      STATE.es90Trim = heroEsTrimSelect.value;
+      renderStep4();
+    });
+  }
+  const heroCompTrimSelect = document.getElementById('heroCompTrimSelect');
+  if(heroCompTrimSelect){
+    heroCompTrimSelect.addEventListener('change', ()=>{
+      STATE.compTrim = heroCompTrimSelect.value;
       renderStep4();
     });
   }
