@@ -863,6 +863,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .trim-split-col{padding:20px!important;border:1px solid var(--line)!important;border-radius:var(--radius);background:rgba(255,255,255,.76);box-shadow:0 8px 26px rgba(16,42,67,.04);}
 .trim-group-label{margin-bottom:13px;color:var(--navy-deep);font-size:13px;font-weight:600;}
 .trim-group-sub{color:var(--ink-faint);font-weight:400;}
+.trim-sub-emphasis{-webkit-text-emphasis:filled dot;text-emphasis:filled dot;-webkit-text-emphasis-position:over;text-emphasis-position:over;color:inherit;}
 .trim-col-cards{gap:10px;}
 .trim-card{position:relative;overflow:hidden;border:1px solid #dfe5ea!important;border-radius:13px!important;background:#fff;box-shadow:none!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
 .trim-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:transparent;}
@@ -17080,12 +17081,12 @@ syncDeploymentUpdatedAt();
 const TRIM_GROUPS = [
   {
     label: 'PLUS 트림(2종)',
-    sub: '합리적 선택을 중요시 여기는 실속있는 고객님께',
+    sub: '합리적 선택을 중요시 여기는 <span class="trim-sub-emphasis">실속있는</span> 고객님께',
     trims: ['Single Motor Plus', 'Twin Motor Plus']
   },
   {
     label: 'ULTRA 트림(3종)',
-    sub: '프리미엄 경험을 중요시 여기는 품격있는 고객님께',
+    sub: '프리미엄 경험을 중요시 여기는 <span class="trim-sub-emphasis">품격있는</span> 고객님께',
     trims: ['Single Motor Ultra', 'Twin Motor Ultra', 'Twin Motor Performance Ultra']
   }
 ];
