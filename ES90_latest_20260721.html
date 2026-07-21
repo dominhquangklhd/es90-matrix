@@ -17346,7 +17346,7 @@ if(score.priceDiff !== null){
         <div class="hero-price-vs">VS</div>
         <div class="hero-price-item">
           <div class="hpi-top">
-            <div class="hpi-label">${(BRAND_ONLY[brandKey]?BRAND_ONLY[brandKey]+' · ':'')+compName}</div>
+            <div class="hpi-label">${(BRAND_ONLY[brandKey]?BRAND_ONLY[brandKey]+' ':'')+compName}</div>
             ${compTrimChoices.length>1?`<select id="heroCompTrimSelect" class="hero-trim-select" aria-label="경쟁차 트림 변경">
               ${compTrimChoices.map(t=>`<option value="${t}"${t===compTrim?' selected':''}>${compTrimDisplay(t)}</option>`).join('')}
             </select>`:''}
