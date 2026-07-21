@@ -1298,7 +1298,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 14:58",
+    "updated": "2026-07-21 15:22",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18037,7 +18037,7 @@ function renderOptTable(cat){
     const competitorBodyColor = colorTotal==null
       ? '확인 불가'
       : colorPaidTotal>0
-        ? `<span style="white-space:nowrap;">기본 ${colorFreeTotal}종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 외장 컬러')">Option 구매</span> ${colorPaidTotal}종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가격 별도참조)</span></span>`
+        ? `<span style="white-space:nowrap;">기본 ${colorFreeTotal}종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 외장 컬러')">Option 구매</span> ${colorPaidTotal}종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
         : `기본 ${colorTotal}종 무상제공`;
     orderedItems.push({
       name:'바디컬러',
@@ -18527,7 +18527,7 @@ function renderCell(v, brandKey, trim){
     let priceNote = '';
     if(pkgName && brandKey && trim){
       const price = getPackagePrice(brandKey, trim, pkgName);
-      if(price!=null) priceNote = ` <span class="ov-opt-price">(판매가격 ${fmtWon(price)} 추가)</span>`;
+      if(price!=null) priceNote = ` <span class="ov-opt-price">(판매가 ${fmtWon(price)} 추가)</span>`;
     }
     const displayPkgName = pkgName==='Black ash 데코가 적용된 Zinc 색상의 천공 나파 가죽'
       ? 'Black ash 데코가 적용된 천공 나파 가죽'
