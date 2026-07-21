@@ -18086,11 +18086,11 @@ function renderOptTable(cat){
     const colorPaidTotal = (brandKey==='Hyundai' && compTrim==='Black Ink') ? 0 : (colorInfo.paid || []).length;
     const colorFreeTotal = colorTotal!=null ? Math.max(colorTotal-colorPaidTotal, 0) : null;
     const competitorBodyColor = (brandKey==='Hyundai' && compTrim==='Black Ink')
-      ? `<span style="white-space:nowrap;">기본 1종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 외장 컬러')">Option 구매</span> 1종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
+      ? `<span style="white-space:nowrap;">기본 1종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 바디컬러')">Option 구매</span> 1종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
       : colorTotal==null
         ? '확인 불가'
         : colorPaidTotal>0
-          ? `<span style="white-space:nowrap;">기본 ${colorFreeTotal}종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 외장 컬러')">Option 구매</span> ${colorPaidTotal}종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
+          ? `<span style="white-space:nowrap;">기본 ${colorFreeTotal}종 무상제공, <span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'유상 바디컬러')">Option 구매</span> ${colorPaidTotal}종 <span style="color:var(--ink-faint);font-size:10.5px;">(판매가 별도참조)</span></span>`
           : `기본 ${colorTotal}종 무상제공`;
     orderedItems.push({
       name:'바디컬러',
@@ -18312,9 +18312,9 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
   }
   const purchaseEntries = [...packageEntries];
   if(paidColors.length) purchaseEntries.push({rank:categoryRank('익스테리어'),index:1000,html:`
-    <div class="option-category-group" data-option-name="유상 외장 컬러">
+    <div class="option-category-group" data-option-name="유상 바디컬러">
       <div class="option-category-head">
-        <div class="option-category-main"><span class="option-category-chip">익스테리어</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'Exterior','바디컬러')">Option 구매</span><span class="option-category-name">유상 외장 컬러 (택1)</span></div>
+        <div class="option-category-main"><span class="option-category-chip">익스테리어</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'Exterior','바디컬러')">Option 구매</span><span class="option-category-name">유상 바디컬러 (택1)</span></div>
       </div>
       <div class="option-category-rows">
         ${paidColors.map(p=>`<div class="pkg-item" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${p.name}</span><button class="color-select-btn" data-price="${p.price}" onclick="toggleColorSelect(this,'${p.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${p.price})">선택 시 +${fmtWon(p.price)} 추가</button></div></div>`).join('')}
