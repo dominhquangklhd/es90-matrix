@@ -1298,7 +1298,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 15:27",
+    "updated": "2026-07-21 15:30",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18235,7 +18235,10 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
       </div>`};
   });
 
-  const paidColors = ((D.body_colors[brandKey]||{}).paid||[]).filter(p=>typeof p.price==='number');
+  const paidColors = ((D.body_colors[brandKey]||{}).paid||[]).filter(p=>
+    typeof p.price==='number' &&
+    !(brandKey==='Hyundai' && compTrim==='Black Ink' && p.name!=='세레니티 화이트 펄')
+  );
   const purchaseEntries = [...packageEntries];
   if(paidColors.length) purchaseEntries.push({rank:categoryRank('익스테리어'),index:1000,html:`
     <div class="option-category-group" data-option-name="유상 외장 컬러">
