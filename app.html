@@ -16471,7 +16471,9 @@ function fmtWon(n){
   return (n/10000).toLocaleString('ko-KR',{maximumFractionDigits:0}) + '만원';
 }
 function formatLiterUnit(value){
-  return typeof value==='string' ? value.replace(/(\d)\s*L\b/g,'$1 L') : value;
+  return typeof value==='string'
+    ? value.replace(/(\d)\s*L\b/g,'$1 L').replace(/\bL\s*\(/g,'L (').replace(/\bkm\s*\(/g,'km (')
+    : value;
 }
 function fmtWonSigned(n){
   if(n===null||n===undefined) return '';
@@ -17591,7 +17593,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     {label:'구동방식',         esVal:driveRank(esSpec.drive_type), compVal:compSpec?driveRank(compSpec.drive_type):null,
       es: esSpec.drive_type||'확인 불가', comp: compSpec?(compSpec.drive_type||'확인 불가'):'확인 불가', compare:true, lowerBetter:false},
     {label:'1회 충전 주행거리', esVal:esSpec.range_km!=null? esSpec.range_km:null,     compVal:compSpec?compSpec.range_km:null,
-      es: esSpec.range_km!=null? `<span style="color:var(--ink);">${esSpec.range_km}km(WLTP 기준)</span>`:'확인 불가',
+      es: esSpec.range_km!=null? `<span style="color:var(--ink);">${esSpec.range_km}km (WLTP 기준)</span>`:'확인 불가',
       comp: compSpec&&compSpec.range_km!=null? compSpec.range_km+'km'+(brandKey==='Polestar 3'&&compTrim==='Rear motor'?' (WLTP 기준)':''):(['Hyundai','BMW 6 Series GT'].includes(brandKey)?'해당 없음':'확인 불가'), compare:true, lowerBetter:false},
     {label:'최고 출력',        esVal:esSpec.power_ps,     compVal:compSpec?compSpec.power_ps:null,
       es: esSpec.power_ps!=null? esSpec.power_ps+'ps':'확인 불가', comp: compSpec&&compSpec.power_ps!=null? compSpec.power_ps+'ps':'확인 불가', compare:true, lowerBetter:false},
