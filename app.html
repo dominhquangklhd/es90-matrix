@@ -18183,6 +18183,12 @@ function renderOptTable(cat){
               : renderCell(it.comp, STATE.brandKey, STATE.compTrim);
           }
           if(it.blankComp) compCell = '';
+          if(STATE.brandKey==='Polestar 4' && typeof compCell==='string'){
+            compCell = compCell.replace(
+              'Charcoal 데코가 적용된 Zinc 색상의 천공 나파 가죽',
+              'Charcoal 데코가 적용된 천공 나파 가죽'
+            );
+          }
 
         }
 
