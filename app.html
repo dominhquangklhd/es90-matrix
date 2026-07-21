@@ -18721,8 +18721,8 @@ function updatePkgCalc(){
   const wheelRows = Array.from(SELECTED_WHEELS, ([name, price])=>({name, price}));
   const wheelSum = wheelRows.reduce((sum, item)=>sum+item.price,0);
   const addSum = pkgSum + (SELECTED_COLOR.price||0) + wheelSum;
-  // 경쟁모델 옵션 구매액은 참고 정보이며 공식 차량가격과 최종 가격차이에는 반영하지 않는다.
-  const displayedCompTotal = base;
+  // 옵션 분석 영역에서는 선택 옵션을 합산하되, 화면 최상단 공식 가격은 기본가로 유지한다.
+  const displayedCompTotal = base + addSum;
 
   // item: 왼쪽에 볼보 ES90 트림/가격도 같은 톤앤매너로 표시 + 옵션 추가 시 줄어드는 격차 계산
   const esTrim = STATE.es90Trim;
@@ -18750,7 +18750,7 @@ function updatePkgCalc(){
       ${SELECTED_COLOR.name? `<div class="pkg-calc-row"><span>${SELECTED_COLOR.name} 추가</span><span>+${fmtWon(SELECTED_COLOR.price)}</span></div>`:''}
       ${wheelRows.map(item=>`<div class="pkg-calc-row"><span>${optionPurchaseDisplayName(item.name)} 추가</span><span>+${fmtWon(item.price)}</span></div>`).join('')}
     </div>
-    <div class="pkg-calc-total"><span>선택 옵션 추가금액 (참고)</span><span>${addSum>0?`+${fmtWon(addSum)}`:fmtWon(0)}</span></div>
+    <div class="pkg-calc-total"><span>옵션 선택 후 가격</span><span>${fmtWon(displayedCompTotal)}</span></div>
     ${(()=>{
       if(!esPrice || esPrice.total==null) return '';
       const gap = Math.abs(displayedCompTotal - effectiveEsTotal);
@@ -18771,7 +18771,7 @@ function updatePkgCalc(){
   // 상단 가격과 가격차이는 공식 기본가격으로 고정한다. 옵션 선택액은 계산 패널의 참고 내역에만 표시한다.
   const heroGap = document.getElementById('heroGapBox');
   if(heroGap){
-    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, displayedCompTotal, esTrim, compName);
+    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, base, esTrim, compName);
   }
   normalizeOptionPurchaseParenthesisSpacing();
 }
