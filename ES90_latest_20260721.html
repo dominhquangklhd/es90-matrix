@@ -18327,6 +18327,17 @@ function toggleWheelSelect(btn, name, price){
   updatePkgCalc();
 }
 
+function normalizeOptionPurchaseParenthesisSpacing(){
+  const card = document.getElementById('optionPurchaseCard');
+  if(!card) return;
+  const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node=>{
+    node.nodeValue = node.nodeValue.replace(/([^\s(])\(/g, '$1 (');
+  });
+}
+
 function updatePkgCalc(){
   const {brandKey, compTrim, compName} = PKG_BOX_CTX;
   if(!brandKey) return;
@@ -18387,6 +18398,7 @@ function updatePkgCalc(){
   if(heroGap){
     heroGap.innerHTML = buildPriceGapHtml(esPrice?esPrice.total:null, newTotal, esTrim, compName);
   }
+  normalizeOptionPurchaseParenthesisSpacing();
 }
 
 function renderCell(v, brandKey, trim){
