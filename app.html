@@ -18833,13 +18833,14 @@ function logoutToLogin(){
   const visual = document.querySelector('.login-cover-visual');
   const input = document.getElementById('loginAccessId');
   const message = document.getElementById('loginCoverMessage');
+  const savedPopup = document.getElementById('loginSavedId');
   cover?.classList.remove('is-leaving');
   if(cover) cover.hidden = false;
   document.body.classList.add('cover-open');
-  if(input) input.value = '';
+  if(input){ input.value = ''; input.blur(); }
+  if(savedPopup) savedPopup.hidden = true;
   if(message) message.textContent = '';
   window.scrollTo({top:0,behavior:'auto'});
-  setTimeout(()=>input?.focus(),50);
 }
 
 const AUTHORIZED_CDSID_HASHES = new Set([
@@ -19405,6 +19406,8 @@ function initLoginCover(){
     });
   }else{
     localStorage.removeItem(SESSION_KEY);
+    input.value = '';
+    savedPopup.hidden = true;
   }
 }
 
