@@ -85,8 +85,18 @@ button{font-family:inherit;}
 /* ===== Content Container ===== */
 .content{padding:20px 28px;box-sizing:border-box;width:100%;}
 .panel{display:none;}
-.panel.show{display:block;animation:fadein .25s ease;}
+.panel.show{display:block;animation:fadein .25s ease;view-transition-name:step-panel;}
 @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+html.panel-transitioning .panel.show{animation:none!important;}
+::view-transition-group(step-panel){animation-duration:.48s;animation-timing-function:cubic-bezier(.22,.78,.24,1);}
+html[data-panel-direction="forward"]::view-transition-old(step-panel){animation:panelPushOutLeft .48s cubic-bezier(.22,.78,.24,1) both;}
+html[data-panel-direction="forward"]::view-transition-new(step-panel){animation:panelPushInRight .48s cubic-bezier(.22,.78,.24,1) both;}
+html[data-panel-direction="back"]::view-transition-old(step-panel){animation:panelPushOutRight .48s cubic-bezier(.22,.78,.24,1) both;}
+html[data-panel-direction="back"]::view-transition-new(step-panel){animation:panelPushInLeft .48s cubic-bezier(.22,.78,.24,1) both;}
+@keyframes panelPushOutLeft{to{opacity:.35;transform:translateX(-10%);}}
+@keyframes panelPushInRight{from{opacity:.35;transform:translateX(10%);}}
+@keyframes panelPushOutRight{to{opacity:.35;transform:translateX(10%);}}
+@keyframes panelPushInLeft{from{opacity:.35;transform:translateX(-10%);}}
 
 .section-head{margin-bottom:14px;}
 .section-eyebrow{font-size:11px;color:var(--navy);font-weight:600;letter-spacing:0.1px;text-transform:uppercase;margin-bottom:3px;}
@@ -1063,10 +1073,14 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 
 /* ===== ES90 로그인 표지 ===== */
 body.cover-open{overflow:hidden;}
-.login-cover{position:fixed;inset:0;z-index:9999;display:block;min-height:100dvh;overflow:hidden;background:#102f47;color:#fff;}
+.login-cover{position:fixed;inset:0;z-index:9999;display:block;min-height:100dvh;overflow:hidden;background:#102f47;color:#fff;opacity:1;transform:scale(1);transition:opacity .55s ease,transform .55s cubic-bezier(.22,.78,.24,1);}
 .login-cover[hidden]{display:none;}
+.login-cover.is-leaving{opacity:0;transform:scale(1.008);pointer-events:none;}
 .login-cover-visual{position:absolute;inset:0;display:block;overflow:hidden;padding:0;background:#102f47;isolation:isolate;}
-.login-cover-visual:after{content:"";position:absolute;z-index:-2;inset:-2px;background:url('assets/es90-login-cover-v3.png') center center/cover no-repeat;opacity:.76;filter:brightness(.68) contrast(.96) saturate(1.05);}
+.login-cover-visual:after{content:"";position:absolute;z-index:-3;inset:-2px;background:url('assets/es90-login-cover-v3.png') center center/cover no-repeat;opacity:.76;filter:brightness(.68) contrast(.96) saturate(1.05);}
+.login-headlight-layer{position:absolute;z-index:-2;inset:-2px;background:url('assets/es90-login-cover-lights-on-v2-crisp.png') center center/cover no-repeat;opacity:0;filter:brightness(.86) contrast(1.12) saturate(.90);transition:opacity .18s ease;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 5.2% 2.1% at 23.8% 69.2%,#000 48%,transparent 100%),radial-gradient(ellipse 5.9% 2.2% at 44.8% 69.1%,#000 48%,transparent 100%),radial-gradient(ellipse 1.35% 4.6% at 22.2% 76.8%,#000 50%,transparent 100%),radial-gradient(ellipse 1.4% 4.7% at 47.7% 76.8%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 5.2% 2.1% at 23.8% 69.2%,#000 48%,transparent 100%),radial-gradient(ellipse 5.9% 2.2% at 44.8% 69.1%,#000 48%,transparent 100%),radial-gradient(ellipse 1.35% 4.6% at 22.2% 76.8%,#000 50%,transparent 100%),radial-gradient(ellipse 1.4% 4.7% at 47.7% 76.8%,#000 50%,transparent 100%);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+.login-cover-visual.lights-on .login-headlight-layer{opacity:.98;animation:headlightsIgnite .78s ease-out both;}
+@keyframes headlightsIgnite{0%{opacity:0;filter:brightness(.78) contrast(1.08) saturate(.90);}34%{opacity:1;filter:brightness(1.02) contrast(1.18) saturate(.90);}100%{opacity:.98;filter:brightness(.92) contrast(1.15) saturate(.90);}}
 .login-cover-visual:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse 150px 62px at 50% 32px,rgba(7,27,42,.58),transparent 100%),linear-gradient(180deg,rgba(8,29,45,.76) 0,rgba(8,29,45,.60) 54px,rgba(8,29,45,.38) 104px,rgba(8,29,45,.16) 154px,transparent 218px),linear-gradient(90deg,rgba(7,28,44,.66) 0%,rgba(10,37,57,.27) 42%,rgba(8,30,47,.48) 100%),linear-gradient(180deg,transparent 0%,transparent 55%,rgba(7,27,42,.80) 100%);pointer-events:none;}
 .login-cover-grid{display:none;}
 .login-cover-brand,.login-cover-main{position:relative;z-index:1;}
@@ -1090,12 +1104,19 @@ body.cover-open{overflow:hidden;}
 .login-card h2{margin:23px 0 7px;color:var(--navy-deep);font-size:25px;font-weight:700;letter-spacing:-1px;}
 .login-card-sub{margin:0 0 27px;color:#798693;font-size:12px;line-height:1.6;}
 .login-label{display:block;margin-bottom:8px;color:#354c61;font-size:11px;font-weight:800;}
-.login-input-wrap{display:flex;align-items:center;height:49px;border:1px solid #cad5dd;border-radius:10px;background:#f9fbfc;transition:.18s;}
+.login-input-wrap{position:relative;display:flex;align-items:center;height:49px;border:1px solid #cad5dd;border-radius:10px;background:#f9fbfc;transition:.18s;}
 .login-input-wrap:focus-within{border-color:var(--navy-soft);background:#fff;box-shadow:0 0 0 3px rgba(45,83,120,.10);}
 .login-input-icon{display:grid;place-items:center;width:45px;color:#6f8292;}
 .login-input-icon svg{width:18px;height:18px;stroke:currentColor;}
-.login-id-input{min-width:0;flex:1;height:100%;padding:0 14px 0 0;border:0;outline:0;background:transparent;color:var(--navy-deep);font:600 14px inherit;letter-spacing:.3px;}
+.login-id-input{min-width:0;flex:1;height:100%;padding:0 14px 0 0;border:0;outline:0;background:transparent;color:var(--navy-deep);font:600 14px inherit;letter-spacing:.3px;text-transform:uppercase;}
 .login-id-input::placeholder{color:#a8b2ba;font-weight:500;}
+.login-saved-id{position:absolute;z-index:12;left:0;right:0;top:calc(100% + 6px);padding:7px;border:1px solid rgba(255,255,255,.16);border-radius:7px;background:rgba(13,40,59,.97);box-shadow:0 12px 28px rgba(0,0,0,.24);backdrop-filter:blur(12px);}
+.login-saved-id[hidden]{display:none;}
+.login-saved-label{display:block;padding:1px 7px 5px;color:rgba(255,255,255,.48);font-size:8px;font-weight:600;letter-spacing:.25px;}
+.login-saved-button{display:flex;align-items:center;justify-content:space-between;width:100%;padding:8px 9px;border:0;border-radius:5px;background:rgba(255,255,255,.07);color:#fff;cursor:pointer;text-align:left;}
+.login-saved-button:hover,.login-saved-button:focus{outline:0;background:rgba(255,255,255,.13);}
+.login-saved-value{font-size:11.5px;font-weight:750;letter-spacing:.5px;}
+.login-saved-action{color:rgba(255,255,255,.52);font-size:8.5px;}
 .login-submit{width:100%;height:49px;margin-top:12px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:#fff;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 8px 18px rgba(17,40,61,.18);transition:.18s;}
 .login-submit:hover{transform:translateY(-1px);box-shadow:0 10px 23px rgba(17,40,61,.23);}
 .login-message{min-height:18px;margin:10px 2px 0;color:var(--orange-deep);font-size:10.5px;line-height:1.5;}
@@ -1163,21 +1184,27 @@ body.cover-open{overflow:hidden;}
 .login-cover-main{top:35%;right:clamp(110px,calc(12vw + 40px),240px);bottom:auto;width:400px;transform:translateY(-50%);}
 .login-cover-kicker{width:auto;margin:0 0 7px;color:#fff;font-size:10px;font-weight:750;letter-spacing:1.65px;text-align:left;text-transform:uppercase;white-space:nowrap;}
 .login-cover-title{position:relative;display:block;width:auto;margin:0 0 0 -32px;font-size:94px;font-weight:650;line-height:.92;letter-spacing:-3.5px;text-align:left;text-indent:0;white-space:nowrap;}
-.login-meteors{position:absolute;z-index:1;inset:0;display:block;overflow:hidden;pointer-events:none;}
-.login-meteors b{position:absolute;display:block;background:linear-gradient(90deg,rgba(255,119,61,.90) 0%,rgba(242,89,26,.48) 42%,rgba(242,89,26,0) 100%);transform:rotate(-32deg);transform-origin:right center;filter:drop-shadow(0 0 1.5px rgba(255,103,43,.20));}
-.login-meteors b:after{content:"";position:absolute;left:-2px;top:50%;width:4px;height:4px;border-radius:50%;background:#ff773d;box-shadow:0 0 3px rgba(255,103,43,.34);transform:translateY(-50%);}
-.login-meteors b:nth-child(1){top:-6px;right:22px;width:58px;height:2.2px;opacity:.76;}
-.login-meteors b:nth-child(1):after{width:7px;height:7px;border-radius:0;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);}
-.login-meteors b:nth-child(2){top:9px;right:92px;width:36px;height:.9px;opacity:.52;}
-.login-meteors b:nth-child(3){top:25px;right:150px;width:55px;height:1.5px;opacity:.62;}
-.login-meteors b:nth-child(4){top:44px;right:202px;width:30px;height:.8px;opacity:.42;}
-.login-meteors b:nth-child(5){top:58px;right:55px;width:43px;height:1.1px;opacity:.46;}
-.login-meteors b:nth-child(6){top:72px;right:135px;width:25px;height:.7px;opacity:.34;}
+.login-meteors{position:absolute;z-index:1;inset:-8px -5px -7px -8px;display:block;overflow:hidden;pointer-events:none;}
+.login-meteors b{position:absolute;display:block;border-radius:999px;background:linear-gradient(90deg,rgba(255,137,88,.98) 0%,rgba(255,93,33,.76) 20%,rgba(242,89,26,.30) 58%,rgba(242,89,26,0) 100%);transform:rotate(-32deg);transform-origin:right center;filter:drop-shadow(0 0 2.5px rgba(255,103,43,.34));animation:meteorFall 4.8s cubic-bezier(.2,.7,.25,1) infinite;}
+.login-meteors b:after{content:"";position:absolute;left:-2px;top:50%;width:4px;height:4px;border-radius:50%;background:#ff8b59;box-shadow:0 0 5px rgba(255,103,43,.68);transform:translateY(-50%);}
+.login-meteors b:nth-child(1){top:-4px;right:9px;width:88px;height:3.4px;opacity:.94;animation-delay:-.4s;}
+.login-meteors b:nth-child(1):after{width:8px;height:8px;border-radius:0;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);}
+.login-meteors b:nth-child(2){top:11px;right:85px;width:48px;height:1px;opacity:.50;animation-delay:-3.2s;}
+.login-meteors b:nth-child(3){top:29px;right:137px;width:72px;height:2.1px;opacity:.72;animation-delay:-1.9s;}
+.login-meteors b:nth-child(4){top:48px;right:196px;width:36px;height:.8px;opacity:.38;animation-delay:-4.1s;}
+.login-meteors b:nth-child(5){top:61px;right:43px;width:62px;height:1.5px;opacity:.60;animation-delay:-2.6s;}
+.login-meteors b:nth-child(6){top:78px;right:124px;width:29px;height:.7px;opacity:.30;animation-delay:-1.1s;}
 .login-meteors b:nth-child(2):after{width:3px;height:3px;}
-.login-meteors b:nth-child(3):after{width:5px;height:5px;}
+.login-meteors b:nth-child(3):after{width:5.5px;height:5.5px;}
 .login-meteors b:nth-child(4):after{width:2.5px;height:2.5px;}
-.login-meteors b:nth-child(5):after{width:3px;height:3px;}
+.login-meteors b:nth-child(5):after{width:4px;height:4px;}
 .login-meteors b:nth-child(6):after{width:2px;height:2px;}
+@keyframes meteorFall{
+  0%,70%,100%{transform:translate(0,0) rotate(-32deg);filter:drop-shadow(0 0 2px rgba(255,103,43,.24));}
+  76%{transform:translate(-5px,3px) rotate(-32deg);filter:drop-shadow(0 0 5px rgba(255,103,43,.52));}
+  86%{transform:translate(-14px,9px) rotate(-32deg);filter:drop-shadow(0 0 2px rgba(255,103,43,.24));}
+}
+@media(prefers-reduced-motion:reduce){.login-meteors b{animation:none;}}
 .login-cover-subtitle{width:auto;margin-top:3px;color:#fff;font-size:29px;font-weight:600;line-height:1.18;letter-spacing:.55px;text-align:left;white-space:nowrap;}
 .login-cover-accent{display:block!important;width:280px!important;min-width:0;height:4px;margin-top:11px;background:linear-gradient(90deg,#ff7642 0%,#f36c32 58%,#d94e1e 100%);clip-path:polygon(0 0,100% 37.5%,100% 62.5%,0 100%);box-shadow:0 2px 7px rgba(243,108,50,.20);transform:none!important;}
 .login-cover-desc{display:block;width:auto;max-width:none;margin:9px 0 0!important;color:rgba(255,255,255,.82);font-size:14px;font-weight:500;line-height:1.45;letter-spacing:0;text-align:left;white-space:nowrap;}
@@ -1196,7 +1223,9 @@ body.cover-open{overflow:hidden;}
 .login-submit:after{content:'→';position:absolute;right:19px;top:50%;color:#e95f25;font-size:20px;font-weight:500;transform:translateY(-52%);}
 .login-submit:after{display:none;content:none;}
 .login-submit:hover{background:#fff;box-shadow:0 12px 26px rgba(0,0,0,.22);}
-.login-footer{display:none;}
+.login-submit:disabled,.login-id-input:disabled{cursor:not-allowed;opacity:.62;}
+.login-submit[aria-busy="true"]{cursor:wait;}
+.login-footer{display:block;margin:10px 0 0 2px;color:rgba(214,221,226,.52);font-size:10px;font-weight:400;line-height:1.35;letter-spacing:.08px;text-align:left;}
 @media screen and (min-width:821px) and (max-width:1366px) and (orientation:landscape){
   .login-cover-main{top:34%;right:calc(7vw + 34px);width:365px;transform:translateY(-50%);}
   .login-cover-kicker{width:auto;font-size:9px;letter-spacing:1.35px;}
@@ -1227,6 +1256,7 @@ body.cover-open{overflow:hidden;}
 </head><body class="cover-open">
 <section class="login-cover" id="loginCover" aria-label="ES90 경쟁력 분석 로그인">
   <div class="login-cover-visual">
+    <div class="login-headlight-layer" aria-hidden="true"></div>
     <div class="login-cover-grid" aria-hidden="true"></div>
     <div class="login-cover-brand"><img src="assets/volvo-wordmark-white.png" alt="Volvo"></div>
     <div class="login-cover-main">
@@ -1244,12 +1274,16 @@ body.cover-open{overflow:hidden;}
       <p class="login-card-sub">승인된 아이디를 입력하여 프로그램에 접속하세요.</p>
       <div class="login-input-wrap">
         <span class="login-input-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke-width="1.7"/><path d="M5.5 19c.7-3.2 3-5 6.5-5s5.8 1.8 6.5 5" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-        <input class="login-id-input" id="loginAccessId" type="text" autocomplete="username" placeholder="CDSID를 입력해 주세요" aria-label="CDSID" aria-describedby="loginCoverMessage">
+        <input class="login-id-input" id="loginAccessId" type="text" autocomplete="username" autocapitalize="characters" spellcheck="false" placeholder="CDSID를 입력해 주세요" aria-label="CDSID" aria-describedby="loginCoverMessage">
+        <div class="login-saved-id" id="loginSavedId" hidden>
+          <span class="login-saved-label">최근 로그인 CDSID</span>
+          <button class="login-saved-button" id="loginSavedIdButton" type="button"><span class="login-saved-value" id="loginSavedIdValue"></span><span class="login-saved-action">선택</span></button>
+        </div>
       </div>
       <button class="login-submit" type="submit"><span class="login-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="5.5"/><path d="M12 2.8V9"/><path d="M6.8 10h10.4"/><path d="M12 5.2v1.6"/></svg></span><span class="login-submit-text">ES90 경쟁력 분석 시작</span></button>
       <div class="login-message" id="loginCoverMessage" aria-live="polite"></div>
       <div class="login-security"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" stroke-width="1.7"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke-width="1.7" stroke-linecap="round"/></svg><span>볼보 공식 딜러사 소속 영업직원만 ES90 상담 시 이용 가능합니다.</span></div>
-      <div class="login-footer">Authorized Volvo Sales Consultants</div>
+      <div class="login-footer">Copyright (C) Volvo Car Korea. All rights reserved.</div>
     </form>
   </div>
 </section>
@@ -16914,13 +16948,29 @@ function navigateToStep(n){
 
 const STEP_PANEL_IDS = ['panel1','panel2','panel4'];
 function showPanel(n){
-  STATE.step = n;
-  STATE.maxStep = Math.max(STATE.maxStep||1, n); // track furthest visited
-  const activeId = STEP_PANEL_IDS[n-1];
-  for(let i=1;i<=4;i++){
-    document.getElementById('panel'+i).classList.toggle('show', ('panel'+i)===activeId);
+  const previousStep = STATE.step || n;
+  const swapPanel = ()=>{
+    STATE.step = n;
+    STATE.maxStep = Math.max(STATE.maxStep||1, n); // track furthest visited
+    const activeId = STEP_PANEL_IDS[n-1];
+    for(let i=1;i<=4;i++){
+      document.getElementById('panel'+i).classList.toggle('show', ('panel'+i)===activeId);
+    }
+    renderSteps();
+  };
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canPush = previousStep !== n && !reduceMotion && typeof document.startViewTransition === 'function';
+  if(canPush){
+    document.documentElement.dataset.panelDirection = n > previousStep ? 'forward' : 'back';
+    document.documentElement.classList.add('panel-transitioning');
+    const transition = document.startViewTransition(swapPanel);
+    transition.finished.finally(()=>{
+      document.documentElement.classList.remove('panel-transitioning');
+      delete document.documentElement.dataset.panelDirection;
+    });
+  }else{
+    swapPanel();
   }
-  renderSteps();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -18359,19 +18409,572 @@ function closeLoginCover(){
   document.body.classList.remove('cover-open');
 }
 
+const AUTHORIZED_CDSID_HASHES = new Set([
+  'd028836fc8efa01f5ed3eda1dec25b5b283566bbcef719e5238c5219df52be62',
+  'e72b3058d533f883505187ebe681c83c80420090705e39ffc1a635ec90cd5a93',
+  '83230a238864f1f5198d0c56529aac3ccaf7a066f06c3afef04ef8091d42a45a',
+  '4802aa0ad02c036a583d63399eb862e324e0b0cc85a4dfeb350d2e4afce2ec75',
+  '1db08775e2df2a0e68964a1eccac7b03052b8ec7fe3dbb983cb8d45df7b9815d',
+  '674a82940aa8279c9123d62caf97537c958ce4bb6d13e47d09f51a606d623ed7',
+  '94cc124082d62913e3345df648c377e2c7615267f3338250dc373b0c29d6fe05',
+  'f8ed50258154b0832d08a5805b76231e45d115c94301cd4052b8ca27437f7e75',
+  '70dbc826ee8836223f2c1855b65aed2e620faeb1cee2913845757383a58b6df3',
+  'b395984da030ed49a9f19956e9c5a3987684e74bbb06a9b706726e8050c505ba',
+  'c9138b33c9a8f29d5aa1304a4b8624c914c0ae17616156ae933a1c7c4de08675',
+  '41d3952ca7171cf271560de02b312b0b36c3c6946227834662d5da5a91b4f2e3',
+  'b53690539fc33d3a7dab3021d83c4f266599464a5efe7b08fa6a09315ad3ece2',
+  '281dabfc29dd07cacf12668bd8c7f54bedd7b6b6bd9d43ff41d69bf93f11a1ae',
+  '94a901cbaa93c0244ee8db398dfc32706c29f059734989fec1ad99ce8c3e0ac6',
+  'c4e96de6e51df6a867c8776da085a167b9c21579773f80dfedd3d71a4377a58a',
+  'ed0f231b001d042ecf5113b1b6d05f8eddf79ed83990b883afb079016d84dc20',
+  '84cdc2d931008a0cc85285d8e7ca99dfa94be2f6187da183a49fd59392e139ad',
+  '28054c1c7606ecc86475e20027dfdfcad1ada03b70e868de0ab1427e1d63a2d0',
+  '69c305d4601f1cd669a283d2f919bffa78aae5c8bfa6f5929b5b544ae2f42009',
+  'c51f0f1b887c2a677f6658defbf534740cbc695c629d4f6379fd32a479d4d424',
+  '0768e70e232030872800eb0057edef61b1d755e59ba46ce976782cdc67e4755f',
+  '6e65f06251d6b5b170a98e78bc93faec6753cd5836a78438750b822fbe532727',
+  '0c0dab55c3600b3bbad26a9397185a949467b2d05eaca28b0c50c8d7ca8edca4',
+  '40d0ca6a8e2cfbd302fc63496bd44bb531df4dd9dbda6af4dc2d8776aab5fc95',
+  'd665cb6ab9c5290e1ceb89d7b0f5d2b6e013f71b8fdece53b6831acd7fe6efaa',
+  '62d5d7f8a7f1461a602b290c2955409c68552a54cf5195553462490a99bba4af',
+  '919dd7511e02c1e4d32555837a12582e00e5e7f39463074faaae9c4e2829b26f',
+  '4238a6ec148213e915def2e8413419ed4aab6fcecea52d2ae1eb47f7e934e5af',
+  'be12abfdb1f1d0f9c1e5411003190dcbb67994c18388ebc0497963c595a009ac',
+  '52d66915dc41719d54c471d225dada0abff2aeabe8133de4bdcbc7ed6210c969',
+  'fbb343703f1d9dedc2a55786890356ae226134caf150e98c3c4e842a0fa57f5d',
+  'e0b81ea403e06878d8a0eda24059756902f1eb73b35f6cf201ba1df55bcf354f',
+  'c9c6a92f66b38ae8c25ce75c1aa3c59f56ce2dab1d21b553ca5dc8be4a0106ee',
+  '2181362739c3c52b39117771901e0f7e316ae0e17533f5b655e3b825465e4391',
+  '05954aae172a352f62472117e6c38112047c99cb08621ad8a050132d865af23b',
+  'c0ac9a9309300473fee0d4b11a3d6ef3adc07f9e8738118b5e8ffe9961dfeec1',
+  '3a2102ec929489821b401d6cefc677fb4e50f3501c993a2eb78a5f4170531442',
+  'f463d600ad1bf02bebc86ae7318e17003de5bcc86e618c9927febd49a2524c8f',
+  '38717dfdc99a4a7a1ae687b0d6f2f44a3f8d38547a71e9b501a577534028b384',
+  '0d1d4c9680e0be89f154a1ac6d9a5545a5029a8aa38d1abf8be6dd16a08cdeb3',
+  '2e0cdec4997a8843cec45afcbc6fe3bf5f2034c6902e9ee343fbee26659a0986',
+  '850810171b3e6363c00e99f8673f2433e58ed636286c4700cd57d394f3f6354f',
+  '68db7d424451c929fc73710553dbfde594ccd5e230854999bdd9eef1e249fdde',
+  '62ac677860f6bc5a69fb699b64a7899251997263517078707b245ae8ca75105b',
+  'e938f4a7998661fc1065129bec086418bcb31a9e64530b6531f84c5a2a85b6f4',
+  'c2ac56ac14cab79e69216aaf0f821990ac5a036fe9fce9bef1077bf2ce1d04d1',
+  'ca89867dd883c56a6c477d9826d97e98d166f857ed891ca61d86ac666759ad6b',
+  '49476b9dfb43de2c81352cde5f7e1bf01be01ae68a144fa5bd0e160131688698',
+  '87346d014502dff3fd52f0a6e02e536545e1ae1beb49d33127944e8e20992ca0',
+  '2a7439ab999f92341c4488723fd4611b4a3ce67fbf2f2fb1dd5bc42ff806b897',
+  '63377bf64c57b2a89919da2f84e1366f19274ced662e48fc73fc8975839d9aba',
+  '1a7bcd7964955ffe6f4c42db11c757b0ce121adfdf9309d3c596e7105e88879b',
+  '9b3bea501624034b605e42ed0a828b9fc7b763c1495c3e2f2dae1edc37fc03d3',
+  'd7a3ce0b4f0d0c6881fa73138c853b306c6798f4b75e29918fbf3dacc6171f25',
+  '263618217fd39730b3c060c1c792e1bf4a386a899f38d29e68b914d9c6006f74',
+  '0ea79ba6a147be10a8712accc2d26fc5b09fac348187ec9deb2f97d4c12e9ff2',
+  '41d19bfe0060e4cfe8f17128e53d1a42049fdaabf7390a84bbd61689d2d7151f',
+  'fc3163662782a31650a17a9971b954c2ccb27b37da0fef7d79a1d81bd009b243',
+  'fe06fbe6a3bbe50573abfb9485f69041d138da16d50ce1a1cb638e2f79344d73',
+  '744580603850aadb90f19e248d57bf9016089546780591f03a0862c0e79ade8f',
+  '1bc366f9db3af665a7e2abd0f8227e77d456fa815cbebefbb9ade527d7cf8064',
+  '75a50fe92f6d62cc0262e9e6cc2e020788a558f9c2b9c5a144e6d0a7cae89665',
+  '65c2c0b35e74fec3e33b45f5ca85a649b278e9bb7f2cb2430d3a306a49ceaabe',
+  'e30cb783e5aef9ecd11a6792b53f7047bb5b2acd98cd2814ce4651ee8379468b',
+  '9b168630f74bf8d607ded98ae0b2fa6a0e89fbbe12161620954947b510ed44f7',
+  'd52862ffd13d4c83ef50e6162b76c54bf7e99ec11effab5c66874713437394d7',
+  'c8d5fcb8d3e1fa8accad5cdf458d5948802da84bb205ebc9a854a1dcd3926051',
+  '5245cb0676705d51107f65661e996adac99e1ebca4af20fa59d037d474168aab',
+  '059fbc2c758bc50940279723c620b28cf061c553518110498d1e61f085f8d4ce',
+  'd118f4a691396f5c10ad30be6a457f4f1963fecfa1d753ee09c471ad13fd2d07',
+  'c63b13626190ff475508a2d9f65bd7894d74a1c0ed6ad115972a53a3df45c264',
+  'be89e54e57a1afc1a6257b0045f7620973db63deab4a4a3e572390f1931f7692',
+  'c0fc2e98740f555bb70625b02973826d88bae68e88c51661155fd7e1dd971009',
+  'e634ef62939f426ec3215a458f00ccc7e8f62efcedf924bb77a4fca047dd52ea',
+  'cd34dc04230d35c2f40c1b110e513a5865d766d4c11e09eb2dd6704f5dc6f594',
+  '23db0d2120fa3063d4c0acdbef37113e1d2b7cf2559d7797a6fa0057e930f9d3',
+  'cdcdbb33d10659540428ef5631afd6d7609de06e77e6570e5702b2933670bbcb',
+  'e3d423732cdaa62bfa8dfdfc1c0784ea75dd7de14e61ecb7703085c5d9d5236a',
+  '6a11dfff167ec21721fb6bd1db48bef7d6dcda04c95a9b820ac95914970fdcc4',
+  '09f6115ee41a4ef669a19f1130005cd8d4acf14bdf8513317a1fc96acef59113',
+  'db0c7711e3043b7fb93499e113cc69adba57b0634e3a9948952c7f091f86574e',
+  '3d2496e8816381bdb4517b30f71fad95b27bd56b8df73fce15c6d4b3685da539',
+  '1e098ede47b045f3cfad46e7ed2707bd582014fda90361389afef600eb4b0274',
+  '449fff8a464a895e0332df68617560ac6973c41ba285ad84b5dbec72e302e551',
+  '11b354017489be0b367f3038d1d00be508f8c476db0b08447a8be078ba4647d6',
+  'd175c0de56509d94e8f056a21f81830572cb7a9909886db9f9090231f85f7f13',
+  'f15a59119feb96f19440d392877d15a4d0c5d4331ff8e0e032a66776632f944f',
+  'c13c02149a74bc337fcfb9196fe0ddfd7d6cd753dabe342496cf3c6dbb0d1426',
+  'd2a067ad0775d0fda7083abcb418c8bb36a6297e91a93bee6e58f2e29e70f00b',
+  '074b2acf55611d6b98a1a965b383855827dc2f97b072b92362d7e84f5bb54cae',
+  '8f8487442e01d74b15c6068fc21db42010afa2173f9d5897a05ee98afbb913ec',
+  '03115def06ff4aa5785d3de4992cb05cc6b987571d77e5188959ae86d69f49b4',
+  '9392756c5a10cfbf77eca3037d78e6b2a3e005a3f0a22ed93ef89b553d43d271',
+  '0ed07502aa9943a740a588d018b3707614507981fc33c512001cd7826c0e6180',
+  'b277020addffa1c986b5045d38159cf92963053181d244a73efc98f29ebeb351',
+  'e17abeb92a46b6c768a210e267bca8926185e9d11c2195c01ed2aa70ab69b0aa',
+  '1a921f28610c2fd26c228822b9a7617d728529daa820a3c473274f55bf91dce0',
+  '7395b7edc9ef4ff046af00935d62ee719e5df0ce128202b8fa728a51d1ee5864',
+  '7177ac0c1b081636032a1c453d4d3e8c716d26ec8647b2aefd44c64ca7e5d6aa',
+  '3549fb8790e9ff6754c555661aa9c59cd29ae0728bb8dde39ed1623b77173836',
+  'aba988dacdcf867b33b355e546d2c312da8b8551c84223ba6bf35990856bd1ad',
+  '88eec88bb6bc18719abe1a3fc7efb39649792cbe0825d4ddeb38961a6913c9fe',
+  'd47341b49d76cbe25044b9d200dccb8c351c65d30e9c4c4f9fdc667f681e2dfb',
+  '23d820e2350a1096ada874747dd73f88738586bb1353f3f6be73cb6e170f4bcc',
+  'bae09373476188c5a8077616257ffb822b412a3dd78844c539f2a81a31079f95',
+  '88a0d56bb57d427dd2ce4d632741f40e27fabd0be682b8392ecd44901d3688f8',
+  '1ff16c11be1e62c03a94369d0c14c88ff777cb91795394ff180d1444e3bfc03b',
+  '0fdffd751c4e6529ad0bc697685d935a619bb74fe79997c551fd1399d8fb2aaf',
+  'a60c2ec2b1eacb32a49be6c504f7d916a1c2c489a554cc7608429690b33068dd',
+  '5e6ab5eaccbe9829255819363b949657273b3b64931121c78291229c74c07bf1',
+  '056421c5b6e3d5dde4eeae01d7fb81785b5b71fec7a4eefa15eac772f6eebc4e',
+  '209e532682c83511a93cbbe5f4a1356b4204bfdaf3952ca4d08522dbcf2b2e67',
+  '34eeebcb04350b3a0f92e5d73e76d796623996c1254857711ff1f17e13f56e21',
+  '592b9bd8c4f3ff265c6e8fdabebd2e859482dba5df2f6eabdc04a7557f9336fe',
+  '3e5e65482545f981611f18fd2f369383b2a215ed514f5c9a182ef2f1fe46a41e',
+  '37cfc959a4463b50d785714da872f177cc5bae486a3c0b4f45d8f78cece312c9',
+  '107b10c9ebf900a7d95987e5902d01a6a62caa49cd9f4d84dd88c3f0a200f0bc',
+  '0e14c03fab0ed074d8d0f389a94bb672c1e65fdedab51807ef34a0ccf5bea0b6',
+  '393f0db7ccfc5e21c0be7d99464d4c0fca2c64785f9dff1ba1ac9df86885a19f',
+  '406a06971116d65948bf8cbd225f549cf404dc48b60d09f17218029c3bc83c90',
+  'cf21a0d7cbf2192f8cf7aa61d40065a2efc10c8370b9ea8c332a9676e5ecb196',
+  'e1116899282bf30b099b363c838eea7bf8285f09e5fa2d8d0da61d73dedadd28',
+  'e6782ace9f2a4c1c29a2bb66ee53b53ab23c59b49ec2a03cdd6e2e3a91526738',
+  '201278abc5053cf1a105562fd9449f8f549df99ebf1013c4be089f3013ab027a',
+  'b865d5f69f8d4adb4a528210afd904b358254bc8900ec2442e801021788a5cc3',
+  '57962c38cb816afe5716d10ec8ba1957a574fa456a684d154e3ccefd4b4b05ed',
+  '44bf58bad5b3e9c3ab99ab794275ad5531046b5a3700fb5918b8b875402c5e02',
+  'd04f76fdf6afe4a0f16ad6128c57d8febcf6b4517f2c8d833f154c02c5d64afe',
+  'f12b25ee341c28dcdc3eaad146ef77964448050cefc6f051b92e58d319e769f3',
+  '5fa0de24a4622affb2e0d4eb566be740c5a6317367f7f9df9dc8f005f978917c',
+  'a0dfc797642d1e1b342198e41e6d1d14fd338b85939d7072788473d9f6de4a1f',
+  'af5875b8a86ed9ae735d52fab98f963329bdfc32b6dca4f2cab455b721a527f4',
+  '961b76736657f85fd1d53031ab5ef28802ce30122d05f82f4826dfda4a560d18',
+  '3032001b0763094e4652105fd197f64f4cd69186d324407f92e88da56aac2d03',
+  '2e6e9bf3632acc4b7b3633b64ad2f83ce6a29d47476b30ea9fc7047bca7726b6',
+  'aeab090e8e8bc6d05f40d36f424f8d07fa9aea15c49e6ebd9530b9b4f142bef8',
+  '11a2a694e823105b35c482d3ed51121c6c3d9b7c0ee91de524f04b0c462b878e',
+  'ed5c27456ee1d1dba5dd56638b51863c53382058e98bb7ecc83a4c0994d2bc3b',
+  'bce179c14c47ec9d00b5979ca8563fcbba539998ff04414561f254e3a531dd68',
+  'fb12225116f96291eb1beb2b3f3d6d77b689d88412797902918d67394c6afc15',
+  '37814b0e71cc5a1c81194ec42580f28be14647d03a361b63c7eb47367c16fbd7',
+  '35da0c8880fbc5a456757747784924727bc0598a545a5b2e2c07bc960e21f3fb',
+  '6228180c2b2fdea068b0e21e301de71e21301d464394a0076fc5cf1a2136d9ab',
+  '42849adde00d02c333bdc898b5e64334491a77dadfce1cd66efff23b712f7e80',
+  '0e4bf9cbfd06f1e88ee98309f52c982e4e72e2b1c97e3ecb12a92294f77b349b',
+  'd5c885d9833e065dcbde1260e670bb708f8c353899aaf69700fdc2f5cb974416',
+  '39f5ab76646acf47498d581cedc9c5f5f691c8f8510a6acbfa5117ab3c801cd2',
+  'ca155a2b8bd06f9242878012782295dac02228b7860dc5e8ffc7853a41efdd9e',
+  '9eba290779064aa3f47484b6ca445df524a0bcaa99ce5efb95282329ea959534',
+  'e27fa326fbbea5511acc823a98994c8447d59439706109fe4d8ef854356c350c',
+  'bea63fb5e8220a20068bbedbeb186305515b216e423d9ff22a209bbe9079afd0',
+  '9977c5577c0528380c03fe6ce83661ea6a510aed31db97240170eb927eb7afcd',
+  '71381e7b5feac9bc4dc19bc9413804b7dc2bd1d68367962defa3982b46cfd5dd',
+  'a0eb7f6be10cb4482dbb5b4874a15ff6355db549e9ee48d6caf93e7968167924',
+  'f3e4ecc3980bff244686070663fd7e416e7863ae0a5c5be1ad49439e57a1d754',
+  '62c924a327c4ba3cdfdbd7ae58010f3b5304cc54e76cd528a6f63f83726d7925',
+  'd04b2ab3187d99cd36ea0af989540f27536acd2d0777c4c45647c0d5d1ad795c',
+  '27eed7b1a922cc0ec15765c0619cbf97ec39f68913abdf1f49d717e20c6c1d78',
+  '25d7f4e9c45d41fd767e112d55a66d231b80ff299f8b69bafa0730e7b4328295',
+  '72f9e13a5872be5afcec165022d5fc330617466c95dc3130a210555c6451294d',
+  '2f3461e6c5fd819b78cfb7a68fd73a16f786be7ac93563e8155feb8d15c497bb',
+  'ded982e6f834ecf086f735e807943a874dc00b58c31c9fdd96f6340e2e4a07f4',
+  'df3b528c9c4112396f61277e02042d2d774f4522358baed90320d6aff44df601',
+  '8107b9539a329c4bc5e5d2fb32387387e1322479e18c65fe845e19bbd4daf3a3',
+  '09078fb9b659c90b8e369d03c1bbd8ae43a867dc0fcda3459201f3ebc7204a59',
+  '65cac7414c5f32965981ac3d79798f4995b4c2c31075cfea61b4548dfd430c1e',
+  '1e9ee58088cb960e8e62f1c1f378af4103bc1b9ae6087eac9e3835af5c34c779',
+  'd9a9c37caeeddefc6e3b102ca07573efa2e3b91d58de2d060e5372febfa6e9f2',
+  '4956d138cd5c3a69f6b89c44b720bb8f1d390adfe701ffdc66525562adbf211d',
+  'd1ec1b94a258440e1d8c8b33f038d2f8a48afcef2274d9b8bb2f13033bcbbe3d',
+  'e0f620a22aedcb53f6d8653c15504f18840424f54cb0cc09b4da8fc9266478d5',
+  'efcfa84ff24bbd07260bb715c8e666aba81e5eabb25df4cc0c6029c64d9291ab',
+  'baf130a890a044c2d528d13a1d0e213ac672de06d55463e977ebb365b48da050',
+  'cd3cdf46329379ea24b785f5fed3e443bae7b46dcf0742792a343c872cbe8e90',
+  '97622bd7087655c773f1b1c7e06db754ada61165b3033930e12aced9f9223465',
+  '1c48b25a45ca7f3daa9b8f64c4297ff896cd3722ac403fd2811559fbec08c969',
+  'c0e36329346a62e1fe1c7506dc16cbcb51cd678f603eaa956fd9aaa890df9ac1',
+  '17610edab88849a715fb85c79ecfca55d0502f37ad9607b2f0c1e6afe1363764',
+  '238b70070ca6ff007bbc674ecba2446defd40583f39551cef4cf71c2190d0107',
+  'f00fd99e842f2e7a83776fe420a94650c073f3bed955a27fe6d230ab17b6f517',
+  '4fd19c5e782082f583c5ddf1e1852c0f86fe8c126df64373c5bcebaa3061dea7',
+  '548fc46d789f361160cb80cf9d8419b288e35b7eef968e5e92b2274401a074e5',
+  'f2f13189295fc6527713e77bc229876818218680e3a47f26ee46fa0e12feab69',
+  '8f280dc13278c78ab47785d9d55ad63ab71ef996031eef6b523385a6584ed86e',
+  '7c6919b37f0954af8018c393a3a4d588af298d6b7382e0901ef3428fd5a6240d',
+  '5db2219b6c8c7338c88625d669ec09adae8e2b382111ca5e33fe57199007e8b9',
+  '0eb0db72f772e6a7f5baf82ba212a4ff50d0d18314c874a3599870fc7a0557db',
+  '92f6197f5e86ef49ef245c52b83e9414d0b3e72562482a9a5db354e268dd3f99',
+  'fffb22c0f95a9ab59a99cbd017b1b0f78bf32effa7a1973fb00e05b85f2dc30f',
+  '07fff626345f6a60e085abe4014ed9ce947fdd5aff7901e3cb5f00db23baea79',
+  '5d23f872088a87fe6e0b70eb04125baba85ee80f1d54f6b19355769e8a6316a9',
+  'a3889cff8168ad4f9d68ca4780118380bc28707da827e63e1d45f5f9855226a5',
+  'd98c78e82406788bb9e6bca23f59a2ab2430466326e9fe42ab143d4a9a9a39db',
+  'caec7143cecd7f3eb955521f3d8e55d329b86c57a5217abe4fc53b4504c13b91',
+  '64a2c65dd083f759a954e5fa4789b666ebdbca84314b380ffa0696390ca9b27a',
+  'bebc793fe9c11e90f207152ccb3dfbedb53d71f65d18ffa8dcd29b699bb2b2a6',
+  'ccbc778ae197d7d0a08d1807d39bd1b24b2ff4558e0f825fadcbe86711b0dcbb',
+  'a03b3ab52005e521d2518ab3f792d63e48297dd0e35e2517093f5a4e591942ec',
+  'f9ef513a6576a8d2d72b9a0e97c4b9d15fcf1335ad192a62279b4be984467c71',
+  '3e1be5274b409c3294335ee62d372688eac47e9c4de7e205b374e7dd8f858c4a',
+  '86022dabe448fee15d15a1ca5b55b42d704a305715c3252a7e92ecc70442c588',
+  '29a58f8e78df2b644dfaa19c52377652934e5c1f5aa4ed04f3d028331b0cf423',
+  'b1575a659980d1505a2378b373883553f6e0ef22af2beec9129e893567fd580f',
+  '004fbebfdf04b009a50057283223e9916da5923ac1cb78e92fcfeabda9c0c115',
+  '076a58f10562a4d5acb2106943042fa47691f56db37f11fceb9bde302bfb3b7c',
+  '8342c36fcaa45de6f9ad467f959313c0c1b16c370c1fea2162dcea00c3777bec',
+  '51c8a60e58c5919ecfe2a63bc9049913cf66f8c8eea82f25ae20bd8537a117fa',
+  'cb844bd104555f125fd5907de31715027f3365fbe9c4f13fa15cce790075bd33',
+  '1a2299da56f294afaa3a5c5591776ab68d0d25ecc48dc5dfca825623e2b6570f',
+  '515d2754c5bd536d7dc164f6e6dc809ab8f19391ba86c17ffd0414b3b771495d',
+  'ed0268c8bdaa3298ba4e887ebb3cc84afcc5c737e9579e82ca85ce7a090c37b5',
+  '2c67f63646ec1eafb618676e560c1a7c1288d6a96dbf9119ce9ab7806f35f3a6',
+  '7c8b8f2ea95d074d522c07a63973dea8e1474f9fffb80b95edbc5c4f5b10f655',
+  '5205fd0fbeb28f1f026046cd9905b412dc40ab0b9ea6d8740506fc0f956d1dfc',
+  'fbcc0c73173023260067cac7ded2de258a4b3b7570b56cad562aaee4bef598b2',
+  'af8cd245c74d23acdc007a9ddfc4516dcb8cde3ba316a4c6f117dbc26d52fdfa',
+  '153a50abc70f5e019acf6cbf98a47d78f2e144dedda755697762dab6b71e4973',
+  '00b0caaf81f70e0998df96cb8115da6b36c9aca59d877c89ef0ec079a7660e42',
+  '2e4a654c9609f09d3f01a908dfe1ac7401c9d1ca640aeb924653179f87a63208',
+  '55bd21759dd6dbf1dfd1ed7347964994f56c2494e9ef3182194436bcb3f3be0e',
+  'ab2db1bf3644bb96830f463f7ca3d299564afe60029e84a7932d9f8f5c5c490b',
+  '142a850881c2903022641bf39262bfe110ae1678ccf85ff054073b4c7ddb841a',
+  '679c019ea68a686cfd40998d1fb947ee3cc5bc2f9c4973cfb97f496942cf09d6',
+  'a4f344f4f3b2d47d3a8ba763acae7db7797fbda78b3fdbc055d43005f95ab37b',
+  '9760ef8ff0ca07b05b84b25f55efad5c4c0430d5518124372786fa65f52f4cd5',
+  'bf90d04b6552065251693f52d9e1c9f7711f1945e182d961bd37345816f6cab9',
+  '159bc9526faf26738323fdb35cd99b1cdf6f4db3c3553448ac29ae31546794f7',
+  '66ac7f912ff45ee6fd672a98c0d1f290df895df044583a68844c3fab3adfa781',
+  '0dcde9b4a1b56ff68cae2c220baf74a98d13b033696fa9e90b465826c6c78b96',
+  '9ba3f3d242b16818184402b9383bcf1082885b2aae69a6303fa7d0df6d7d793f',
+  '943264a270390012f60036a4aff53b22c6f19ad925ef2938318b11c670d07236',
+  '3b32d283d18033fc5b145c6500e69f50b2f0f91a73f3ad363080123483284f5e',
+  'e8b41fc588c8a66c901dd3d0a24b3923b5291eb451217a5379d520a89aa0f651',
+  'fd8a08060d4fed027f5475454763df7cee2caf0176b3bbef7cf5ebdc909b515f',
+  'b43bfa510a12b11b865b7dac412d95c57eed91865634163ac74411b011c61fe7',
+  '5014358dfca909a2b5ae0657ec38d8796ebeddeec19b07d58cd536bc0faaabee',
+  'f9c633e2b6f0bc4e01373bcf03af64a2cdb49395bafee2cc2370b62a3194c9fc',
+  '47fe1ba867f9f319b1ff17361935b5443e149ce18c5732fd6169ce77d5c25f61',
+  '29276875727bb3c6c570f28f7efbbcf759065e3299e4bf7c5d63b89bdfdae737',
+  '17f347fc72df9586f970c2abf2f08e4b7a3d5a840e08ec34147ab3ef7651e65c',
+  '5e14837e82dfc66ac11dabde1c005ec1ef1ec966ef1e34922c2003e509d32e8e',
+  '173be7c3bf8bb732a17e60414502725a1e40fe6c942c89f570e7d6ddf07617bb',
+  '87a8ea4b40bed5096b13a4d9e0f657cc481a380320acb6773b15ebe785048ce8',
+  '15d0dc0a64836e49922193ade11ce7dee6acee816e4b4764b7249518df6eba54',
+  '84393b3fed5c0e22cf833fef52d83b200de219a84bc68e1f72977e2e4d13d49a',
+  '3c95353db3e232368b165272ef7b18824cc1ef955cae4a07a489843280a28c3a',
+  'd1aaefb82c5f07739f4bef6c7efb72fc1a60cc8d3dcb9a18fa6e726a1cad330d',
+  'f13e97002899ad080943ae9f142dc378bba422ab5e6eb437c213ad10ad76d79d',
+  '94ac291f8aac0d44913d31e0e0eda84353002f3793880825b6f91fb8915d03fe',
+  'de987cca6dd27975b4567647554e27618ff2a529fe96f2a98aeaf87265bf09c5',
+  '5cbdd407d5f757ccef0f0acb69834ddcf2b168893b5695d7d422bf012fed3caa',
+  '68ef1189664843c76fcdb183bc51b81850165a85047e918499926fcb0a295ef8',
+  '981a5d1ee25811e356c5929a90bb3f56d5bda6f0c761a86b4e407fe84890480e',
+  '0d06c0a60222e759425524fcd37238a2ccbf5b58c83fb6b41ebd10b173cc4e0d',
+  '98f7e9a1e8a23f97ffb9b612c97f5e33c1876dd13adf303950539228ad1251c4',
+  'ea7a81dbcf2be0d4935933949676b741ff1dab857da33323e901e1d4c16dfb1c',
+  'd2d222346f0478c0793b196f4c544f8a8a5917aea8b9a7523de5bc452fdb0024',
+  '27b744d174111f35c9626bcaf0bea790255728139e77d245bef717e7652fa0e1',
+  '8d35ee98cd94995f28d34761f1c71e329a3d65f05b5d012c63de5c905aedd83e',
+  'c3350e5026f6630cd71e50538d8d873cc9ad3a185b91fd9b91614b559b5f9742',
+  '9728519970199cc09efed930c9741f02e5162dd02c316595d63dea6e6d148762',
+  '578d266fe14aa1884f412a87353eb3686ba29660353ea683350c01a9e92cd334',
+  '2db715f655330835c91419cf483a2e0f504b4999aef34bd87d06e3eebec302c6',
+  '0168bddf40e0e8b9e705af2696c72eb9cba0ccbef7c2466cdd2b131b4de423e4',
+  '289209c786c8972f0e2acf1b76441bfcb0f8dc7ae6a9716ef81b66e28cde359d',
+  '5addcee5e5cdc2be3e4ff059707b611f1d0e2c433ac85744522e8229d001f577',
+  '6e69baf3a6a94f6e15d529456429eb142008a620b7597ca9360c5b8be02ae002',
+  'bebbed5b15c6f9e213ca7586fd35f4cfbc40d3c659198134f1a9d0b8f1e07949',
+  '8571542dc6553c729bc57c955e833b92abf1e8f1655c172fb962b3d1f43c1667',
+  '3fa0c81a92f42e8b41e4800fe5aade445e3f0bdd4278d925b103a90968e320b6',
+  'c69d715c05be988830697243b394fbba7db25fff1135af3c96d3333f5cee5d09',
+  '9e867ee4a9a9033192aed8c55f02444293bddc63d9c23a64952626f82419cae3',
+  '11e5c580e4598a5a5600f5f4a31844dbce0a3bb2d771ffbd2d1f9268eeda2b94',
+  '3ce969e951c58bb0e31327c41632e7c8f71ed847c618e2517d6519c4c10f346f',
+  '257144d3bee37b177e06f10dbaac97f930b5a2210721ba79ff400418aa130811',
+  'a7a736e8669f98f8e034bfc7539bb3088048baea72088b77a5157b8256cff1bf',
+  'c2a87c488b28d2e5d1ad00613eb8e9e4aa740b8830b2ac6f6a1c12b99a63c632',
+  '5744911bd836fa9cc8745501d28dbbee02694d60013d580420d868060aa34149',
+  '117d0a76613529152d0f4acbb64878517fa1ecb9b03282bb60c8c480e17aa2f6',
+  '0bcf18df9dc973e4dbcd3b3dc308998748d9672c1fe4f949304d3db5e667e840',
+  '45d0682d59b09c4bfcf61200754f1bf91931367ca1e35219a587e62d065d7f78',
+  'd4ff26950474da85c2530260147547e2355a81dd76f6e6ed92bda87ad16b46e6',
+  '87f47a799bc247787df9c54a6cf91ecec644dd50b4c9542525c9d1ed623e722b',
+  '1927d20678bc909eadee2ce0cb728f50fdd5d3288b98b995cf15fd1aa3fdb10e',
+  'a9702aac648e09770cfff0f1ae708ddb19afda6cfdc56b71e84f5ff7cc4cbd08',
+  '58a638251564b8fc8f9fdb1d333a9e0cff17162c443264b31ae2e5bc2f3258a7',
+  '242ddbf62ff972c330379e5e6e75cfaf6abab253a6979343654f3f92c110f0bf',
+  'b1b184e380ea2abf8aa645557f2f4f384aa6be597670fa3919832966c740d3d0',
+  '23bd66deff2b1d95894aeb03288e2c8bbfb6fb881507fbc45b0c2c7135367ee1',
+  'a40d4c4e0449bbf2988d1b48752d5ed8a8f1f22dfa6953296071317221d536a9',
+  '998a9023d4547d69b26b438951deaa32cd92301ea18302bc344cbc9d33c7209d',
+  '09093cf7c330d26a8183bad24d60cb0224b821ba92f4d033a36d500c4f5f18d0',
+  '25cffe65cb1df0fb99d625957f4fcf8ea3d1f465329a81e8354532c6d9e66527',
+  'b6749f6c75877ba6e8f3dc81488a25047cb41bfbc02c32ab6c60185150d19831',
+  'e9d045108cad349d03bbc90bdf608e54757b23e3748b153373562b78bbed9378',
+  '913ddc1e95b9d238de6b9ff99b9d7c6d5f89389077f7ba9b4c03858a6ac95615',
+  '13135d9dafa7359755f9400fa7b6f31e23873b0d4e4f61359ce30e1f6a7daa5c',
+  '1b0b490f948b5f25fa53db307cb20f9f58ae5749969266b0c6f00de9a6704aad',
+  '7e5610b13808086d80f50cafb24b0235464454272eab4b8dab4ed568eedbcfaa',
+  '34e7d00f563de7578cc654b5783f57072694ee7c5b1670297d1d891aa3a47e3c',
+  'd5aea5cfa43943c5ef16638dd7432d1149524406ec807cda413427e79ebca71f',
+  '9a07551559782753b6f024c4d08ff1f3752f8336223ed741bff88edf5e131aa4',
+  '16e8b667210a4aa61ccb49b920bf7337f7237276be198769542b665872ab3d85',
+  '497bdccfafb7cc85c1137344f8904635641d34c623a008683cdd6492124ec978',
+  '457efb448f6c4d2ce34d661f1644414126d7d34415517910d8406c8c1f31e991',
+  'd6705c57b28a47fe7e2bf77c8623fac5c16931977e25efff229eb55496d3bc00',
+  'aeb36faca4f7ef582e235b3c1074ae9fcd53db8232e37df7ccfe98ce2a9ec06b',
+  '2e47f4a204012dffd875febb61883896a5ddff726bc2d6670daaf745bef4dfaa',
+  'd7ab5812676f9059d6561e70f4a24d3756e2cdf6452a6c98777e5be125dcd3b7',
+  '7d1e995b1641e688bde2027722ebd5ac09de79b327f23be5f916ceda9196e757',
+  '36c2de2fce792eb9d20c5663c455b12773b57d324e2aaa7cdb10cce937822270',
+  '157b294532de4079a33aac6bb8362e450efe32cd971b1dedaef59db27fa8a36a',
+  '9d593f3a6c703282989b5fbe7ba767ea584efe1f617f1cf31f393ab305b2c9fd',
+  '80cb95aa68666289ce4b70d97f9856d5d094904a08fe96293a5b2264b934cfc9',
+  'e6bf318bcf088e34fb7699f8914aac5e21d86a0c3ebdcac38e88880471b22535',
+  '170b7a27e4671a02b4bc15cceade12c38f1bf58a0a274c921f4b11371febea69',
+  '278769f5e0c70687a2b47ae972236eb23f66e8505555f5b03be5065c47e8385e',
+  '2e5dea1a73a74d48f24f8b133a837e44f957318dbc075767ac97679493de3cc7',
+  '6ddc9393416db3d72e92d94d4fe04640e1737ae7f07ed912fe0a28421186c9f8',
+  '56d180156b9b3f9216d09eb390f0b254b5c158b02334251534d91e31dd89510a',
+  '644612e0a555c49348bd4e0a9914a40f4ae27652edc1e2c82f494281ab9156ac',
+  'd68ced98776995305410a6f32756b7222f83060274531fa4b7819b9c6350d1c7',
+  'cccbb793e1c41279553ce9f1778c368389a13f151117c4871eb4214337e20449',
+  '4c94d9670c6c64e6f5be107519191fe8683f140273a862cb12e8dce6d24a74fa',
+  '32021bc7d5918e056500a0a615ed797eb91b8b426b257c6523e9da4f82a16a5e',
+  '79a4bfcbc4903fc3b1645f30a43241bed1a025902b9cf6555aed643367ba6c6c',
+  '6a09987cd7c5542ef700e8bb80422233b17e99cbfd8342e2df6db63088fb49f0',
+  '0101817b043df99a9a8058f0bec369a179b239469d1ec1817e23997104c5ef81',
+  '89320f1e5a87d6afe2ab4a44fc93df52518147f612e6e667a30f1b01990fc283',
+  '8c5184bc8e31506fd2a213526102991051ac00ce27b059d7d2893daccaac750c',
+  '2c22d1299ab759c8144cd2e1c88f9b8c17dcac3c6374117fd956013d7aea27f9',
+  '66e09973f284a55d74cba5d52e26a97c9afdb6722e47e02b11db88d2661842c8',
+  'a7f3f9ceaba7a39b7593bd5e38431dde92c04b2ed027205fb206236c55a67f62',
+  '3ea8c15c5484cc8d1974811a4d83ca4cf5d7a4e23484584f9f6e82ac47c1aa5d',
+  'e70c4ea06c69ab62b89ec52323029e9c44aff003c400c5c9fc774054528bf3a1',
+  'a363261578a8b4cf15f4a31831dfe9f97ac2abd03267f6b4b75ca71982465766',
+  'cba553fb74351e24f03f7db76d269553db686f3552418647737a6065099f2137',
+  '3c99987fde7cddf7c8beab1c040681a0bfdc5a1da3b7c0cf39c6743ac9d6b0bd',
+  '5ddef42266e0f83cf4c95d31e90d845f0f3ecfefa3d7bf83c572317a89695476',
+  '5de458941ee934f40f26063d2c31d67f839df48511fe1c13a1b6bc9dabf24f28',
+  'ee81bf6bc76e840a4ea6edea9bf16813d74f6e339a1d9317cd93f46aeced4b60',
+  '9d045004de454f820edce68819ab1533c731e19f1637ef86a365fed8ec0e367a',
+  '76c5c860fe1c6e76b2a754e02bff8823d61e9bbbcff3f71562fe7d940cbefa82',
+  '55321ce7f4a4f5528b7c93d065917ca2a8f13169fce9b100fb55446413814cde',
+  '8b49137ed78a72393272525eb610f035d1876e30b51d389f8f9f6f7b43171deb',
+  '8e17d30f723fbc902f30b800aed60019030d9d88f7559035b344b403339886a8',
+  '84fe09b7cff6fd6690e9441da5723543ab083f24a8ebd19314ed7aee7e52b1e9',
+  '1d1a39426ed4dae69bb977a615f3af3a37ccbee3ca49c83926105b6f676942d2',
+  '6700945790754597c8ca0dba10202421c4f86ae7225a97077a5a1412b21e8f74',
+  '85f37b8555c626724c4a5d0d83d53b6361770c9d4dd517d328a660ebe6406fba',
+  '74659eefedf5deff92e9e429a4980d1a3661844a45e47d351bb2a4567be90e90',
+  '5ded97adff9bf441452b05170620e1f59926ec5ee3cfcc4fe53f15c2f8b9090a',
+  '31c3f8186d4d44b74feca57662b98dc060a7836948369b9b46cbba0bef2fc3d0',
+  'c8595aab1f2b2aae4a5503c635f639f802f918ba06f5e953fcfe1f5122ce03c6',
+  'a743509df695b7932d6c693c56c4c29e5a1e1866d1dc84b29548d71d7e3c7e90',
+  '28127beb882bd8e437995271126144dc3bf4c511374293f7900c1a1c26a959a5',
+  '12a98805bb6e3b206c9e889f6857f15b63818a6de4fb4fed20a830d8e074fa8d',
+  '4c7bcfc2960bfe561d8efd3d6c1fa87c0d4e39ba042c2bfc961a83688cf63d31',
+  'dd3761188a396698a1cd2d00047fcc9c8ae8f5bda2402b801bb222f9c1941cad',
+  '92a471a9946316fa25a3ba0b73bb2f37672aa6d72e923c9525847dc0398d462a',
+  'ecb6908d21519529eb751a9b67aa974978f727b8ff499d53bf584d626a39b7f1',
+  'ee03b8ecd2077cf9f28892e19711bca25c23286977ca7cd1e96c54b82ef5d32a',
+  'c61273e59b38271fc57d0b748b2b78d5a0c36301be2c26a1f4180d72f6ccf6d3',
+  '3368e7a68936b6424bc63325a3db70945a0287fa0b795594a67aae4521017935',
+  'aeb504b8f69eb965f82a2a8bc34e7213dabdb3fe93a702c0d80691e9621efe1e',
+  'eebb89b995a626ce2c2b7b0322d3a075aeaf167bd32b6b20d4c87033698b8a0a',
+  'f5b8488d823c74cd15530cd28e453ba94a7521063e01a130a5a1dba9d492f63c',
+  '6c11b8c0527bc682161e09971894bea07a802773a2a0e7805bb247078ef0b3e1',
+  '7077b98c6074f49982f549bb89d2e841893a9a63497db50ee5b63422a7b9e842',
+  '3562ca85df1e7a6f1395dbc10c46704e9cbc97095e0599df4636c47ef062bd63',
+  '0a60c7abfae733558a8e079c0fa89a27da66c480abbf25b3dc52e94e258b2fc9',
+  '774e0953d0469029c1cf7beca2bf862872d3554083a68a8d7c2d2336e38e8fcb',
+  '73cfdfe38cb73baeebdf0f6443a7ef84e03ea51cb1e3d659a72c455e0d85b03a',
+  '532d208d7e8793c034e36000a4bc187d2fb90964ce773d311cead06caf32fa74',
+  '2a9f75f8ef1f5c38ed8a98e024f9d1b292eebbe45d736a2970688daf6188374c'
+]);
+
+async function hashCdsid(value){
+  const normalized = String(value ?? '').trim().toUpperCase();
+  if(!normalized) return '';
+  const bytes = new TextEncoder().encode(normalized);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+
 function initLoginCover(){
   const form = document.getElementById('loginCoverForm');
+  const input = document.getElementById('loginAccessId');
+  const button = form?.querySelector('.login-submit');
   const message = document.getElementById('loginCoverMessage');
-  form?.addEventListener('submit', event=>{
-    event.preventDefault();
-    if(message) message.textContent = '';
+  const cover = document.getElementById('loginCover');
+  const visual = document.querySelector('.login-cover-visual');
+  const savedPopup = document.getElementById('loginSavedId');
+  const savedButton = document.getElementById('loginSavedIdButton');
+  const savedValue = document.getElementById('loginSavedIdValue');
+  const SESSION_KEY = 'es90_cdsid_session';
+  const LAST_ID_KEY = 'es90_last_cdsid';
+  const IDLE_LIMIT = 60 * 60 * 1000;
+  let failedAttempts = 0;
+  let lockTimer = null;
+  let loginTransitioning = false;
+  let lastActivityWrite = 0;
+
+  input?.addEventListener('input', ()=>{
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const upper = input.value.toUpperCase();
+    if(input.value !== upper){
+      input.value = upper;
+      if(start !== null && end !== null) input.setSelectionRange(start,end);
+    }
+    savedPopup.hidden = true;
+  });
+
+  const getSavedId = ()=>String(localStorage.getItem(LAST_ID_KEY) || '').trim().toUpperCase();
+  const showSavedId = ()=>{
+    const savedId = getSavedId();
+    if(!savedId || input.value.trim()){
+      savedPopup.hidden = true;
+      return;
+    }
+    savedValue.textContent = savedId;
+    savedPopup.hidden = false;
+  };
+  input?.addEventListener('focus', showSavedId);
+  input?.addEventListener('click', showSavedId);
+  savedButton?.addEventListener('pointerdown', event=>event.preventDefault());
+  savedButton?.addEventListener('click', ()=>{
+    input.value = getSavedId();
+    savedPopup.hidden = true;
+    input.focus();
+    input.setSelectionRange(input.value.length,input.value.length);
+  });
+  document.addEventListener('pointerdown', event=>{
+    if(!savedPopup.contains(event.target) && event.target !== input) savedPopup.hidden = true;
+  });
+
+  const readSession = ()=>{
+    try{return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');}
+    catch(error){return null;}
+  };
+  const writeSession = ()=>{
+    localStorage.setItem(SESSION_KEY,JSON.stringify({expiresAt:Date.now() + IDLE_LIMIT}));
+    lastActivityWrite = Date.now();
+  };
+  const expireSession = ()=>{
+    localStorage.removeItem(SESSION_KEY);
+    loginTransitioning = false;
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
+    visual?.classList.remove('lights-on');
+    cover?.classList.remove('is-leaving');
+    if(cover) cover.hidden = false;
+    document.body.classList.add('cover-open');
+    input.value = '';
+    message.textContent = '1시간 동안 사용 기록이 없어 자동 로그아웃되었습니다.';
     resetAll();
+    setTimeout(()=>{
+      input.focus();
+      showSavedId();
+    },50);
+  };
+  const touchSession = ()=>{
+    const session = readSession();
+    if(!session) return;
+    if(Number(session.expiresAt) <= Date.now()){
+      expireSession();
+      return;
+    }
+    if(Date.now() - lastActivityWrite >= 30000) writeSession();
+  };
+  ['pointerdown','keydown','touchstart','scroll'].forEach(type=>{
+    window.addEventListener(type,touchSession,{passive:true});
+  });
+  setInterval(()=>{
+    const session = readSession();
+    if(session && Number(session.expiresAt) <= Date.now()) expireSession();
+  },30000);
+
+  const setLocked = seconds=>{
+    let remaining = seconds;
+    input.disabled = true;
+    button.disabled = true;
+    const tick = ()=>{
+      if(remaining <= 0){
+        clearInterval(lockTimer);
+        lockTimer = null;
+        failedAttempts = 0;
+        input.disabled = false;
+        button.disabled = false;
+        message.textContent = '';
+        input.focus();
+        return;
+      }
+      message.textContent = `입력 횟수를 초과했습니다. ${remaining}초 후 다시 시도해 주세요.`;
+      remaining -= 1;
+    };
+    tick();
+    lockTimer = setInterval(tick, 1000);
+  };
+
+  form?.addEventListener('submit', async event=>{
+    event.preventDefault();
+    if(lockTimer || loginTransitioning) return;
+    const cdsid = input.value.trim().toUpperCase();
+    input.value = cdsid;
+    if(!cdsid){
+      message.textContent = 'CDSID를 입력해 주세요.';
+      input.focus();
+      return;
+    }
+    button.disabled = true;
+    button.setAttribute('aria-busy','true');
+    message.textContent = '확인 중입니다.';
+    try{
+      const hash = await hashCdsid(cdsid);
+      if(!AUTHORIZED_CDSID_HASHES.has(hash)){
+        failedAttempts += 1;
+        message.textContent = '등록되지 않은 CDSID입니다. 다시 확인해 주세요.';
+        input.select();
+        if(failedAttempts >= 5) setLocked(30);
+        return;
+      }
+      failedAttempts = 0;
+      message.textContent = '';
+      localStorage.setItem(LAST_ID_KEY,cdsid);
+      writeSession();
+      savedPopup.hidden = true;
+      loginTransitioning = true;
+      document.querySelector('.login-cover-visual')?.classList.add('lights-on');
+      const transitionDelay = 3000;
+      setTimeout(()=>cover?.classList.add('is-leaving'),transitionDelay - 550);
+      setTimeout(()=>{
+        resetAll();
+        closeLoginCover();
+        loginTransitioning = false;
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        requestAnimationFrame(()=>{
+          showPanel(1);
+          window.scrollTo({top:0,behavior:'auto'});
+        });
+      },transitionDelay);
+    }catch(error){
+      message.textContent = 'CDSID 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+    }finally{
+      if(!lockTimer && !loginTransitioning){
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+      }
+    }
+  });
+
+  const existingSession = readSession();
+  if(existingSession && Number(existingSession.expiresAt) > Date.now()){
+    lastActivityWrite = Date.now();
     closeLoginCover();
     requestAnimationFrame(()=>{
       showPanel(1);
       window.scrollTo({top:0,behavior:'auto'});
     });
-  });
+  }else{
+    localStorage.removeItem(SESSION_KEY);
+  }
 }
 
 renderApp();
