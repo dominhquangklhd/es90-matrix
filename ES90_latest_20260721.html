@@ -347,6 +347,7 @@ button{font-family:inherit;}
 .ov-opt.option-jump{position:relative;overflow:visible;cursor:pointer;transition:filter .15s ease,transform .15s ease;}
 .ov-opt.option-jump::before{content:'👆';position:absolute;left:-5px;top:-6px;display:flex;align-items:center;justify-content:center;width:9px;height:9px;border:1px solid #efb98f;border-radius:50%;background:#fff8f2;font-size:6px;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.14);pointer-events:none;}
 .ov-opt.option-jump:hover{filter:brightness(.94);transform:translateY(-1px);}
+.ov-opt.es-air-option-toggle.is-selected{background:#f15a24;color:#fff;box-shadow:0 1px 4px rgba(241,90,36,.25);}
 .option-jump-highlight{animation:optionJumpHighlight 1.5s ease;}
 @keyframes optionJumpHighlight{0%,100%{box-shadow:none}20%,75%{box-shadow:0 0 0 3px rgba(245,91,31,.45)}}
 .opt-table tr.option-row-highlight td{animation:optionRowHighlight 1.8s ease;}
@@ -16400,6 +16401,31 @@ const STATE = {
   profile: null
 };
 
+const ES_AIR_SUSPENSION_OPTION_PRICES = {
+  'Single Motor Ultra': 2860000,
+  'Twin Motor Ultra': 3000000
+};
+let SELECTED_ES_AIR_SUSPENSION_TRIMS = new Set();
+
+function getEsAirSuspensionOptionPrice(trim=STATE.es90Trim){
+  return ES_AIR_SUSPENSION_OPTION_PRICES[trim] || 0;
+}
+
+function getEffectiveES90Total(trim=STATE.es90Trim){
+  const price = getES90Price(trim);
+  if(!price || price.total==null) return null;
+  return price.total + (SELECTED_ES_AIR_SUSPENSION_TRIMS.has(trim) ? getEsAirSuspensionOptionPrice(trim) : 0);
+}
+
+function toggleEsAirSuspensionOption(event){
+  if(event){ event.preventDefault(); event.stopPropagation(); }
+  const trim = STATE.es90Trim;
+  if(!getEsAirSuspensionOptionPrice(trim)) return;
+  if(SELECTED_ES_AIR_SUSPENSION_TRIMS.has(trim)) SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(trim);
+  else SELECTED_ES_AIR_SUSPENSION_TRIMS.add(trim);
+  renderStep4();
+}
+
 const GROUPS = {
   direct: {
     name: '직접 경쟁', icon: '⚡', desc: 'E 세그먼트 이면서 전기차 이면서 세단인',
@@ -16935,6 +16961,7 @@ function resetSelectionState(resetEs90){
   PKG_SELECTED = new Set();
   SELECTED_COLOR = {name:null, price:0};
   SELECTED_WHEELS = new Map();
+  if(resetEs90) SELECTED_ES_AIR_SUSPENSION_TRIMS = new Set();
 }
 
 let selectionToastTimer = null;
@@ -17365,7 +17392,7 @@ function renderStep4(){
 
 let priceGapHtml;
 if(score.priceDiff !== null){
-  priceGapHtml = buildPriceGapHtml(esPrice?esPrice.total:null, compPrice?compPrice.total:null, es90Trim, BRAND_DISPLAY_FULL[brandKey]||compName);
+  priceGapHtml = buildPriceGapHtml(getEffectiveES90Total(es90Trim), compPrice?compPrice.total:null, es90Trim, BRAND_DISPLAY_FULL[brandKey]||compName);
 } else {
   priceGapHtml = `<div class="value-banner ${valueClass}">✓ ${valueLabel}</div>`;
 }
@@ -17388,7 +17415,7 @@ if(score.priceDiff !== null){
               ${D.meta.es90_trims.map(t=>`<option value="${t}"${t===es90Trim?' selected':''}>${es90TrimMenuDisplay(t)}</option>`).join('')}
             </select>
           </div>
-          <div class="hpi-value es90-price">${esPrice? fmtWonRange(esPrice.total, es90Trim):'가격 미정'}</div>
+          <div class="hpi-value es90-price">${esPrice? fmtWonRange(getEffectiveES90Total(es90Trim), es90Trim):'가격 미정'}</div>
         </div>
         <div class="hero-price-vs">VS</div>
         <div class="hero-price-item">
@@ -18119,7 +18146,8 @@ function renderOptTable(cat){
           if(it.name.trim()==='에어 서스펜션 및 액티브 섀시'){
             const esAirSuspensionOptionPrice = STATE.es90Trim==='Single Motor Ultra' ? 286 : STATE.es90Trim==='Twin Motor Ultra' ? 300 : null;
             if(esAirSuspensionOptionPrice!==null){
-              esCell = `<span class="ov-opt-line"><span class="ov-no">—</span><span class="ov-opt">Option 구매</span><span class="ov-opt-price">(판매가 ${esAirSuspensionOptionPrice}만원 추가)</span></span>`;
+              const isSelected = SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim);
+              esCell = `<span class="ov-opt-line"><span class="ov-no">—</span><span class="ov-opt option-jump es-air-option-toggle${isSelected?' is-selected':''}" role="button" tabindex="0" aria-pressed="${isSelected}" onclick="toggleEsAirSuspensionOption(event)" onkeydown="if(event.key==='Enter'||event.key===' '){toggleEsAirSuspensionOption(event)}">${isSelected?'✓ 선택됨':'Option 구매'}</span><span class="ov-opt-price">(판매가 ${esAirSuspensionOptionPrice}만원 추가)</span></span>`;
             }
           }
 
@@ -18519,6 +18547,7 @@ function updatePkgCalc(){
   // item: 왼쪽에 볼보 ES90 트림/가격도 같은 톤앤매너로 표시 + 옵션 추가 시 줄어드는 격차 계산
   const esTrim = STATE.es90Trim;
   const esPrice = getES90Price(esTrim);
+  const effectiveEsTotal = getEffectiveES90Total(esTrim);
 
   const panelHtml = `
     <div class="pkg-calc-title">추가내역 및 금액</div>
@@ -18526,7 +18555,7 @@ function updatePkgCalc(){
       <div class="pkg-calc-vside">
         <div class="pkg-calc-vlabel">Volvo ES90</div>
         <div class="pkg-calc-vtrim">${es90TrimCompact(esTrim)}</div>
-        <div class="pkg-calc-vprice es90-price">${esPrice? fmtWonRange(esPrice.total, esTrim):'가격 미정'}</div>
+        <div class="pkg-calc-vprice es90-price">${esPrice? fmtWonRange(effectiveEsTotal, esTrim):'가격 미정'}</div>
       </div>
       <div class="pkg-calc-vdivider">vs</div>
       <div class="pkg-calc-vside" style="text-align:left;">
@@ -18544,10 +18573,10 @@ function updatePkgCalc(){
     <div class="pkg-calc-total"><span>합계</span><span>${fmtWon(newTotal)}</span></div>
     ${(()=>{
       if(!esPrice || esPrice.total==null) return '';
-      const gap = Math.abs(newTotal - esPrice.total);
-      const esCheaper = esPrice.total < newTotal;
+      const gap = Math.abs(newTotal - effectiveEsTotal);
+      const esCheaper = effectiveEsTotal < newTotal;
       const competitorFullLabel = fullCompTrimLabel(brandKey, compTrim);
-      const samePrice = esPrice.total===newTotal;
+      const samePrice = effectiveEsTotal===newTotal;
       const priceWinner = samePrice ? '동일 가격' : `${esCheaper ? `ES90 ${es90TrimCompact(esTrim)}` : competitorFullLabel} 가격우위`;
       return `<div class="pkg-calc-gapline"><span class="pkg-calc-gap-context">ES90 ${es90TrimCompact(esTrim)} 대비</span><span class="pkg-calc-gap-result"><b>${fmtWon(gap)}</b> 가격차이 발생<span class="pkg-calc-gap-winner">(${priceWinner})</span></span></div>`;
     })()}
@@ -18562,7 +18591,7 @@ function updatePkgCalc(){
   // item: 상단 히어로에는 옵션 뱃지를 노출하지 않음(계산 패널에서만 표시). 격차 배너만 새 총액 기준으로 갱신한다.
   const heroGap = document.getElementById('heroGapBox');
   if(heroGap){
-    heroGap.innerHTML = buildPriceGapHtml(esPrice?esPrice.total:null, newTotal, esTrim, compName);
+    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, newTotal, esTrim, compName);
   }
   normalizeOptionPurchaseParenthesisSpacing();
 }
