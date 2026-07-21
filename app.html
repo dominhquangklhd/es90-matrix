@@ -18417,6 +18417,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
     let options = paidOptionGroups.get(category);
     const detailCategory = CAT_ORDER.find(key=>CAT_LABEL[key]===category) || CAT_ORDER[0];
     const isLeatherOnlyChoice = detailCategory==='Interior & Seats' && options.length>1 && options.every(option=>/가죽/.test(option.name));
+    const isWheelOnlyChoice = detailCategory==='Wheels & Tires' && options.length>1;
     const isHyundaiClimateRoofChoice = brandKey==='Hyundai' && category==='공조' && options.length===2 &&
       options.every(option=>['스마트 비전 루프','파노라마 선루프'].includes(option.name));
     const isTeslaModelSAwdInteriorChoice = brandKey==='Tesla Model S' && compTrim==='AWD' && category==='인테리어·시트' && options.length===2 &&
@@ -18430,22 +18431,24 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
       const plaidInteriorOrder = {'블랙 & 화이트 인테리어':1,'크림 인테리어':2,'요크 스티어링 휠':3};
       options = [...options].sort((a,b)=>plaidInteriorOrder[a.name]-plaidInteriorOrder[b.name]);
     }
-    const exclusiveChoiceGroup = isLeatherOnlyChoice ? 'leather' : (isHyundaiClimateRoofChoice ? 'climate-roof' : (isTeslaModelSAwdInteriorChoice ? 'tesla-model-s-awd-interior' : ''));
+    const exclusiveChoiceGroup = isLeatherOnlyChoice ? 'leather' : (isWheelOnlyChoice ? 'wheel' : (isHyundaiClimateRoofChoice ? 'climate-roof' : (isTeslaModelSAwdInteriorChoice ? 'tesla-model-s-awd-interior' : '')));
     const paidOptionRows = options.map(option=>{
       const isPlaidInteriorChoice = isTeslaModelSPlaidInteriorGroup && option.name!=='요크 스티어링 휠';
       const optionChoiceGroup = isPlaidInteriorChoice ? 'tesla-model-s-plaid-interior' : exclusiveChoiceGroup;
       const optionClass = isLeatherOnlyChoice ? ' exclusive-leather-btn' :
+        (isWheelOnlyChoice ? ' exclusive-wheel-btn' :
         (isHyundaiClimateRoofChoice ? ' exclusive-climate-roof-btn' :
         (isTeslaModelSAwdInteriorChoice ? ' exclusive-tesla-interior-btn' :
-        (isPlaidInteriorChoice ? ' exclusive-tesla-plaid-interior-btn' : '')));
+        (isPlaidInteriorChoice ? ' exclusive-tesla-plaid-interior-btn' : ''))));
       const optionHandler = isLeatherOnlyChoice ? 'toggleExclusiveLeatherSelect' :
+        (isWheelOnlyChoice ? 'toggleExclusiveWheelSelect' :
         (isHyundaiClimateRoofChoice ? 'toggleExclusiveClimateRoofSelect' :
         (isTeslaModelSAwdInteriorChoice ? 'toggleExclusiveTeslaInteriorSelect' :
-        (isPlaidInteriorChoice ? 'toggleExclusiveTeslaPlaidInteriorSelect' : 'toggleWheelSelect')));
+        (isPlaidInteriorChoice ? 'toggleExclusiveTeslaPlaidInteriorSelect' : 'toggleWheelSelect'))));
       return `<div class="pkg-item" data-option-name="${option.name.replace(/"/g,'&quot;')}" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${optionPurchaseDisplayName(option.name)}</span><button class="wheel-select-btn color-select-btn${optionClass}${SELECTED_WHEELS.has(option.name)?' active':''}" data-price="${option.prices[compTrim]}" data-option-name="${option.name.replace(/"/g,'&quot;')}"${optionChoiceGroup?` data-choice-group="${optionChoiceGroup}"`:''} onclick="${optionHandler}(this,'${option.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${option.prices[compTrim]})">${SELECTED_WHEELS.has(option.name)?'✓ 선택됨':`선택 시 +${fmtWon(option.prices[compTrim])} 추가`}</button></div></div>`;
     }).join('');
     const isPolestar3InteriorChoice = String(brandKey).replace(/\s+/g,'')==='Polestar3' && detailCategory==='Interior & Seats';
-    const paidOptionHeadingSuffix = isTeslaModelSPlaidInteriorGroup ? ' (요크 스티어링 휠 외 택1)' : ((isLeatherOnlyChoice||isHyundaiClimateRoofChoice||isTeslaModelSAwdInteriorChoice||isPolestar3InteriorChoice) ? ' (택1)' : '');
+    const paidOptionHeadingSuffix = isTeslaModelSPlaidInteriorGroup ? ' (요크 스티어링 휠 외 택1)' : ((isLeatherOnlyChoice||isWheelOnlyChoice||isHyundaiClimateRoofChoice||isTeslaModelSAwdInteriorChoice||isPolestar3InteriorChoice) ? ' (택1)' : '');
     purchaseEntries.push({rank:category==='기타 옵션'?categorySequence.length:categoryRank(category),index:2000+index,html:`
       <div class="option-category-group"${exclusiveChoiceGroup?` data-exclusive-choice="${exclusiveChoiceGroup}"`:''}>
         <div class="option-category-head">
@@ -19409,6 +19412,22 @@ function initLoginCover(){
     input.value = '';
     savedPopup.hidden = true;
   }
+}
+
+// 휠·타이어 유상 옵션은 실제 장착 가능한 한 가지 사양만 선택한다.
+function toggleExclusiveWheelSelect(btn, name, price){
+  const wasActive = SELECTED_WHEELS.has(name);
+  document.querySelectorAll('.exclusive-wheel-btn[data-choice-group="wheel"]').forEach(other=>{
+    SELECTED_WHEELS.delete(other.dataset.optionName || '');
+    other.classList.remove('active');
+    other.textContent = optionSelectLabel(Number(other.dataset.price));
+  });
+  if(!wasActive){
+    SELECTED_WHEELS.set(name, price);
+    btn.classList.add('active');
+    btn.textContent = '✓ 선택됨';
+  }
+  updatePkgCalc();
 }
 
 renderApp();
