@@ -16466,7 +16466,7 @@ const CAT_LABEL = {
   'Safety & Support system':'안전·주행보조',
   'Powertrain & Chassis':'파워트레인·섀시',
   'Exterior':'익스테리어',
-  'Interior & Seats':'인테리어 및 시트',
+  'Interior & Seats':'인테리어',
   'Climate':'공조',
   'Telematics':'텔레매틱스',
   'Wheels & Tires':'휠·타이어',
@@ -18078,7 +18078,7 @@ function getPackageCategoryLabels(cats, pkgName){
 function getPaidOptionCategory(name){
   const n = String(name||'');
   if(/루프|선루프/.test(n)) return '공조';
-  if(/인테리어|가죽|스티어링\s*휠|데코/.test(n)) return '인테리어 및 시트';
+  if(/인테리어|가죽|스티어링\s*휠|데코/.test(n)) return '인테리어';
   if(/휠|타이어|^\s*2[12](?:[\"”]|인치)/.test(n)) return '휠·타이어';
   if(/후륜\s*조향|서스펜션|섀시|브레이크/.test(n)) return '파워트레인·섀시';
   if(/사이드\s*미러|아웃사이드\s*미러/.test(n)) return '익스테리어';
