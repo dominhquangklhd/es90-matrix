@@ -88,6 +88,8 @@ button{font-family:inherit;}
 .panel.show{display:block;animation:none;}
 .panel.show.panel-enter-forward{animation:panelSlideInForward .46s cubic-bezier(.22,.78,.24,1) both;}
 .panel.show.panel-enter-back{animation:panelSlideInBack .46s cubic-bezier(.22,.78,.24,1) both;}
+.selection-toast{position:fixed;left:50%;top:50%;z-index:220;min-width:240px;padding:15px 24px;border:1px solid rgba(241,90,36,.35);border-radius:10px;background:rgba(16,42,67,.96);color:#fff;font-size:14px;font-weight:700;text-align:center;box-shadow:0 14px 36px rgba(16,42,67,.24);opacity:0;visibility:hidden;transform:translate(-50%,-44%) scale(.97);transition:opacity .2s ease,transform .2s ease,visibility .2s;pointer-events:none;}
+.selection-toast.show{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1);}
 @keyframes panelSlideInForward{from{opacity:0;transform:translateX(5%);}to{opacity:1;transform:translateX(0);}}
 @keyframes panelSlideInBack{from{opacity:0;transform:translateX(-5%);}to{opacity:1;transform:translateX(0);}}
 @media(prefers-reduced-motion:reduce){.panel.show.panel-enter-forward,.panel.show.panel-enter-back{animation:none;}}
@@ -1299,7 +1301,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 16:42",
+    "updated": "2026-07-21 16:44",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -16895,6 +16897,7 @@ function renderApp(){
       <div class="panel" id="panel3"></div>
       <div class="panel" id="panel4"></div>
     </div>
+    <div class="selection-toast" id="selectionToast" role="status" aria-live="polite">ES90 트림을 선택하세요</div>
   `;
   renderSteps();
   renderStep1();
@@ -16933,7 +16936,20 @@ function resetSelectionState(resetEs90){
   SELECTED_WHEELS = new Map();
 }
 
+let selectionToastTimer = null;
+function showSelectionToast(){
+  const toast = document.getElementById('selectionToast');
+  if(!toast) return;
+  clearTimeout(selectionToastTimer);
+  toast.classList.add('show');
+  selectionToastTimer = setTimeout(()=>toast.classList.remove('show'),1800);
+}
+
 function navigateToStep(n){
+  if(n === 2 && !STATE.es90Trim){
+    showSelectionToast();
+    return;
+  }
   if(n > STATE.maxStep || n === STATE.step) return;
   if(n <= 1){
     resetSelectionState(true);
