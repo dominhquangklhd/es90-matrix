@@ -18314,7 +18314,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
   if(paidColors.length) purchaseEntries.push({rank:categoryRank('익스테리어'),index:1000,html:`
     <div class="option-category-group" data-option-name="유상 외장 컬러">
       <div class="option-category-head">
-        <div class="option-category-main"><span class="option-category-chip">익스테리어</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'Exterior','바디컬러')">Option 구매</span><span class="option-category-name">유상 외장 컬러</span></div>
+        <div class="option-category-main"><span class="option-category-chip">익스테리어</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'Exterior','바디컬러')">Option 구매</span><span class="option-category-name">유상 외장 컬러 (택1)</span></div>
       </div>
       <div class="option-category-rows">
         ${paidColors.map(p=>`<div class="pkg-item" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${p.name}</span><button class="color-select-btn" data-price="${p.price}" onclick="toggleColorSelect(this,'${p.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${p.price})">선택 시 +${fmtWon(p.price)} 추가</button></div></div>`).join('')}
