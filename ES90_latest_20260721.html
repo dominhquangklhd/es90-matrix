@@ -17747,15 +17747,16 @@ function jumpToCategory(category){
   const btn = Array.from(tabs.querySelectorAll('.tab-btn')).find(b=>b.dataset.cat===category);
   if(!btn) return;
 
-  // 2번 막대그래프에서 선택한 카테고리의 상세표를 먼저 갱신한 후
-  // 3번 상세옵션의 제목과 8개 카테고리 탭이 반드시 화면 상단에 함께 보이도록 이동한다.
+  // 3번 상세옵션을 먼저 갱신한 뒤, 번호·제목·8개 카테고리 메뉴가 모두 보이도록
+  // Option 구매 이동과 동일한 700ms 속도로 부드럽게 이동한다.
   selectOptionCategory(category);
   requestAnimationFrame(()=>{
-    card.scrollIntoView({behavior:'auto', block:'start'});
-    window.scrollBy({top:-12, left:0, behavior:'auto'});
-    card.style.transition = 'box-shadow .3s ease';
-    card.style.boxShadow = '0 0 0 2px var(--orange)';
-    setTimeout(()=>{ card.style.boxShadow = ''; }, 900);
+    const stickyHeight = document.querySelector('.steps-wrap')?.getBoundingClientRect().height || 62;
+    smoothScrollToElement(card,'start',700,()=>{
+      card.style.transition = 'box-shadow .3s ease';
+      card.style.boxShadow = '0 0 0 2px var(--orange)';
+      setTimeout(()=>{ card.style.boxShadow = ''; },900);
+    },stickyHeight + 12);
   });
 }
 
@@ -18190,11 +18191,11 @@ function jumpFromPurchaseToDetails(event, category, optionName){
   });
 }
 
-function smoothScrollToElement(element, block='start', duration=700, onComplete){
+function smoothScrollToElement(element, block='start', duration=700, onComplete, startOffset=12){
   if(!element) return;
   const startY = window.scrollY || document.documentElement.scrollTop || 0;
   const rect = element.getBoundingClientRect();
-  const targetY = Math.max(0, startY + rect.top - (block==='center' ? (window.innerHeight-rect.height)/2 : 12));
+  const targetY = Math.max(0, startY + rect.top - (block==='center' ? (window.innerHeight-rect.height)/2 : startOffset));
   if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     window.scrollTo(0,targetY);
     if(onComplete) onComplete();
