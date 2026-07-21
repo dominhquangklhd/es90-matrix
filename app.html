@@ -1302,7 +1302,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 17:53",
+    "updated": "2026-07-21 17:56",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -16947,7 +16947,7 @@ function showSelectionToast(){
 }
 
 function navigateToStep(n){
-  if(n === 2 && !STATE.es90Trim){
+  if(n >= 2 && !STATE.es90Trim){
     showSelectionToast();
     return;
   }
