@@ -18485,13 +18485,15 @@ function jumpToOptionPurchase(event, optionName){
   const candidates = card.querySelectorAll('[data-pkg], [data-option-name]');
   const candidateList = Array.from(candidates);
   const getCandidateName = el=>normalizePackageName(el.dataset.pkg || el.dataset.optionName || '');
+  const getLeatherFamilyName = value=>String(value||'').replace(/(?:zinc|charcoal)색상의/g,'');
   // I/II처럼 이름 일부가 겹치는 패키지는 완전 일치를 먼저 찾아 정확한 카드로 이동한다.
   const target = candidateList.find(el=>getCandidateName(el)===targetName)
     || candidateList.find(el=>{
     const candidateName = el.dataset.pkg || el.dataset.optionName || '';
     const normalized = normalizePackageName(candidateName);
     return normalized.includes(targetName) || targetName.includes(normalized);
-  });
+  })
+    || candidateList.find(el=>getLeatherFamilyName(getCandidateName(el))===getLeatherFamilyName(targetName));
   // 개별 유상 옵션 행이 찾아져도 해당 옵션을 담고 있는 그룹 카드 전체를 강조한다.
   const destination = target ? (target.closest('.option-category-group') || target) : card;
   requestAnimationFrame(()=>{
