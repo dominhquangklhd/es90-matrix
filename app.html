@@ -859,9 +859,8 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .trim-col-cards{gap:10px;}
 .trim-card{position:relative;overflow:hidden;border:1px solid #dfe5ea!important;border-radius:13px!important;background:#fff;box-shadow:none!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
 .trim-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:transparent;}
-.trim-card:hover{transform:translateY(-2px);border-color:#9fb2c1!important;box-shadow:0 10px 24px rgba(16,42,67,.09)!important;}
-.trim-card.sel{border-color:var(--orange)!important;background:#fffaf7!important;box-shadow:0 0 0 2px rgba(241,90,36,.10)!important;}
-.trim-card.sel:before{background:var(--orange);}
+.trim-card:hover,.trim-card.sel{transform:translateY(-2px);border-color:var(--orange)!important;background:var(--orange-bg)!important;box-shadow:0 0 0 2px rgba(241,90,36,.09)!important;}
+.trim-card.sel:before{background:transparent;}
 .trim-card-inner{position:relative;z-index:1;padding:17px 18px!important;}
 .trim-card-placeholder{height:110px;min-height:110px;flex:0 0 110px;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:none;}
 .trim-badge{background:#edf3f7!important;color:var(--navy)!important;border:0!important;}
@@ -1299,7 +1298,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 14:52",
+    "updated": "2026-07-21 14:56",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
