@@ -18307,7 +18307,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
     typeof p.price==='number' &&
     !(brandKey==='Hyundai' && compTrim==='Black Ink' && p.name!=='세레니티 화이트 펄')
   );
-  if(brandKey==='Tesla Model S' && compTrim==='AWD'){
+  if(brandKey==='Tesla Model S' && ['AWD','Plaid'].includes(compTrim)){
     paidColors = [...paidColors].sort((a,b)=>a.name.localeCompare(b.name,'en'));
   }
   const purchaseEntries = [...packageEntries];
