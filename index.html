@@ -44,7 +44,7 @@
       const previous = localStorage.getItem('es90-app-version');
       localStorage.setItem('es90-app-version', version);
       appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
-      if (previous && previous !== version) showStatus('최신 내용 업데이트 완료');
+      if (previous && previous !== version) showStatus('최신 업데이트 반영완료');
     }
 
     const UPDATE_INTERVAL = 5 * 60 * 1000;
@@ -67,7 +67,7 @@
       pendingVersion = null;
       localStorage.setItem('es90-app-version', version);
       appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
-      showStatus('최신 내용 업데이트 완료', 3200);
+      showStatus('최신 업데이트 반영완료', 3200);
     }
 
     async function checkLatestApp() {
