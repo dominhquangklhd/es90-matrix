@@ -243,6 +243,7 @@ button{font-family:inherit;}
 .ov-no{color:var(--ink-faint);}
 .ov-opt{color:var(--amber);font-size:10.5px;font-weight:600;background:var(--amber-bg);padding:2px 7px;border-radius:5px;}
 .ov-opt-price{color:var(--ink-faint);font-size:10px;font-weight:500;}
+.ov-opt-line{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
 .ov-spec{color:var(--ink);font-size:11px;font-weight:500;}
 .table-scroll{overflow-x:auto;border-radius:10px;border:1px solid var(--line);}
 
@@ -1301,7 +1302,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 16:48",
+    "updated": "2026-07-21 16:50",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18555,7 +18556,7 @@ function renderCell(v, brandKey, trim){
       ? 'Black ash 데코가 적용된 천공 나파 가죽'
       : pkgName;
     const escapedPkgName = pkgName.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    return `<span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'${escapedPkgName}')">Option 구매${displayPkgName?`(${displayPkgName})`:''}</span>${priceNote}`;
+    return `<span class="ov-opt-line"><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'${escapedPkgName}')">Option 구매${displayPkgName?`(${displayPkgName})`:''}</span>${priceNote}</span>`;
   }
   if(typeof v === 'string' && /^O\s*\(/.test(v.trim())){
     return `<span class="ov-yes">✓</span> <span class="ov-spec">${v.trim().replace(/^O\s*/, '')}</span>`;
