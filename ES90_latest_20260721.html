@@ -18190,7 +18190,7 @@ function renderOptTable(cat){
               : renderCell(it.comp, STATE.brandKey, STATE.compTrim);
           }
           if(it.blankComp) compCell = '';
-          if(STATE.brandKey==='Polestar 4' && typeof compCell==='string'){
+          if(STATE.brandKey==='Polestar 4' && ['Rear motor','Dual motor'].includes(STATE.compTrim) && typeof compCell==='string'){
             compCell = compCell.replace(
               'Charcoal 데코가 적용된 Zinc 색상의 천공 나파 가죽',
               'Charcoal 데코가 적용된 천공 나파 가죽'
@@ -18716,7 +18716,9 @@ function renderCell(v, brandKey, trim){
     }
     const displayPkgName = pkgName==='Black ash 데코가 적용된 Zinc 색상의 천공 나파 가죽'
       ? 'Black ash 데코가 적용된 천공 나파 가죽'
-      : pkgName;
+      : brandKey==='Polestar 4' && ['Rear motor','Dual motor'].includes(trim) && pkgName==='Charcoal 데코가 적용된 Zinc 색상의 천공 나파 가죽'
+        ? 'Charcoal 데코가 적용된 천공 나파 가죽'
+        : pkgName;
     const escapedPkgName = pkgName.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
     return `<span class="ov-opt-line"><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpToOptionPurchase(event,'${escapedPkgName}')">Option 구매${displayPkgName?`(${displayPkgName})`:''}</span>${priceNote}</span>`;
   }
