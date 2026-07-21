@@ -18416,7 +18416,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
   [...categorySequence,'기타 옵션'].filter(category=>paidOptionGroups.has(category)).forEach((category,index)=>{
     let options = paidOptionGroups.get(category);
     const detailCategory = CAT_ORDER.find(key=>CAT_LABEL[key]===category) || CAT_ORDER[0];
-    const isLeatherOnlyChoice = category==='인테리어·시트' && options.length>1 && options.every(option=>/가죽/.test(option.name));
+    const isLeatherOnlyChoice = detailCategory==='Interior' && options.length>1 && options.every(option=>/가죽/.test(option.name));
     const isHyundaiClimateRoofChoice = brandKey==='Hyundai' && category==='공조' && options.length===2 &&
       options.every(option=>['스마트 비전 루프','파노라마 선루프'].includes(option.name));
     const isTeslaModelSAwdInteriorChoice = brandKey==='Tesla Model S' && compTrim==='AWD' && category==='인테리어·시트' && options.length===2 &&
