@@ -1302,7 +1302,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 17:59",
+    "updated": "2026-07-21 18:02",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18115,6 +18115,9 @@ function renderOptTable(cat){
             esCell = evTrue && nameDetail
               ? `<span class="ov-yes">✓</span> <span style="font-size:11px;color:var(--ink-soft);">${nameDetail.detail}</span>`
               : renderCell(it.es90);
+          }
+          if(it.name.trim()==='에어 서스펜션 및 액티브 섀시' && STATE.es90Trim==='Single Motor Ultra'){
+            esCell = '<span class="ov-opt-line"><span class="ov-no">—</span><span class="ov-opt">Option 구매</span><span class="ov-opt-price">(판매가 286만원 추가)</span></span>';
           }
 
           const compSoundDetailByTrim = COMP_SOUND_DETAIL[STATE.brandKey] && COMP_SOUND_DETAIL[STATE.brandKey][it.name.trim()];
