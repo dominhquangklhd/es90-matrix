@@ -85,18 +85,12 @@ button{font-family:inherit;}
 /* ===== Content Container ===== */
 .content{padding:20px 28px;box-sizing:border-box;width:100%;}
 .panel{display:none;}
-.panel.show{display:block;animation:fadein .25s ease;view-transition-name:step-panel;}
-@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-html.panel-transitioning .panel.show{animation:none!important;}
-::view-transition-group(step-panel){animation-duration:.48s;animation-timing-function:cubic-bezier(.22,.78,.24,1);}
-html[data-panel-direction="forward"]::view-transition-old(step-panel){animation:panelPushOutLeft .48s cubic-bezier(.22,.78,.24,1) both;}
-html[data-panel-direction="forward"]::view-transition-new(step-panel){animation:panelPushInRight .48s cubic-bezier(.22,.78,.24,1) both;}
-html[data-panel-direction="back"]::view-transition-old(step-panel){animation:panelPushOutRight .48s cubic-bezier(.22,.78,.24,1) both;}
-html[data-panel-direction="back"]::view-transition-new(step-panel){animation:panelPushInLeft .48s cubic-bezier(.22,.78,.24,1) both;}
-@keyframes panelPushOutLeft{to{opacity:.35;transform:translateX(-10%);}}
-@keyframes panelPushInRight{from{opacity:.35;transform:translateX(10%);}}
-@keyframes panelPushOutRight{to{opacity:.35;transform:translateX(10%);}}
-@keyframes panelPushInLeft{from{opacity:.35;transform:translateX(-10%);}}
+.panel.show{display:block;animation:none;}
+.panel.show.panel-enter-forward{animation:panelSlideInForward .46s cubic-bezier(.22,.78,.24,1) both;}
+.panel.show.panel-enter-back{animation:panelSlideInBack .46s cubic-bezier(.22,.78,.24,1) both;}
+@keyframes panelSlideInForward{from{opacity:0;transform:translateX(5%);}to{opacity:1;transform:translateX(0);}}
+@keyframes panelSlideInBack{from{opacity:0;transform:translateX(-5%);}to{opacity:1;transform:translateX(0);}}
+@media(prefers-reduced-motion:reduce){.panel.show.panel-enter-forward,.panel.show.panel-enter-back{animation:none;}}
 
 .section-head{margin-bottom:14px;}
 .section-eyebrow{font-size:11px;color:var(--navy);font-weight:600;letter-spacing:0.1px;text-transform:uppercase;margin-bottom:3px;}
@@ -836,7 +830,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 
 /* Main canvas */
 .content{width:100%;max-width:1440px;margin:0 auto;padding:28px 34px 80px;}
-.panel.show{animation:panelRise .28s ease-out both;}
+.panel.show{animation:none;}
 @keyframes panelRise{from{opacity:.35;transform:translateY(7px)}to{opacity:1;transform:none}}
 .section-head{display:flex;align-items:center;gap:13px;margin:0 0 22px;padding:0;}
 .section-eyebrow{display:inline-flex;align-items:center;height:27px;margin:0;padding:0 10px;border-radius:999px;background:var(--orange-bg);color:var(--orange-deep);font-size:10px;font-weight:600;letter-spacing:.7px;}
@@ -16958,18 +16952,13 @@ function showPanel(n){
     }
     renderSteps();
   };
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canPush = previousStep !== n && !reduceMotion && typeof document.startViewTransition === 'function';
-  if(canPush){
-    document.documentElement.dataset.panelDirection = n > previousStep ? 'forward' : 'back';
-    document.documentElement.classList.add('panel-transitioning');
-    const transition = document.startViewTransition(swapPanel);
-    transition.finished.finally(()=>{
-      document.documentElement.classList.remove('panel-transitioning');
-      delete document.documentElement.dataset.panelDirection;
-    });
-  }else{
-    swapPanel();
+  const direction = previousStep === n ? '' : (n > previousStep ? 'forward' : 'back');
+  swapPanel();
+  const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
+  activePanel?.classList.remove('panel-enter-forward','panel-enter-back');
+  if(direction && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    activePanel?.classList.add(direction === 'forward' ? 'panel-enter-forward' : 'panel-enter-back');
+    setTimeout(()=>activePanel?.classList.remove('panel-enter-forward','panel-enter-back'),500);
   }
   window.scrollTo({top:0, behavior:'smooth'});
 }
@@ -17053,7 +17042,7 @@ function renderStep1(){
           </div>`;
         }).join('')}
       </div>
-      <div class="spec-excluded-note" style="margin-top:12px;padding:0;"><span class="note-flag">🚧</span><span>상기 예약 현황은 실시간 잔여계약 기준이며 수시로 변경될 수 있습니다.</span></div>
+      <div class="spec-excluded-note" style="margin-top:24px;padding:0;"><span class="note-flag">🚧</span><span>상기 예약 현황은 실시간 잔여계약 기준이며 수시로 변경될 수 있습니다.</span></div>
       <div class="spec-excluded-note" style="margin-top:5px;padding:0;"><span class="note-flag">🚧</span><span>Single Motor ER Ultra 및 Twin Motor Ultra 경우, 에어 서스펜션 제외 후 가격</span></div>
     </div>
   `;
