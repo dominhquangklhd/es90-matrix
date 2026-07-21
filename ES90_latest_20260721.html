@@ -1302,7 +1302,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 17:25",
+    "updated": "2026-07-21 17:27",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -17174,7 +17174,7 @@ function renderStep2(){
         <div class="group-sub">${g.desc}</div>
         <div class="group-brand-list">
           <div class="group-sort-note">A·B·C 순</div>
-          ${g.brands.map(b=>`<div class="group-brand-row"><span class="logo-badge"></span>${BRAND_DISPLAY_FULL[b]}${b==='Tesla Model S'?' <span style="color:var(--ink-faint);font-weight:500;">(2026년 6월 단종)</span>':b==='BMW 6 Series GT'?' <span style="color:var(--ink-faint);font-weight:500;">(2024년 12월 단종)</span>':''}</div>`).join('')}
+          ${g.brands.map(b=>`<div class="group-brand-row"><span class="logo-badge"></span><span>${BRAND_DISPLAY_FULL[b]}${b==='Tesla Model S'?' <span style="color:var(--ink-faint);font-weight:500;">(2026년 6월 단종)</span>':b==='BMW 6 Series GT'?' <span style="color:var(--ink-faint);font-weight:500;">(2024년 12월 단종)</span>':''}</span></div>`).join('')}
         </div>
       </div>
     `);
