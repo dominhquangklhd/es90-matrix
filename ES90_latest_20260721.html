@@ -416,7 +416,7 @@ button{font-family:inherit;}
 .vbar-fill{width:100%;border-radius:4px 4px 0 0;transition:height 1s ease,background-color .18s ease;}
 .cat-compare-wrap{display:flex;gap:16px;align-items:stretch;}
 .cat-compare-wrap .vbar-wrap{flex:1;min-width:0;}
-#categoryCompareCard{padding-top:18px!important;padding-bottom:12px!important;}
+#categoryCompareCard{padding-top:18px!important;padding-bottom:7px!important;}
 #categoryCompareCard .card-title{margin-bottom:8px;}
 #categoryCompareCard .vbar-wrap{row-gap:12px;padding:3px 4px 2px;}
 #categoryCompareCard .vbar-track-pair{height:90px;margin-bottom:5px;gap:9px;}
@@ -430,6 +430,9 @@ button{font-family:inherit;}
 #categoryCompareCard .spec-summary-gapnum{font-size:32px;}
 #categoryCompareCard .spec-summary-gapsub{margin-top:4px;font-size:11.5px;}
 #categoryCompareCard .win-badge,#categoryCompareCard .loss-badge{margin-bottom:5px;padding:3px 12px;font-size:10px;}
+#categoryCompareCard .category-card-footer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:12px;margin-top:4px;min-height:24px;}
+#categoryCompareCard .category-card-footer .comparison-note{align-items:center;margin:0!important;padding:0!important;line-height:1.25;}
+#categoryCompareCard .category-card-footer .vbar-legend{align-items:center;justify-content:center;margin:0;}
 
 /* ===== ES90 대기고객 선택 (실시간 예약현황) ===== */
 .waitlist-heading-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
@@ -17400,11 +17403,13 @@ if(score.priceDiff !== null){
           </div>`;
         })()}
       </div>
-      <div class="vbar-legend">
-        <span><div class="leg-dot" style="background:var(--navy);"></div>ES90 ${es90TrimDisplay(es90Trim)}</span>
-        <span><div class="leg-dot" style="background:#c3cad2;"></div>${compLabel(compName, compTrim)}</span>
+      <div class="category-card-footer">
+        <div class="spec-excluded-note comparison-note"><span class="note-flag">🚧</span><span>ES90 카테고리별 옵션기준, 경쟁모델과 옵션과의 1:1 비교</span></div>
+        <div class="vbar-legend">
+          <span><div class="leg-dot" style="background:var(--navy);"></div>ES90 ${es90TrimDisplay(es90Trim)}</span>
+          <span><div class="leg-dot" style="background:#c3cad2;"></div>${compLabel(compName, compTrim)}</span>
+        </div>
       </div>
-      <div class="spec-excluded-note comparison-note" style="margin-bottom:10px;padding:0;"><span class="note-flag">🚧</span><span>ES90 카테고리별 옵션기준, 경쟁모델과 옵션과의 1:1 비교</span></div>
     </div>
 
     <div class="card" id="detailOptionsCard" style="padding-bottom:6px;">
