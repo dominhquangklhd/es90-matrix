@@ -16498,7 +16498,7 @@ const ES90_TRIM_DISPLAY = {
 };
 function es90TrimDisplay(trim){ return ES90_TRIM_DISPLAY[trim] || trim; }
 function es90TrimMenuDisplay(trim){ return es90TrimDisplay(trim).replace('Extended Range','ER'); }
-function es90TrimCompact(trim){ return es90TrimDisplay(trim).replace('Single Motor Extended Range','Single Motor EV'); }
+function es90TrimCompact(trim){ return es90TrimDisplay(trim).replace('Single Motor Extended Range','Single Motor ER'); }
 function compTrimDisplay(trim){ return trim==='Model Y L' ? 'Model Y Longwheelbase' : trim; }
 // combines competitor brand display name + trim, omitting the trim when it's a generic/redundant label like 'EV'
 function compLabel(compName, compTrim){
