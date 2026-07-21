@@ -430,7 +430,7 @@ button{font-family:inherit;}
 #categoryCompareCard .spec-summary-gapnum{font-size:32px;}
 #categoryCompareCard .spec-summary-gapsub{margin-top:4px;font-size:11.5px;}
 #categoryCompareCard .win-badge,#categoryCompareCard .loss-badge{margin-bottom:5px;padding:3px 12px;font-size:10px;}
-#categoryCompareCard .category-card-footer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:12px;margin-top:4px;min-height:24px;}
+#categoryCompareCard .category-card-footer{display:flex;align-items:center;justify-content:center;margin-top:4px;min-height:24px;}
 #categoryCompareCard .category-card-footer .comparison-note{align-items:center;margin:0!important;padding:0!important;line-height:1.25;}
 #categoryCompareCard .category-card-footer .vbar-legend{align-items:center;justify-content:center;margin:0;}
 
@@ -1083,7 +1083,7 @@ body.cover-open{overflow:hidden;}
 .login-cover.is-leaving{opacity:0;transform:scale(1.008);pointer-events:none;}
 .login-cover-visual{position:absolute;inset:0;display:block;overflow:hidden;padding:0;background:#102f47;isolation:isolate;}
 .login-cover-visual:after{content:"";position:absolute;z-index:-3;inset:-2px;background:url('assets/es90-login-cover-v3.png') center center/cover no-repeat;opacity:.76;filter:brightness(.68) contrast(.96) saturate(1.05);}
-.login-headlight-layer{position:absolute;z-index:-2;inset:-2px;background:url('assets/es90-login-cover-lights-on-v2-crisp.png') center center/cover no-repeat;opacity:0;filter:brightness(.86) contrast(1.12) saturate(.90);transition:opacity .18s ease;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 5.2% 2.1% at 23.8% 69.2%,#000 48%,transparent 100%),radial-gradient(ellipse 5.9% 2.2% at 44.8% 69.1%,#000 48%,transparent 100%),radial-gradient(ellipse 1.35% 4.6% at 22.2% 76.8%,#000 50%,transparent 100%),radial-gradient(ellipse 1.4% 4.7% at 47.7% 76.8%,#000 50%,transparent 100%);mask-image:radial-gradient(ellipse 5.2% 2.1% at 23.8% 69.2%,#000 48%,transparent 100%),radial-gradient(ellipse 5.9% 2.2% at 44.8% 69.1%,#000 48%,transparent 100%),radial-gradient(ellipse 1.35% 4.6% at 22.2% 76.8%,#000 50%,transparent 100%),radial-gradient(ellipse 1.4% 4.7% at 47.7% 76.8%,#000 50%,transparent 100%);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;}
+.login-headlight-layer{position:absolute;z-index:-2;inset:-2px;background:url('assets/es90-login-headlights-only-v3.png') center center/cover no-repeat;opacity:0;filter:brightness(1.28) contrast(1.12) saturate(.72);transition:opacity .18s ease;pointer-events:none;}
 .login-cover-visual.lights-on .login-headlight-layer{opacity:.98;animation:headlightsIgnite .78s ease-out both;}
 @keyframes headlightsIgnite{0%{opacity:0;filter:brightness(.78) contrast(1.08) saturate(.90);}34%{opacity:1;filter:brightness(1.02) contrast(1.18) saturate(.90);}100%{opacity:.98;filter:brightness(.92) contrast(1.15) saturate(.90);}}
 .login-cover-visual:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse 150px 62px at 50% 32px,rgba(7,27,42,.58),transparent 100%),linear-gradient(180deg,rgba(8,29,45,.76) 0,rgba(8,29,45,.60) 54px,rgba(8,29,45,.38) 104px,rgba(8,29,45,.16) 154px,transparent 218px),linear-gradient(90deg,rgba(7,28,44,.66) 0%,rgba(10,37,57,.27) 42%,rgba(8,30,47,.48) 100%),linear-gradient(180deg,transparent 0%,transparent 55%,rgba(7,27,42,.80) 100%);pointer-events:none;}
@@ -16466,7 +16466,7 @@ const CAT_LABEL = {
   'Safety & Support system':'안전·주행보조',
   'Powertrain & Chassis':'파워트레인·섀시',
   'Exterior':'익스테리어',
-  'Interior & Seats':'인테리어',
+  'Interior & Seats':'인테리어·시트',
   'Climate':'공조',
   'Telematics':'텔레매틱스',
   'Wheels & Tires':'휠·타이어',
@@ -16877,7 +16877,7 @@ function renderApp(){
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="meta-pill">마지막 업데이트 <b>${D.meta.updated.split(' ')[0]}</b></div>
+          <div class="meta-pill">매트릭스 최신 업데이트 <b>${D.meta.updated.split(' ')[0]}</b></div>
         </div>
       </div>
     </div>
@@ -16904,7 +16904,7 @@ function openAdminEmail(){
   window.location.href = 'mailto:?subject=ES90%20경쟁력%20분석%20데이터%20수정%20요청%28%2A구체적으로%20기술%29';
 }
 
-const STEP_LABELS = ['Volvo ES90 선택','비교 모델 및 트림 선택','종합분석 결과'];
+const STEP_LABELS = ['Volvo ES90 선택','비교모델 및 트림 선택','종합분석 결과'];
 function renderSteps(){
   const bar = document.getElementById('stepsBar');
   bar.innerHTML = STEP_LABELS.map((l,i)=>{
@@ -17353,12 +17353,12 @@ if(score.priceDiff !== null){
     </div>
 
     <div class="card" id="performanceCompareCard">
-      <div class="card-title"><span class="ci">1</span>성능 비교</div>
+      <div class="card-title"><span class="ci">1</span>성능비교_경쟁모델과 제원 1:1 비교</div>
       ${renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brandKey)}
     </div>
 
     <div class="card" id="categoryCompareCard" style="padding-bottom:6px;">
-      <div class="card-title"><span class="ci">2</span>카테고리별 옵션비교</div>
+      <div class="card-title"><span class="ci">2</span>옵션비교_경쟁모델과 옵션 1:1 비교</div>
       <div class="cat-compare-wrap">
         <div class="vbar-wrap">
           ${cats.map(c=>{
@@ -17404,7 +17404,6 @@ if(score.priceDiff !== null){
         })()}
       </div>
       <div class="category-card-footer">
-        <div class="spec-excluded-note comparison-note"><span class="note-flag">🚧</span><span>ES90 카테고리별 옵션기준, 경쟁모델과 옵션과의 1:1 비교</span></div>
         <div class="vbar-legend">
           <span><div class="leg-dot" style="background:var(--navy);"></div>ES90 ${es90TrimDisplay(es90Trim)}</span>
           <span><div class="leg-dot" style="background:#c3cad2;"></div>${compLabel(compName, compTrim)}</span>
@@ -17413,7 +17412,7 @@ if(score.priceDiff !== null){
     </div>
 
     <div class="card" id="detailOptionsCard" style="padding-bottom:6px;">
-      <div class="card-title"><span class="ci">3</span>카테고리별 상세옵션</div>
+      <div class="card-title"><span class="ci">3</span>상세옵션</div>
       <div class="tab-row" id="catTabs"></div>
       <div class="table-scroll"><table class="opt-table" id="optTable"></table></div>
       <div class="color-legend">
@@ -17429,7 +17428,7 @@ if(score.priceDiff !== null){
     <div id="pkgBoxContainer" hidden></div>
 
     <div class="card">
-      <div class="card-title"><span class="ci">4</span>옵션구성 분석결과</div>
+      <div class="card-title"><span class="ci">4</span>옵션분석</div>
       <div class="diff-table-wrap" style="margin-bottom:14px;">
         <div class="diff-table-head"><span class="trim-highlight">ES90 ${es90TrimDisplay(es90Trim)}</span> <span class="head-plain">강점사항</span> <span class="trim-highlight">(${pros.length})</span></div>
         ${renderCatOptionCards(pros, 'pro')}
@@ -17442,7 +17441,7 @@ if(score.priceDiff !== null){
     </div>
 
     <div class="card" id="optionPurchaseCard">
-      <div class="card-title"><span class="ci">5</span>경쟁모델 옵션구매</div>
+      <div class="card-title"><span class="ci">5</span>비교모델 옵션구매</div>
       <div id="unifiedOptionPurchase"></div>
       ${(()=>{
         const cinfo = D.body_colors[brandKey];
@@ -17700,7 +17699,6 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
         <span><span class="compare-badge is-no">비교 X</span> 분석 제외</span>
         <span><span class="cl-sym">✓</span>적용</span>
       </div>
-      <div class="spec-excluded-note comparison-note" style="margin-bottom:10px;padding:0;"><span class="note-flag">🚧</span><span>ES90 성능 비교항목 기준, 경쟁모델과 제원의 1:1 비교</span></div>
       </div>
       <div class="spec-summary">
         <div class="spec-summary-inner">
@@ -18078,7 +18076,7 @@ function getPackageCategoryLabels(cats, pkgName){
 function getPaidOptionCategory(name){
   const n = String(name||'');
   if(/루프|선루프/.test(n)) return '공조';
-  if(/인테리어|가죽|스티어링\s*휠|데코/.test(n)) return '인테리어';
+  if(/인테리어|가죽|스티어링\s*휠|데코/.test(n)) return '인테리어·시트';
   if(/휠|타이어|^\s*2[12](?:[\"”]|인치)/.test(n)) return '휠·타이어';
   if(/후륜\s*조향|서스펜션|섀시|브레이크/.test(n)) return '파워트레인·섀시';
   if(/사이드\s*미러|아웃사이드\s*미러/.test(n)) return '익스테리어';
