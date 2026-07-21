@@ -16497,6 +16497,7 @@ const ES90_TRIM_DISPLAY = {
   'Twin Motor Performance Ultra':   'Twin Performance Ultra'
 };
 function es90TrimDisplay(trim){ return ES90_TRIM_DISPLAY[trim] || trim; }
+function es90TrimMenuDisplay(trim){ return es90TrimDisplay(trim).replace('Extended Range','ER'); }
 function es90TrimCompact(trim){ return es90TrimDisplay(trim).replace('Single Motor Extended Range','Single Motor EV'); }
 function compTrimDisplay(trim){ return trim==='Model Y L' ? 'Model Y Longwheelbase' : trim; }
 // combines competitor brand display name + trim, omitting the trim when it's a generic/redundant label like 'EV'
@@ -17333,7 +17334,7 @@ if(score.priceDiff !== null){
           <div class="hpi-top">
             <div class="hpi-label">Volvo ES90</div>
             <select id="heroEsTrimSelect" class="hero-trim-select" aria-label="ES90 트림 변경">
-              ${D.meta.es90_trims.map(t=>`<option value="${t}"${t===es90Trim?' selected':''}>${es90TrimDisplay(t)}</option>`).join('')}
+              ${D.meta.es90_trims.map(t=>`<option value="${t}"${t===es90Trim?' selected':''}>${es90TrimMenuDisplay(t)}</option>`).join('')}
             </select>
           </div>
           <div class="hpi-value es90-price">${esPrice? fmtWonRange(esPrice.total, es90Trim):'가격 미정'}</div>
