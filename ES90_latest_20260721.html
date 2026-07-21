@@ -1300,7 +1300,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 14:46",
+    "updated": "2026-07-21 14:48",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -17673,7 +17673,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
   ];
   const rows = [...coreRows, ...excludedRows];
   const formatSpecStatus = value => typeof value==='string'
-    ? value.replace(/해당 없음/g,'해당없음').replace(/확인 불가/g,'확인불가')
+    ? value.replace(/해당 없음/g,'해당없음').replace(/확인 불가/g,'확인불가').replace(/\/(?=\d[\d,]*km)/g,'/ ')
     : value;
 
   const compareCoreRow = r => {
