@@ -17839,17 +17839,91 @@ function renderOptTable(cat){
   }
 
   // sound item names (item 10)
-  const SOUND_ITEMS = ['Bose 프리미엄 사운드 시스템','Bowers & Wilkins 프리미엄 사운드 시스템'];
+  const SOUND_ITEMS = ['기본 사운드 시스템','Bose 프리미엄 사운드 시스템','Bowers & Wilkins 프리미엄 사운드 시스템'];
   const DISPLAY_ITEMS = ['9인치 운전자 디스플레이','14.5인치 터치 스크린 센터 디스플레이'];
   const SOUND_ES90_DETAIL = {
     'Bose 프리미엄 사운드 시스템': '14개 스피커, 940W',
-    'Bowers & Wilkins 프리미엄 사운드 시스템': '25개, 1,610W'
+    'Bowers & Wilkins 프리미엄 사운드 시스템': '25개 스피커, 1,610W'
   };
   // item: competitor-side sound system detail (스피커 개수, 출력) — brand마다 사양이 다르므로 브랜드별로 관리
   const COMP_SOUND_DETAIL = {
-    'BMW i5': {'Bowers & Wilkins 프리미엄 사운드 시스템': '(18개, 655W)'},
-    'Audi': {'Bowers & Wilkins 프리미엄 사운드 시스템': 'B&O 3D 프리미엄 사운드 시스템 (16개, 705W)'},
-    'Genesis': {'Bowers & Wilkins 프리미엄 사운드 시스템': '뱅앤올룹슨 고해상도 사운드 시스템 (17개)'}
+    'Hyundai': {
+      '기본 사운드 시스템': {
+        'Premium':'8개 스피커, 최대 출력 정보 없음',
+        'Exclusive':'8개 스피커, 최대 출력 정보 없음'
+      },
+      'Bose 프리미엄 사운드 시스템': {
+        'Exclusive':'BOSE 프리미엄 사운드<br>14개 스피커, 최대 출력 정보 없음<br>(Option, BOSE 프리미엄 사운드 패키지)',
+        'Calligraphy':'BOSE 프리미엄 사운드<br>14개 스피커, 최대 출력 정보 없음',
+        'Black Ink':'BOSE 프리미엄 사운드<br>14개 스피커, 최대 출력 정보 없음'
+      }
+    },
+    'Genesis': {
+      'Bowers & Wilkins 프리미엄 사운드 시스템': {
+        'EV':'뱅앤올룹슨 고해상도 사운드<br>17개 스피커, 최대 출력 확인 불가'
+      }
+    },
+    'Audi': {
+      'Bose 프리미엄 사운드 시스템': {
+        'Performance S-line+':'B&O 3D 프리미엄 사운드<br>16개 스피커, 705W'
+      }
+    },
+    'BMW 6 Series GT': {
+      'Bowers & Wilkins 프리미엄 사운드 시스템': {
+        '630i xDrive GT M Sport Pro Final Edition':'B&W 다이아몬드 서라운드 사운드<br>16개 스피커, 1,400W'
+      }
+    },
+    'BMW i5': {
+      'Bowers & Wilkins 프리미엄 사운드 시스템': {
+        'eDrive40 M Sport':'B&W 서라운드 사운드<br>17개 스피커, 655W',
+        'xDrive40 M Sport':'B&W 서라운드 사운드<br>17개 스피커, 655W',
+        'xDrive40 M Sport Pro':'B&W 서라운드 사운드<br>17개 스피커, 655W',
+        'M60 xDrive Pro':'B&W 서라운드 사운드<br>17개 스피커, 655W'
+      }
+    },
+    'BMW iX3': {
+      'Bose 프리미엄 사운드 시스템': {
+        '50 xDrive M Sport':'Harman Kardon HiFi 라우드 사운드<br>13개 스피커, 최대 출력 정보 없음',
+        '50 xDrive M Sport Pro':'Harman Kardon HiFi 라우드 사운드<br>13개 스피커, 최대 출력 정보 없음'
+      }
+    },
+    'Mercedes-Benz': {
+      '기본 사운드 시스템': {
+        '350+':'어드밴스드 사운드<br>11개 스피커, 225W'
+      }
+    },
+    'Polestar 3': {
+      '기본 사운드 시스템': {
+        'Rear motor':'하이 퍼포먼스 오디오<br>10개 스피커, 300W',
+        'Dual motor':'하이 퍼포먼스 오디오<br>10개 스피커, 300W'
+      },
+      'Bowers & Wilkins 프리미엄 사운드 시스템': {
+        'Rear motor':'Bowers & Wilkins for Polestar<br>25개 스피커, 1,610W<br>(Option, Plus pack)',
+        'Dual motor':'Bowers & Wilkins for Polestar<br>25개 스피커, 1,610W<br>(Option, Plus pack)',
+        'Performance':'Bowers & Wilkins for Polestar<br>25개 스피커, 1,610W'
+      }
+    },
+    'Polestar 4': {
+      '기본 사운드 시스템': {
+        'Rear motor':'하이 퍼포먼스 오디오<br>8개 스피커, 최대 출력 정보 없음',
+        'Dual motor':'하이 퍼포먼스 오디오<br>8개 스피커, 최대 출력 정보 없음'
+      },
+      'Bose 프리미엄 사운드 시스템': {
+        'Rear motor':'Harman Kardon 프리미엄 사운드<br>12개 스피커, 1,320W<br>(Option, Plus pack)',
+        'Dual motor':'Harman Kardon 프리미엄 사운드<br>12개 스피커, 1,320W<br>(Option, Plus pack)'
+      }
+    },
+    'Tesla Model S': {
+      'Bowers & Wilkins 프리미엄 사운드 시스템': {
+        'AWD':'프리미엄 오디오<br>22개 스피커, 960W',
+        'Plaid':'프리미엄 오디오<br>22개 스피커, 960W'
+      }
+    },
+    'Tesla': {
+      'Bose 프리미엄 사운드 시스템': {
+        'Model Y L':'프리미엄 오디오<br>18개 스피커, 최대 출력 정보 없음'
+      }
+    }
   };
   // item: 항목명 끝에 붙은 괄호 상세정보를 항목명에서 떼어내 체크마크 옆에 표기 — ES90 전 트림 공통 적용 (양쪽 공통 스펙)
   const ITEM_NAME_DETAIL = {
@@ -17859,11 +17933,17 @@ function renderOptTable(cat){
   };
   // item: 디스플레이 크기는 브랜드/트림마다 달라 우열을 가릴 수 없으므로 실제 인치 값을 그대로 표기
   const COMP_DISPLAY_DETAIL = {
-    'Hyundai': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'12.3인치'},
-    'BMW i5': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'14.9인치'},
+    'Hyundai': {'9인치 운전자 디스플레이':'9.9인치', '14.5인치 터치 스크린 센터 디스플레이':'17인치'},
+    'Genesis': {'9인치 운전자 디스플레이':'27인치 (통합형)', '14.5인치 터치 스크린 센터 디스플레이':'27인치 (통합형)'},
     'Audi': {'9인치 운전자 디스플레이':'11.9인치', '14.5인치 터치 스크린 센터 디스플레이':'14.5인치'},
-    'Genesis': {'9인치 운전자 디스플레이':'27인치(통합형)', '14.5인치 터치 스크린 센터 디스플레이':'27인치(통합형)'},
-    'Mercedes-Benz': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'12.8인치'}
+    'BMW 6 Series GT': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'12.3인치'},
+    'BMW i5': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'14.9인치'},
+    'BMW iX3': {'9인치 운전자 디스플레이':'44.3인치', '14.5인치 터치 스크린 센터 디스플레이':'17.9인치'},
+    'Mercedes-Benz': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'12.8인치'},
+    'Polestar 3': {'9인치 운전자 디스플레이':'9인치', '14.5인치 터치 스크린 센터 디스플레이':'14.5인치'},
+    'Polestar 4': {'9인치 운전자 디스플레이':'10.2인치', '14.5인치 터치 스크린 센터 디스플레이':'15.4인치'},
+    'Tesla Model S': {'9인치 운전자 디스플레이':'12.3인치', '14.5인치 터치 스크린 센터 디스플레이':'17.4인치'},
+    'Tesla': {'14.5인치 터치 스크린 센터 디스플레이':'16인치'}
   };
 
   // 직접 비교 가능한 항목을 먼저, 수치·사양·설명형 항목을 아래에 배치한다.
@@ -17984,10 +18064,13 @@ function renderOptTable(cat){
               : renderCell(it.es90);
           }
 
-          const compSoundDetail = COMP_SOUND_DETAIL[STATE.brandKey] && COMP_SOUND_DETAIL[STATE.brandKey][it.name.trim()];
+          const compSoundDetailByTrim = COMP_SOUND_DETAIL[STATE.brandKey] && COMP_SOUND_DETAIL[STATE.brandKey][it.name.trim()];
+          const compSoundDetail = compSoundDetailByTrim && typeof compSoundDetailByTrim==='object'
+            ? compSoundDetailByTrim[STATE.compTrim]
+            : compSoundDetailByTrim;
           const compDisplayDetail = COMP_DISPLAY_DETAIL[STATE.brandKey] && COMP_DISPLAY_DETAIL[STATE.brandKey][it.name.trim()];
           if(isSound){
-            compCell = cvTrue && compSoundDetail
+            compCell = compSoundDetail
               ? `<span class="ov-spec">${compSoundDetail}</span>`
               : renderCell(it.comp, STATE.brandKey, STATE.compTrim);
           } else if(isDisplay){
