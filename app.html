@@ -12112,7 +12112,7 @@ body.cover-open{overflow:hidden;}
               },
               "competitor": {
                 "Rear motor": null,
-                "Dual motor": "Option\n(21\" Plus)\n전 : 265/45R21\n후 : 295/40R21",
+                "Dual motor": "Option\n(21인치 Plus)\n전 : 265/45R21\n후 : 295/40R21",
                 "Performance": null
               }
             },
@@ -12127,7 +12127,7 @@ body.cover-open{overflow:hidden;}
               },
               "competitor": {
                 "Rear motor": null,
-                "Dual motor": "Option\n(22\" Sport)\n전 : 265/40R22\n후 : 295/35R22",
+                "Dual motor": "Option\n(22인치 Sport)\n전 : 265/40R22\n후 : 295/35R22",
                 "Performance": "전 : 265/40R22\n후 : 295/35R22"
               }
             },
@@ -13375,8 +13375,8 @@ body.cover-open{overflow:hidden;}
                 "Twin Motor Performance Ultra": null
               },
               "competitor": {
-                "Rear motor": "Option\n(21\" Sport)\n전 : 255/45R21\n후 : 255/45R21",
-                "Dual motor": "Option\n(21\" Sport)\n전 : 255/45R21\n후 : 255/45R21"
+                "Rear motor": "Option\n(21인치 Sport)\n전 : 255/45R21\n후 : 255/45R21",
+                "Dual motor": "Option\n(21인치 Sport)\n전 : 255/45R21\n후 : 255/45R21"
               }
             },
             {
@@ -16187,7 +16187,7 @@ body.cover-open{overflow:hidden;}
     "Mercedes-Benz": [],
     "Polestar 3": [
       {
-        "name": "21\" Plus",
+        "name": "21인치 Plus",
         "prices": {
           "Rear motor": null,
           "Dual motor": 2000000,
@@ -16195,7 +16195,7 @@ body.cover-open{overflow:hidden;}
         }
       },
       {
-        "name": "22\" Sport",
+        "name": "22인치 Sport",
         "prices": {
           "Rear motor": null,
           "Dual motor": 3000000,
@@ -16237,7 +16237,7 @@ body.cover-open{overflow:hidden;}
     ],
     "Polestar 4": [
       {
-        "name": "21\" Sport",
+        "name": "21인치 Sport",
         "prices": {
           "Rear motor": 2000000,
           "Dual motor": 2000000
@@ -18052,7 +18052,7 @@ function getPaidOptionCategory(name){
   const n = String(name||'');
   if(/루프|선루프/.test(n)) return '공조';
   if(/인테리어|가죽|스티어링\s*휠|데코/.test(n)) return '인테리어 및 시트';
-  if(/휠|타이어|^\s*2[12][\"”]/.test(n)) return '휠·타이어';
+  if(/휠|타이어|^\s*2[12](?:[\"”]|인치)/.test(n)) return '휠·타이어';
   if(/후륜\s*조향|서스펜션|섀시|브레이크/.test(n)) return '파워트레인·섀시';
   if(/사이드\s*미러|아웃사이드\s*미러/.test(n)) return '익스테리어';
   if(/빌트인\s*캠|오토파일럿|셀프\s*드라이빙/.test(n)) return '안전·주행보조';
