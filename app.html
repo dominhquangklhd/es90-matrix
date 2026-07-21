@@ -1302,7 +1302,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 17:56",
+    "updated": "2026-07-21 17:59",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -18226,6 +18226,10 @@ function getPaidOptionCategory(name){
   return '기타 옵션';
 }
 
+function optionPurchaseDisplayName(value){
+  return String(value||'').replace(/나파/g,'Nappa');
+}
+
 function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
   const container = document.getElementById('unifiedOptionPurchase');
   if(!container) return;
@@ -18250,7 +18254,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
           </div>
           <button class="pkg-select-btn ${PKG_SELECTED.has(p.name)?'active':''}" style="margin-top:0;flex-shrink:0;" onclick="togglePkgSelect(this)">${PKG_SELECTED.has(p.name)?'✓ 선택됨':`선택 시 +${fmtWon(p.price)} 추가`}</button>
         </div>
-        <ul class="pkg-feature-list">${p.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+        <ul class="pkg-feature-list">${p.features.map(f=>`<li>${optionPurchaseDisplayName(f)}</li>`).join('')}</ul>
       </div>`};
   });
 
@@ -18286,7 +18290,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
           <div class="option-category-main"><span class="option-category-chip">${category}</span><span class="ov-opt option-jump" role="button" tabindex="0" onclick="jumpFromPurchaseToDetails(event,'${detailCategory}','${options[0].name.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">Option 구매</span><span class="option-category-name">${category} 유상 옵션</span></div>
         </div>
         <div class="option-category-rows">
-          ${options.map(option=>`<div class="pkg-item" data-option-name="${option.name.replace(/"/g,'&quot;')}" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${option.name}</span><button class="wheel-select-btn color-select-btn${isLeatherOnlyChoice?' exclusive-leather-btn':''}" data-price="${option.prices[compTrim]}" data-option-name="${option.name.replace(/"/g,'&quot;')}"${isLeatherOnlyChoice?' data-choice-group="leather"':''} onclick="${isLeatherOnlyChoice?'toggleExclusiveLeatherSelect':'toggleWheelSelect'}(this,'${option.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${option.prices[compTrim]})">선택 시 +${fmtWon(option.prices[compTrim])} 추가</button></div></div>`).join('')}
+          ${options.map(option=>`<div class="pkg-item" data-option-name="${option.name.replace(/"/g,'&quot;')}" style="display:block;"><div class="pkg-item-name" style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><span>${optionPurchaseDisplayName(option.name)}</span><button class="wheel-select-btn color-select-btn${isLeatherOnlyChoice?' exclusive-leather-btn':''}" data-price="${option.prices[compTrim]}" data-option-name="${option.name.replace(/"/g,'&quot;')}"${isLeatherOnlyChoice?' data-choice-group="leather"':''} onclick="${isLeatherOnlyChoice?'toggleExclusiveLeatherSelect':'toggleWheelSelect'}(this,'${option.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}',${option.prices[compTrim]})">선택 시 +${fmtWon(option.prices[compTrim])} 추가</button></div></div>`).join('')}
         </div>
       </div>`});
   });
@@ -18529,7 +18533,7 @@ function updatePkgCalc(){
       <div class="pkg-calc-row pkg-calc-base"><span>${compLabel(compName,compTrim)}</span><span>${fmtWon(base)}</span></div>
       ${rows.map(r=>`<div class="pkg-calc-row"><span>${r.name} 추가</span><span>+${fmtWon(r.price)}</span></div>`).join('')}
       ${SELECTED_COLOR.name? `<div class="pkg-calc-row"><span>${SELECTED_COLOR.name} 추가</span><span>+${fmtWon(SELECTED_COLOR.price)}</span></div>`:''}
-      ${wheelRows.map(item=>`<div class="pkg-calc-row"><span>${item.name} 추가</span><span>+${fmtWon(item.price)}</span></div>`).join('')}
+      ${wheelRows.map(item=>`<div class="pkg-calc-row"><span>${optionPurchaseDisplayName(item.name)} 추가</span><span>+${fmtWon(item.price)}</span></div>`).join('')}
     </div>
     <div class="pkg-calc-total"><span>합계</span><span>${fmtWon(newTotal)}</span></div>
     ${(()=>{
