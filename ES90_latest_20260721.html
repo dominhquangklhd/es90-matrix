@@ -16961,6 +16961,9 @@ function showPanel(n){
     setTimeout(()=>activePanel?.classList.remove('panel-enter-forward','panel-enter-back'),500);
   }
   window.scrollTo({top:0, behavior:'smooth'});
+  if(window.parent !== window){
+    window.parent.postMessage({type:'es90-step-change',step:n},window.location.origin);
+  }
 }
 
 // ---------------- STEP 1: ES90 trim ----------------

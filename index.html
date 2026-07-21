@@ -47,17 +47,76 @@
       if (previous && previous !== version) showStatus('최신 버전을 자동으로 적용했습니다.');
     }
 
+    const UPDATE_INTERVAL = 5 * 60 * 1000;
+    let pendingVersion = null;
+    let updateCheckRunning = false;
+
+    function isSafeToAutoUpdate() {
+      try {
+        const doc = appFrame.contentDocument;
+        if (!doc) return false;
+        const cover = doc.getElementById('loginCover');
+        const panel1 = doc.getElementById('panel1');
+        return Boolean((cover && !cover.hidden) || panel1?.classList.contains('show'));
+      } catch (_) {
+        return false;
+      }
+    }
+
+    function applyVersion(version) {
+      pendingVersion = null;
+      localStorage.setItem('es90-app-version', version);
+      appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
+      showStatus('최신 버전을 자동으로 적용했습니다.', 3200);
+    }
+
+    async function checkLatestApp() {
+      if (updateCheckRunning || !navigator.onLine) return;
+      updateCheckRunning = true;
+      try {
+        const response = await fetch(`./version.json?check=${Date.now()}`, { cache: 'no-store' });
+        if (!response.ok) return;
+        const latestVersion = (await response.json()).version;
+        const currentVersion = localStorage.getItem('es90-app-version');
+        if (!latestVersion || latestVersion === currentVersion) {
+          pendingVersion = null;
+          return;
+        }
+        if (isSafeToAutoUpdate()) {
+          applyVersion(latestVersion);
+        } else {
+          pendingVersion = latestVersion;
+          showStatus('최신 버전이 준비되었습니다. Step 1에서 자동 적용됩니다.', 5200);
+        }
+      } catch (_) {
+        // 네트워크가 복구되거나 다음 5분 확인 시 다시 시도한다.
+      } finally {
+        updateCheckRunning = false;
+      }
+    }
+
+    window.addEventListener('message', event => {
+      if (event.origin !== window.location.origin || event.source !== appFrame.contentWindow) return;
+      if (event.data?.type === 'es90-step-change' && event.data.step === 1 && pendingVersion) {
+        applyVersion(pendingVersion);
+      }
+    });
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then(registration => {
         registration.update();
         document.addEventListener('visibilitychange', () => {
-          if (document.visibilityState === 'visible') registration.update();
+          if (document.visibilityState === 'visible') {
+            registration.update();
+            checkLatestApp();
+          }
         });
       }).catch(() => showStatus('온라인 상태에서 자동 업데이트가 활성화됩니다.'));
     }
 
-    window.addEventListener('online', loadLatestApp);
+    window.addEventListener('online', checkLatestApp);
     loadLatestApp();
+    window.setInterval(checkLatestApp, UPDATE_INTERVAL);
   </script>
 </body>
 </html>
