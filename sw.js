@@ -1,5 +1,5 @@
-const CACHE_NAME = 'es90-sales-app-v10';
-const APP_SHELL = ['./', './index.html', './app.html', './manifest.webmanifest', './icons/es90-icon.svg', './assets/es90-login-cover-lights-on-v3-led.png'];
+const CACHE_NAME = 'es90-sales-app-v11';
+const APP_SHELL = ['./', './index.html', './app.html', './manifest.webmanifest', './icons/es90-icon.svg', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
