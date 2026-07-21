@@ -1299,7 +1299,7 @@ body.cover-open{overflow:hidden;}
 <div id="app"></div>
 <script>window.ES90_DATA = {
   "meta": {
-    "updated": "2026-07-21 08:47",
+    "updated": "2026-07-21 14:39",
     "source_files": [
       "ES90_competitive_analysis_260711.xlsx"
     ],
@@ -16882,7 +16882,7 @@ function renderApp(){
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <div class="meta-pill">매트릭스 최신 업데이트 <b>${D.meta.updated.split(' ')[0]}</b></div>
+          <div class="meta-pill">매트릭스 최신 업데이트 <b id="matrixUpdatedDate">${D.meta.updated.split(' ')[0]}</b></div>
         </div>
       </div>
     </div>
@@ -16999,7 +16999,37 @@ const RESERVATION_DATA = {
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
-const RESERVATION_UPDATED_AT = getDocumentUpdatedAt();
+let RESERVATION_UPDATED_AT = getDocumentUpdatedAt();
+function formatDeploymentUpdatedAt(value){
+  const date = new Date(value);
+  if(Number.isNaN(date.getTime())) return null;
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+    timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit',
+    hour:'2-digit', minute:'2-digit', hourCycle:'h23'
+  }).formatToParts(date).filter(part=>part.type!=='literal').map(part=>[part.type,part.value]));
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}`;
+}
+async function syncDeploymentUpdatedAt(){
+  try{
+    const response = await fetch(`./version.json?updated=${Date.now()}`, {cache:'no-store'});
+    if(!response.ok) return;
+    const versionInfo = await response.json();
+    const deployedAt = formatDeploymentUpdatedAt(versionInfo.updatedAt);
+    if(!deployedAt) return;
+    D.meta.updated = deployedAt;
+    RESERVATION_UPDATED_AT = deployedAt;
+    document.querySelectorAll('.waitlist-update-time').forEach(el=>{ el.textContent = `${deployedAt} 기준`; });
+    document.querySelectorAll('.waitlist-update-stamp').forEach(el=>{
+      el.title = '배포 업데이트 시각';
+      el.setAttribute('aria-label', `배포 업데이트 ${deployedAt}`);
+    });
+    const matrixDate = document.getElementById('matrixUpdatedDate');
+    if(matrixDate) matrixDate.textContent = deployedAt.split(' ')[0];
+  }catch(_){
+    // 로컬 파일이나 오프라인 환경에서는 HTML에 포함된 마지막 배포 시각을 유지한다.
+  }
+}
+syncDeploymentUpdatedAt();
 const TRIM_GROUPS = [
   {
     label: 'PLUS 트림(2종)',
