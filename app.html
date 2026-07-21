@@ -19368,7 +19368,7 @@ function initLoginCover(){
       writeSession();
       savedPopup.hidden = true;
       loginTransitioning = true;
-      const transitionDelay = 700;
+      const transitionDelay = 1000;
       setTimeout(()=>cover?.classList.add('is-leaving'),transitionDelay - 550);
       setTimeout(()=>{
         resetAll();
