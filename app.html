@@ -752,6 +752,13 @@ button{font-family:inherit;}
   .login-cover { bottom:calc(-1 * env(safe-area-inset-bottom, 0px))!important; min-height:calc(100dvh + env(safe-area-inset-bottom, 0px))!important; }
   .login-cover-visual { bottom:0!important; min-height:100%!important; }
 }
+@media (display-mode: standalone) and (min-width:1024px) and (orientation:landscape) {
+  html{height:auto;min-height:100dvh;overflow-y:auto;}
+  body:not(.cover-open){height:auto;min-height:100dvh;overflow-y:auto!important;-webkit-overflow-scrolling:touch;}
+  body:not(.cover-open) #app{min-height:calc(100dvh + 1px);padding-bottom:calc(140px + env(safe-area-inset-bottom, 0px))!important;}
+  body:not(.cover-open) .content{padding-bottom:calc(140px + env(safe-area-inset-bottom, 0px))!important;}
+  body:not(.cover-open) .panel.show{padding-bottom:32px;}
+}
 
 /* ===== Result hero keyword badges ===== */
 .result-badges{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 14px;}
