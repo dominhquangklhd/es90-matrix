@@ -898,8 +898,9 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 /* ES90 trim selector */
 .trim-split-wrap{gap:16px;margin-bottom:20px;}
 .trim-split-col{padding:20px!important;border:1px solid var(--line)!important;border-radius:var(--radius);background:rgba(255,255,255,.76);box-shadow:0 8px 26px rgba(16,42,67,.04);}
-.trim-group-label{margin-bottom:13px;color:var(--navy-deep);font-size:13px;font-weight:600;}
-.trim-group-sub{color:var(--ink-faint);font-weight:400;}
+.trim-group-label{min-height:24px;margin-bottom:13px;color:var(--navy-deep);font-size:13px;font-weight:600;line-height:1.2;align-items:center;}
+.trim-group-label::after{align-self:center;}
+.trim-group-sub{display:inline-flex;align-items:center;min-height:24px;color:var(--ink-faint);font-weight:400;line-height:1.2;}
 .trim-sub-emphasis{-webkit-text-emphasis:filled dot;text-emphasis:filled dot;-webkit-text-emphasis-position:over;text-emphasis-position:over;color:inherit;}
 .trim-col-cards{gap:10px;}
 .trim-card{position:relative;overflow:hidden;border:1px solid #dfe5ea!important;border-radius:13px!important;background:#fff;box-shadow:none!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;}
