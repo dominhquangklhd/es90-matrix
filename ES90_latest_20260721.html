@@ -17137,6 +17137,7 @@ function showPanel(n){
   const direction = previousStep === n ? '' : (n > previousStep ? 'forward' : 'back');
   swapPanel();
   const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
+  if(n===3) initIpadPinnedResultHero();
   activePanel?.classList.remove('panel-enter-forward','panel-enter-back');
   if(direction && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     activePanel?.classList.add(direction === 'forward' ? 'panel-enter-forward' : 'panel-enter-back');
