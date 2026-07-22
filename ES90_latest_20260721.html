@@ -16614,6 +16614,11 @@ function compLabel(compName, compTrim){
   if(compTrim==='EV' || compTrim==='Model Y L') return compName;
   return `${compName} ${compTrimDisplay(compTrim)}`;
 }
+// 성능·옵션 비교 결과 카드에서만 6GT의 한정판 접미어를 생략한다.
+function resultCompLabel(compName, compTrim){
+  const label = compLabel(compName, compTrim);
+  return String(compName).includes('6 Series GT') ? label.replace(/\s+Final Edition$/,'') : label;
+}
 function fullCompTrimLabel(brandKey, compTrim){
   const fullName = BRAND_DISPLAY_FULL[brandKey] || BRAND_DISPLAY[brandKey] || brandKey;
   if(!compTrim || compTrim==='EV' || compTrim==='Model Y L' || fullName.toLowerCase().endsWith(String(compTrimDisplay(compTrim)).toLowerCase())) return fullName;
@@ -17559,7 +17564,7 @@ if(score.priceDiff !== null){
         </div>
         ${(()=>{
           const optionGap = Math.abs(score.esTotal-score.compTotal);
-          const optionWinner = score.esTotal===score.compTotal ? '동일' : (score.esTotal>score.compTotal ? `ES90 ${es90TrimMenuDisplay(es90Trim)}` : compLabel(compName, compTrim));
+          const optionWinner = score.esTotal===score.compTotal ? '동일' : (score.esTotal>score.compTotal ? `ES90 ${es90TrimMenuDisplay(es90Trim)}` : resultCompLabel(compName, compTrim));
           const esH = Math.max(score.maxTotal? score.esTotal/score.maxTotal*100:0, 6);
           const compH = Math.max(score.maxTotal? score.compTotal/score.maxTotal*100:0, 6);
           return `
@@ -17857,7 +17862,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
   const winCountGap = Math.abs(esWins-compWins);
   const winnerTrimLabel = esWins===compWins
     ? '동일'
-    : (esWins>compWins ? `ES90 ${es90TrimMenuDisplay(es90Trim)}` : compLabel(compName, compTrim));
+    : (esWins>compWins ? `ES90 ${es90TrimMenuDisplay(es90Trim)}` : resultCompLabel(compName, compTrim));
   const esH = Math.max(esWins/total*100, 6), compH = Math.max(compWins/total*100, 6);
 
   return `
