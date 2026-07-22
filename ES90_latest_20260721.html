@@ -17082,6 +17082,10 @@ function navigateToStep(n){
   }
   if(n > STATE.maxStep || n === STATE.step) return;
   if(n <= 1){
+    if(PENDING_DEPLOYED_VERSION){
+      window.location.reload();
+      return;
+    }
     resetSelectionState(true);
     STATE.maxStep = 1;
     renderStep1();
@@ -17156,6 +17160,7 @@ function formatDeploymentUpdatedAt(value){
   return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}`;
 }
 let LAST_DEPLOYED_VERSION = null;
+let PENDING_DEPLOYED_VERSION = null;
 async function syncDeploymentUpdatedAt(){
   try{
     const response = await fetch(`./version.json?updated=${Date.now()}`, {cache:'no-store'});
@@ -17164,8 +17169,12 @@ async function syncDeploymentUpdatedAt(){
     const deployedVersion = String(versionInfo.version||'');
     if(LAST_DEPLOYED_VERSION===null) LAST_DEPLOYED_VERSION = deployedVersion;
     else if(deployedVersion && deployedVersion!==LAST_DEPLOYED_VERSION){
-      window.location.reload();
-      return;
+      if(STATE.step === 1){
+        window.location.reload();
+        return;
+      }
+      PENDING_DEPLOYED_VERSION = deployedVersion;
+      LAST_DEPLOYED_VERSION = deployedVersion;
     }
     const deployedAt = formatDeploymentUpdatedAt(versionInfo.updatedAt);
     if(!deployedAt) return;
