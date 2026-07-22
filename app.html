@@ -17773,6 +17773,7 @@ if(score.priceDiff !== null){
 }
 
 function initIpadPinnedResultHero(){
+  window.clearTimeout(window._ipadHeroSettleTimer);
   if(window._ipadHeroResizeHandler){
     window.removeEventListener('resize',window._ipadHeroResizeHandler);
     window.removeEventListener('orientationchange',window._ipadHeroResizeHandler);
@@ -17793,6 +17794,7 @@ function initIpadPinnedResultHero(){
   };
   syncPinnedHero();
   requestAnimationFrame(syncPinnedHero);
+  window._ipadHeroSettleTimer = window.setTimeout(syncPinnedHero,820);
   window._ipadHeroResizeHandler = syncPinnedHero;
   window.addEventListener('resize',syncPinnedHero,{passive:true});
   window.addEventListener('orientationchange',syncPinnedHero,{passive:true});
