@@ -16703,6 +16703,7 @@ function isSpecValue(v){ return v!==null && v!==undefined && v!==true && v!==fal
 // item: some option values are stored as "O(뒷좌석 포함)" style strings rather than plain boolean true —
 // this still means "included", so counting/pros-cons logic must treat it the same as true.
 function hasOpt(v){ return v===true || (typeof v==='string' && /^O\s*\(/.test(v.trim())); }
+function isPaidOptionValue(v){ return typeof v==='string' && /^Option(?:\s|$)/i.test(v.trim()); }
 
 // items excluded from win/loss counting & pros/cons — display size differs by brand and can't be ranked as superior/inferior
 const NO_RANK_ITEMS = new Set(['9인치 운전자 디스플레이', '14.5인치 터치 스크린 센터 디스플레이', '기본 사운드 시스템', 'Bose 프리미엄 사운드 시스템', 'Bowers & Wilkins 프리미엄 사운드 시스템']);
@@ -16725,6 +16726,7 @@ function isDirectCompareOption(it){
   if(FORCE_COMPARE_X_ITEMS.has(String(it.name||'').trim())) return false;
   if(FORCE_COMPARE_O_ITEMS.has(String(it.name||'').trim())) return true;
   if(NO_RANK_ITEMS.has(String(it.name||'').trim())) return false;
+  if(hasOpt(it.es90) && isPaidOptionValue(it.comp)) return true;
   return [it.es90,it.comp].every(v=>v===true || v===false || v===null);
 }
 
@@ -16764,7 +16766,7 @@ function computeAdvDisadv(es90Trim, brandKey, compTrim){
       if(!isDirectCompareOption(it)) return;
       const evTrue = hasOpt(it.es90);
       const cvTrue = hasOpt(it.comp);
-      const cvHasSpec = isSpecValue(it.comp); // item 13: competitor has a different spec value
+      const cvHasSpec = isSpecValue(it.comp) && !isPaidOptionValue(it.comp); // 유상 옵션은 ES90 기본 적용 대비 강점으로 집계
       // ES90 advantage: ES90 has true, competitor does NOT have true (but if comp has a spec string, it's not "missing" — skip)
       if(evTrue && !cvTrue && !cvHasSpec){
         adv.push({category:cat.label, catKey:cat.category, name:it.name, compVal:it.comp});
