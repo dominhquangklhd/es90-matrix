@@ -17780,17 +17780,16 @@ function initIpadPinnedResultHero(){
   }
   const slot = document.querySelector('#panel4 .result-hero-slot');
   const hero = slot?.querySelector('.result-hero');
+  const panel = document.getElementById('panel4');
   const isIpadWebKit = CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
-  if(!slot || !hero || !isIpadWebKit) return;
+  if(!slot || !hero || !panel || !isIpadWebKit) return;
   const syncPinnedHero = ()=>{
-    hero.classList.remove('ipad-fixed');
-    slot.style.height = '';
-    const rect = slot.getBoundingClientRect();
-    const heroHeight = Math.ceil(hero.getBoundingClientRect().height);
-    slot.style.height = `${heroHeight}px`;
+    const rect = panel.getBoundingClientRect();
     slot.style.setProperty('--ipad-hero-left',`${Math.round(rect.left)}px`);
     slot.style.setProperty('--ipad-hero-width',`${Math.round(rect.width)}px`);
     hero.classList.add('ipad-fixed');
+    const heroHeight = Math.ceil(hero.getBoundingClientRect().height);
+    slot.style.height = `${heroHeight}px`;
   };
   syncPinnedHero();
   requestAnimationFrame(syncPinnedHero);
