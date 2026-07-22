@@ -2284,10 +2284,10 @@ body.cover-open{overflow:hidden;background:#102f47;}
                 "Twin Motor Performance Ultra": true
               },
               "competitor": {
-                "Premium": null,
-                "Exclusive": null,
-                "Calligraphy": null,
-                "Black Ink": null
+                "Premium": "Option\n(파노라믹 글라스 루프)",
+                "Exclusive": "Option\n(파노라믹 글라스 루프)",
+                "Calligraphy": "Option\n(파노라믹 글라스 루프)",
+                "Black Ink": "Option\n(파노라믹 글라스 루프)"
               }
             },
             {
@@ -16183,7 +16183,7 @@ body.cover-open{overflow:hidden;background:#102f47;}
         }
       },
       {
-        "name": "파노라마 선루프",
+        "name": "파노라믹 글라스 루프",
         "prices": {
           "Premium": 1200000,
           "Exclusive": 1200000,
@@ -18461,7 +18461,7 @@ function renderUnifiedOptionPurchase(cats, brandKey, compTrim, compName){
     const isInteriorSingleChoice = isLeatherOnlyChoice || isPolestarInteriorChoice;
     const isWheelOnlyChoice = detailCategory==='Wheels & Tires' && options.length>1;
     const isHyundaiClimateRoofChoice = brandKey==='Hyundai' && category==='공조' && options.length===2 &&
-      options.every(option=>['스마트 비전 루프','파노라마 선루프'].includes(option.name));
+      options.every(option=>['스마트 비전 루프','파노라믹 글라스 루프'].includes(option.name));
     const isTeslaModelSAwdInteriorChoice = brandKey==='Tesla Model S' && compTrim==='AWD' && category==='인테리어·시트' && options.length===2 &&
       options.every(option=>['블랙 & 화이트 인테리어','크림 인테리어'].includes(option.name));
     const isTeslaModelSPlaidInteriorGroup = brandKey==='Tesla Model S' && compTrim==='Plaid' && category==='인테리어·시트' && options.length===3 &&
@@ -18700,7 +18700,7 @@ function toggleExclusiveLeatherSelect(btn, name, price){
   updatePkgCalc();
 }
 
-// 현대 그랜저의 공조 루프 옵션은 스마트 비전 루프와 파노라마 선루프 중 하나만 선택한다.
+// 현대 그랜저의 공조 루프 옵션은 스마트 비전 루프와 파노라믹 글라스 루프 중 하나만 선택한다.
 function toggleExclusiveClimateRoofSelect(btn, name, price){
   const wasActive = SELECTED_WHEELS.has(name);
   document.querySelectorAll('.exclusive-climate-roof-btn[data-choice-group="climate-roof"]').forEach(other=>{
@@ -18839,6 +18839,8 @@ function renderCell(v, brandKey, trim){
     }
     const displayPkgName = pkgName==='Black ash 데코가 적용된 Zinc 색상의 천공 나파 가죽'
       ? 'Black ash 데코가 적용된 천공 나파 가죽'
+      : brandKey==='Hyundai' && pkgName==='파노라믹 글라스 루프'
+        ? ''
       : brandKey==='Polestar 4' && ['Rear motor','Dual motor'].includes(trim) && pkgName==='Charcoal 데코가 적용된 Zinc 색상의 천공 나파 가죽'
         ? 'Charcoal 데코가 적용된 천공 나파 가죽'
         : pkgName;
