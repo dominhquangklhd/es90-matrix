@@ -749,8 +749,13 @@ button{font-family:inherit;}
   html,body { min-height:100dvh; background:#102f47; }
   body { padding-bottom:0; }
   #app { padding-bottom:calc(72px + env(safe-area-inset-bottom, 0px)); }
-  .login-cover { bottom:calc(-1 * env(safe-area-inset-bottom, 0px))!important; min-height:calc(100dvh + env(safe-area-inset-bottom, 0px))!important; }
-  .login-cover-visual { bottom:0!important; min-height:100%!important; }
+  /* iPad 홈 화면 PWA의 가변 뷰포트·안전영역 오차는 로그인 표지만 오버스캔해 흡수한다. */
+  body.cover-open .login-cover { inset:-3px -3px calc(-32px - env(safe-area-inset-bottom, 0px))!important; min-height:calc(100dvh + 38px)!important; }
+  body.cover-open .login-cover-visual { inset:0!important; min-height:100%!important; }
+  body.cover-open .login-cover-visual:after { inset:-12px!important; }
+  @supports (height:100lvh) {
+    body.cover-open .login-cover { min-height:calc(100lvh + 38px)!important; }
+  }
 }
 @media (display-mode: standalone) and (min-width:1024px) and (orientation:landscape) {
   html{min-height:100dvh;}
