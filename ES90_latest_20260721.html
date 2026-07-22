@@ -16880,7 +16880,7 @@ function computeProsConsSolutions(es90Trim, brandKey, compTrim){
   cons = cons.map(c=>{
     const upTrim = findUpgradeTrim(brandKey, c.catKey, c.name, es90Trim);
     if(upTrim){
-      if(es90Trim.includes('Ultra') && upTrim.includes('Plus')) return c;
+      if(es90Trim.includes('Ultra') && upTrim.includes('Plus')) return null;
       const badge = es90Trim==='Twin Motor Ultra' && upTrim.includes('Performance Ultra')
         ? 'Option 구매'
         : shortTrimBadge(upTrim);
@@ -19487,7 +19487,7 @@ function toggleExclusiveWheelSelect(btn, name, price){
     SELECTED_WHEELS.delete(other.dataset.optionName || '');
     other.classList.remove('active');
     other.textContent = optionSelectLabel(Number(other.dataset.price));
-  });
+  }).filter(Boolean);
   if(!wasActive){
     SELECTED_WHEELS.set(name, price);
     btn.classList.add('active');
