@@ -16887,7 +16887,7 @@ function computeProsConsSolutions(es90Trim, brandKey, compTrim){
       return {...c, badge};
     }
     return c;
-  });
+  }).filter(Boolean);
 
   return {pros, cons};
 }
@@ -19487,7 +19487,7 @@ function toggleExclusiveWheelSelect(btn, name, price){
     SELECTED_WHEELS.delete(other.dataset.optionName || '');
     other.classList.remove('active');
     other.textContent = optionSelectLabel(Number(other.dataset.price));
-  }).filter(Boolean);
+  });
   if(!wasActive){
     SELECTED_WHEELS.set(name, price);
     btn.classList.add('active');
