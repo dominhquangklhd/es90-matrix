@@ -996,6 +996,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 /* iPad Safari: use a viewport-fixed layer instead of jitter-prone sticky positioning. */
 @supports (-webkit-touch-callout:none){
   @media screen and (min-width:768px) and (max-width:1366px){
+    #panel4.panel-enter-forward,#panel4.panel-enter-back{animation:none!important;transform:none!important;opacity:1!important;}
     #panel4 .result-hero-slot{display:block;}
     #panel4 .result-hero.ipad-fixed{position:fixed;top:140px;left:var(--ipad-hero-left);right:auto;width:var(--ipad-hero-width);margin:0;-webkit-transform:translateZ(0);transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;contain:paint;}
   }
