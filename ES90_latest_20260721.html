@@ -662,6 +662,9 @@ button{font-family:inherit;}
 .trim-card:hover{border-color:var(--orange);box-shadow:0 0 0 3px rgba(253,100,8,0.08),0 4px 18px rgba(253,100,8,0.1);background:var(--orange-bg-soft);transform:translateY(-1px);}
 .trim-card.sel{border-color:var(--orange);border-width:2px;background:var(--orange-bg-soft);box-shadow:0 0 0 4px rgba(253,100,8,0.12),0 4px 18px rgba(253,100,8,0.15);}
 .trim-card-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.trim-card-thumb{display:grid;place-items:center;flex:0 0 82px;width:82px;height:58px;overflow:hidden;border-radius:8px;background:#f3f6f8;}
+.trim-card-thumb img{display:block;width:96%;height:96%;object-fit:contain;}
+.trim-card:hover .trim-card-thumb,.trim-card.sel .trim-card-thumb{background:#fff;}
 .trim-card-left{flex:1;}
 .trim-card-right{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;min-width:118px;}
 .trim-price-big{width:106px;box-sizing:border-box;color:var(--orange-deep);background:var(--orange-bg-soft);border:1px solid var(--orange-bg);box-shadow:none;text-align:center;white-space:nowrap;padding:9px 8px;border-radius:8px;line-height:1.15;}
@@ -1089,6 +1092,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
   #panel1 .trim-col-cards{margin-top:5px;gap:7px;}
   #panel1 .trim-col-cards .trim-card{height:90px;}
   #panel1 .trim-card-inner{padding:11px 14px!important;}
+  #panel1 .trim-card-thumb{flex-basis:72px;width:72px;height:50px;}
   #panel1 .trim-card-placeholder{height:90px;min-height:90px;flex-basis:90px;}
   #panel1 .waitlist-card{min-height:470px;margin-top:16px;padding:22px!important;}
   #panel1 .subsidy-guide{right:22px;width:calc(38% - 14px);}
@@ -16599,6 +16603,11 @@ const ES90_TRIM_DISPLAY = {
 function es90TrimDisplay(trim){ return ES90_TRIM_DISPLAY[trim] || trim; }
 function es90TrimMenuDisplay(trim){ return es90TrimDisplay(trim).replace('Extended Range','ER'); }
 function es90TrimCompact(trim){ return es90TrimDisplay(trim).replace('Single Motor Extended Range','Single Motor ER'); }
+function es90TrimImage(trim){
+  if(trim==='Twin Motor Performance Ultra') return 'assets/es90-trim-performance-ultra.png';
+  if(trim.includes('Ultra')) return 'assets/es90-trim-ultra.png';
+  return 'assets/es90-trim-plus.png';
+}
 function compTrimDisplay(trim){ return trim==='Model Y L' ? 'Model Y Longwheelbase' : trim; }
 // combines competitor brand display name + trim, omitting the trim when it's a generic/redundant label like 'EV'
 function compLabel(compName, compTrim){
@@ -17247,6 +17256,7 @@ function renderStep1(){
       const card = el(`
         <div class="trim-card" data-trim="${trim}">
           <div class="trim-card-inner">
+            <div class="trim-card-thumb"><img src="${es90TrimImage(trim)}" alt="${es90TrimDisplay(trim)} 차량" loading="eager"></div>
             <div class="trim-card-left">
               <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
                 <div class="trim-badge" style="margin-bottom:0;font-family:'Paperlogy','VolvoCentum SemiBold','VolvoCentum',sans-serif;">Volvo ES90</div>
