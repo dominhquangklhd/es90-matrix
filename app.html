@@ -746,7 +746,11 @@ button{font-family:inherit;}
 /* 홈화면 앱 모드(standalone) — status bar 여백 */
 @media (display-mode: standalone) {
   .topbar { padding-top: env(safe-area-inset-top, 0px); }
-  body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html,body { min-height:100dvh; background:#102f47; }
+  body { padding-bottom:0; }
+  #app { padding-bottom:calc(72px + env(safe-area-inset-bottom, 0px)); }
+  .login-cover { bottom:calc(-1 * env(safe-area-inset-bottom, 0px)); min-height:calc(100dvh + env(safe-area-inset-bottom, 0px)); }
+  .login-cover-visual { bottom:0; min-height:100%; }
 }
 
 /* ===== Result hero keyword badges ===== */
