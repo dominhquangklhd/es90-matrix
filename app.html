@@ -667,7 +667,7 @@ button{font-family:inherit;}
 .trim-card:hover .trim-card-thumb,.trim-card.sel .trim-card-thumb{background:#fff;}
 .trim-card-left{flex:1;}
 .trim-card-right{display:flex;flex-direction:column;gap:4px;align-items:flex-end;flex-shrink:0;min-width:118px;}
-.trim-price-big{width:106px;box-sizing:border-box;color:var(--orange-deep);background:var(--orange-bg-soft);border:1px solid var(--orange-bg);box-shadow:none;text-align:center;white-space:nowrap;padding:9px 8px;border-radius:8px;line-height:1.15;}
+.trim-price-big{display:flex;flex-direction:column;align-items:center;justify-content:center;width:106px;height:58px;box-sizing:border-box;color:var(--orange-deep);background:var(--orange-bg-soft);border:1px solid var(--orange-bg);box-shadow:none;text-align:center;white-space:nowrap;padding:0 8px;border-radius:8px;line-height:1.15;}
 .trim-price-big .trim-price-main{font-weight:800;}
 .trim-price-big .trim-price-sub{font-weight:500;opacity:.8;}
 .trim-price-big.navy{color:var(--midnight);background:var(--pastel-blue-bg);border:1px solid var(--pastel-blue);}
@@ -1094,6 +1094,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
   #panel1 .trim-col-cards .trim-card{height:90px;}
   #panel1 .trim-card-inner{padding:11px 14px!important;gap:1px;}
   #panel1 .trim-card-thumb{flex-basis:72px;width:72px;height:50px;}
+  #panel1 .trim-price-big{height:50px;}
   #panel1 .trim-card-placeholder{height:90px;min-height:90px;flex-basis:90px;}
   #panel1 .waitlist-card{min-height:470px;margin-top:16px;padding:22px!important;}
   #panel1 .subsidy-guide{right:22px;width:calc(38% - 14px);}
