@@ -18868,6 +18868,7 @@ function closeLoginCover(){
   const cover = document.getElementById('loginCover');
   if(cover) cover.hidden = true;
   document.body.classList.remove('cover-open');
+  if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:false},window.location.origin);
 }
 
 function logoutToLogin(){
@@ -18882,6 +18883,7 @@ function logoutToLogin(){
   cover?.classList.remove('is-leaving','is-revealing');
   if(cover) cover.hidden = false;
   document.body.classList.add('cover-open');
+  if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
   if(input){ input.value = ''; input.blur(); }
   if(savedPopup) savedPopup.hidden = true;
   if(message) message.textContent = '';
@@ -19344,6 +19346,7 @@ function initLoginCover(){
     cover?.classList.remove('is-leaving','is-revealing');
     if(cover) cover.hidden = false;
     document.body.classList.add('cover-open');
+    if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
     input.value = '';
     message.textContent = '1시간 동안 사용 기록이 없어 자동 로그아웃되었습니다.';
     resetAll();
