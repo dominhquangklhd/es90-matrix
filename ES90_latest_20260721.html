@@ -872,9 +872,9 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .step.done .step-kicker{color:#41725a;}
 .step.done .slabel{color:#35556a;}
 .step-meteor-group{position:absolute;z-index:2;left:52%;right:0;top:0;bottom:0;overflow:visible;clip-path:inset(-100px -100px -100px 0);pointer-events:none;}
-.step-meteor-group b{position:absolute;display:block;height:1.6px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.82) 0%,rgba(255,106,43,.48) 18%,rgba(255,126,70,.10) 60%,rgba(255,112,55,0) 100%);filter:blur(var(--blur,0)) drop-shadow(0 0 2px rgba(255,105,45,.22));transform:rotate(-28deg);transform-origin:left center;opacity:0;animation:stepMeteorOnce var(--duration,3.8s) cubic-bezier(.18,.58,.26,1) var(--delay,0s) 1 both;}
+.step-meteor-group b{position:absolute;display:block;height:1.6px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.82) 0%,rgba(255,106,43,.48) 18%,rgba(255,126,70,.10) 60%,rgba(255,112,55,0) 100%);filter:blur(var(--blur,0)) drop-shadow(0 0 2px rgba(255,105,45,.22));transform:rotate(-28deg);transform-origin:left center;opacity:0;animation:stepMeteorOnce var(--duration,4.8s) cubic-bezier(.45,0,.55,1) var(--delay,0s) 1 both;}
 .step-meteor-group b:after{content:"";position:absolute;left:-3px;top:50%;width:7px;height:7px;clip-path:polygon(50% 0,61% 35%,98% 38%,69% 59%,79% 96%,50% 74%,21% 96%,31% 59%,2% 38%,39% 35%);background:#ff7843;box-shadow:0 0 5px rgba(255,255,255,.78);transform:translateY(-50%);}
-.step-meteor-group b:nth-child(1){top:1px;right:-55px;width:122px;height:1.8px;--peak:.62;--delay:.08s;--duration:4.6s;}
+.step-meteor-group b:nth-child(1){top:1px;right:-55px;width:122px;height:1.8px;--peak:.62;--delay:.08s;--duration:5.5s;}
 .step-meteor-group b:nth-child(2){top:10px;right:-8px;width:38px;height:1.2px;--peak:.30;--delay:1.30s;--blur:.25px;}
 .step-meteor-group b:nth-child(3){top:-3px;right:-24px;width:68px;height:1.4px;--peak:.46;--delay:1.68s;}
 .step-meteor-group b:nth-child(4){top:15px;right:18px;width:20px;height:1px;--peak:.22;--delay:2.05s;--blur:.45px;}
@@ -882,7 +882,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .step-meteor-group b:nth-child(6){top:12px;right:2px;width:43px;height:1.1px;--peak:.28;--delay:2.80s;--blur:.35px;}
 .step-meteor-group b:nth-child(7){top:-1px;right:30px;width:25px;height:.9px;--peak:.18;--delay:3.18s;--blur:.55px;}
 .step-meteor-group b:nth-child(2):after,.step-meteor-group b:nth-child(4):after,.step-meteor-group b:nth-child(6):after{width:5px;height:5px}.step-meteor-group b:nth-child(7):after{width:4px;height:4px}
-@keyframes stepMeteorOnce{0%{opacity:0;transform:translate(26px,-14px) rotate(-28deg)}17%{opacity:var(--peak,.42)}72%{opacity:var(--peak,.42);transform:translate(-86px,43px) rotate(-28deg)}82%{opacity:var(--peak,.42);transform:translate(-105px,61px) rotate(-28deg)}90%{opacity:.10;transform:translate(-125px,78px) rotate(-28deg)}100%{opacity:0;transform:translate(-145px,92px) rotate(-28deg)}}
+@keyframes stepMeteorOnce{0%{opacity:0;transform:translate(26px,-14px) rotate(-28deg)}20%{opacity:var(--peak,.42)}68%{opacity:var(--peak,.42)}100%{opacity:0;transform:translate(-145px,92px) rotate(-28deg)}}
 @media(prefers-reduced-motion:reduce){.step-meteor-group{display:none;}}
 
 /* Main canvas */
