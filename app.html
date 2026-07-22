@@ -283,7 +283,7 @@ button{font-family:inherit;}
 .cat-card-list{list-style:none;margin:0;padding:0;font-size:11px;color:var(--ink);line-height:1.7;text-align:left;}
 .cat-card-list li{word-break:keep-all;padding-left:9px;position:relative;}
 .cat-card-list li::before{content:'';position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.45;}
-.cat-card-empty{font-size:10.5px;color:#9aa5b1;text-align:center;padding-top:8px;}
+.cat-card-empty{flex:1;display:grid;place-items:center;min-height:0;padding:0;font-size:10.5px;color:#9aa5b1;text-align:center;}
 .cat-card:not(.dimmed) .cat-card-empty{color:var(--ink);font-weight:500;}
 .ug-badge{display:inline-block;background:rgba(214,82,10,0.07);color:var(--orange-deep);font-size:9px;font-weight:600;padding:1px 6px;border-radius:20px;vertical-align:middle;letter-spacing:0.1px;border:1px solid rgba(214,82,10,0.32);}
 @media(max-width:640px){.cat-card-grid{flex-wrap:wrap;}.cat-card{flex:1 1 calc(25% - 8px);}}
