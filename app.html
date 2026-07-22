@@ -17460,7 +17460,7 @@ function renderStep4(){
 
 let priceGapHtml;
 if(score.priceDiff !== null){
-  priceGapHtml = buildPriceGapHtml(getEffectiveES90Total(es90Trim), compPrice?compPrice.total:null, es90Trim, BRAND_DISPLAY_FULL[brandKey]||compName);
+  priceGapHtml = buildPriceGapHtml(getEffectiveES90Total(es90Trim), compPrice?compPrice.total:null, es90Trim, compTrimDisplay(compTrim));
 } else {
   priceGapHtml = `<div class="value-banner ${valueClass}">✓ ${valueLabel}</div>`;
 }
@@ -18820,7 +18820,7 @@ function updatePkgCalc(){
   // 상단 가격과 가격차이는 공식 기본가격으로 고정한다. 옵션 선택액은 계산 패널의 참고 내역에만 표시한다.
   const heroGap = document.getElementById('heroGapBox');
   if(heroGap){
-    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, base, esTrim, compName);
+    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, base, esTrim, compTrimDisplay(compTrim));
   }
   normalizeOptionPurchaseParenthesisSpacing();
 }
