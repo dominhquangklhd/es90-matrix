@@ -992,12 +992,10 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .result-hero{position:sticky;top:140px;left:0;right:0;z-index:45;isolation:isolate;overflow:hidden;width:100%;max-width:100%;box-sizing:border-box;padding:18px 22px!important;border:0!important;border-radius:18px!important;background:linear-gradient(130deg,#071b2c 0%,#153d5b 66%,#245976 100%)!important;box-shadow:0 14px 34px rgba(7,27,44,.18)!important;color:#fff;-webkit-transform:none;transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;}
 .result-hero:after{content:"";position:absolute;width:320px;height:320px;right:-125px;top:-170px;border:1px solid rgba(255,255,255,.13);border-radius:50%;box-shadow:0 0 0 42px rgba(255,255,255,.025),0 0 0 84px rgba(255,255,255,.018);pointer-events:none;}
 .result-hero{border-radius:12px!important;}
-/* iPad Safari: keep the STEP 3 price hero pinned while stabilizing its composited layer. */
+/* iPad Safari: use a viewport-fixed layer instead of jitter-prone sticky positioning. */
 @supports (-webkit-touch-callout:none){
   @media screen and (min-width:768px) and (max-width:1366px){
-    #panel4{overflow-x:visible;}
-    #panel4 .result-hero{position:-webkit-sticky;position:sticky;top:140px;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);-webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform;contain:paint;}
-    #panel4 .result-hero:after{-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);}
+    #panel4 .result-hero.ipad-fixed{position:fixed;top:140px;left:var(--ipad-hero-left);right:auto;width:var(--ipad-hero-width);margin:0;-webkit-transform:translateZ(0);transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden;contain:paint;}
   }
 }
 .result-title{position:relative;z-index:1;color:#fff!important;font-size:20px!important;font-weight:500!important;line-height:1.25!important;letter-spacing:-.45px!important;}
@@ -17555,6 +17553,7 @@ if(score.priceDiff !== null){
 }
 
   panel.innerHTML = `
+    <div class="result-hero-slot">
     <div class="result-hero">
       <div class="result-title">Volvo ES90 ${es90TrimDisplay(es90Trim)}<span class="title-vs-badge">VS</span>${BRAND_ONLY[brandKey]||''} ${compLabel(compName, compTrim)}</div>
       <div class="result-badges">
@@ -17586,6 +17585,7 @@ if(score.priceDiff !== null){
         </div>
       </div>
       <div id="heroGapBox">${priceGapHtml}</div>
+    </div>
     </div>
 
     <div class="card" id="performanceCompareCard">
@@ -17752,6 +17752,7 @@ if(score.priceDiff !== null){
   updatePkgCalc();
   renderUpgradeOptList(es90Trim);
   initBarAnimations();
+  initIpadPinnedResultHero();
 
   const heroEsTrimSelect = document.getElementById('heroEsTrimSelect');
   if(heroEsTrimSelect){
@@ -17767,6 +17768,33 @@ if(score.priceDiff !== null){
       renderStep4();
     });
   }
+}
+
+function initIpadPinnedResultHero(){
+  if(window._ipadHeroResizeHandler){
+    window.removeEventListener('resize',window._ipadHeroResizeHandler);
+    window.removeEventListener('orientationchange',window._ipadHeroResizeHandler);
+    window._ipadHeroResizeHandler = null;
+  }
+  const slot = document.querySelector('#panel4 .result-hero-slot');
+  const hero = slot?.querySelector('.result-hero');
+  const isIpadWebKit = CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
+  if(!slot || !hero || !isIpadWebKit) return;
+  const syncPinnedHero = ()=>{
+    hero.classList.remove('ipad-fixed');
+    slot.style.height = '';
+    const rect = slot.getBoundingClientRect();
+    const heroHeight = Math.ceil(hero.getBoundingClientRect().height);
+    slot.style.height = `${heroHeight}px`;
+    slot.style.setProperty('--ipad-hero-left',`${Math.round(rect.left)}px`);
+    slot.style.setProperty('--ipad-hero-width',`${Math.round(rect.width)}px`);
+    hero.classList.add('ipad-fixed');
+  };
+  syncPinnedHero();
+  requestAnimationFrame(syncPinnedHero);
+  window._ipadHeroResizeHandler = syncPinnedHero;
+  window.addEventListener('resize',syncPinnedHero,{passive:true});
+  window.addEventListener('orientationchange',syncPinnedHero,{passive:true});
 }
 
 function renderUpgradeOptList(es90Trim){
