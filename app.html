@@ -830,7 +830,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 #app{min-height:100vh;padding-bottom:72px;}
 
 /* App bar */
-.topbar{position:static;z-index:60;padding:0;background:rgba(7,27,44,.97);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 8px 30px rgba(7,27,44,.16);backdrop-filter:blur(14px);}
+.topbar{position:sticky;top:0;z-index:90;padding:0;background:rgba(7,27,44,.97);border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 8px 30px rgba(7,27,44,.16);backdrop-filter:blur(14px);}
 .topbar-inner{max-width:1440px;min-height:76px;margin:0 auto;padding:0 34px;gap:18px;}
 .brand-mark{position:relative;padding-left:21px;}
 .brand-mark:before{content:"";position:absolute;left:0;top:4px;width:5px;height:36px;border-radius:3px;background:linear-gradient(180deg,#ff7b45,var(--orange));box-shadow:0 0 18px rgba(241,90,36,.35);}
@@ -840,7 +840,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .meta-pill b{color:#fff;}
 
 /* Navigation modeled after a clean vehicle-search workflow */
-.steps-wrap{position:sticky;top:0;z-index:80;padding:0;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);box-shadow:0 5px 18px rgba(16,42,67,.08);backdrop-filter:blur(12px);}
+.steps-wrap{position:sticky;top:76px;z-index:80;padding:0;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);box-shadow:0 5px 18px rgba(16,42,67,.08);backdrop-filter:blur(12px);}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:1440px;height:62px;margin:0 auto;padding:0 34px;gap:0;align-items:stretch;}
 .step{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:9px;width:100%;min-width:0;margin:0;padding:0 24px;box-sizing:border-box;background:transparent;border:0;border-radius:0;text-align:left;box-shadow:none;}
 .step:after{content:"";position:absolute;left:24px;right:24px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:transparent;}
@@ -1036,7 +1036,7 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 @media(max-width:620px){
   .topbar-inner{min-height:68px;padding-top:10px;padding-bottom:10px;}
   .brand-tagline{display:none;}
-  .steps-wrap{top:0;}
+  .steps-wrap{top:88px;}
   .steps{height:auto;padding-top:8px;padding-bottom:8px;}
   .step{flex:1;margin:0;padding:6px;justify-content:center;}
   .step:after{left:6px;right:6px;}
