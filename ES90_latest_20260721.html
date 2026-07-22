@@ -556,6 +556,8 @@ button{font-family:inherit;}
 .opt-table.spec-table th:not(:first-child), .opt-table.spec-table td.opt-val{width:35%;font-size:12px;}
 #performanceCompareCard .spec-table th:nth-child(2),
 #performanceCompareCard .spec-table th:nth-child(3){text-align:center!important;line-height:1.35;overflow-wrap:anywhere;}
+#performanceCompareCard .spec-table thead th{background:#e8f0f5!important;color:#294b63!important;border-bottom:1px solid #c7d6e0!important;}
+#performanceCompareCard .spec-table thead th:first-child{background:#edf3f6!important;color:#506879!important;}
 #performanceCompareCard .spec-table tbody td.opt-val{padding-left:clamp(24px,3vw,42px)!important;padding-right:9px!important;}
 .spec-excluded{opacity:1;}
 .spec-excluded-note{font-size:10px;color:var(--amber);text-align:left;padding:6px 10px 0;font-weight:500;display:flex;align-items:flex-start;gap:14px;}
@@ -842,6 +844,7 @@ button{font-family:inherit;}
 }
 html,body{background:#f1f4f7;color:var(--ink);overscroll-behavior-y:none;}
 body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),transparent 28%);}
+body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 #app{min-height:100vh;padding-bottom:72px;}
 
 /* App bar */
