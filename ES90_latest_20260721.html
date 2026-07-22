@@ -16618,7 +16618,9 @@ function compLabel(compName, compTrim){
 // 성능·옵션 비교 결과 카드에서만 6GT의 한정판 접미어를 생략한다.
 function resultCompLabel(compName, compTrim){
   const label = compLabel(compName, compTrim);
-  return String(compName).includes('6 Series GT') ? label.replace(/\s+Final Edition$/,'') : label;
+  return String(compName).includes('6 Series GT')
+    ? label.replace(/^6 Series GT\s+/,'6 Series ').replace(/\s+Final Edition$/,'')
+    : label;
 }
 function fullCompTrimLabel(brandKey, compTrim){
   const fullName = BRAND_DISPLAY_FULL[brandKey] || BRAND_DISPLAY[brandKey] || brandKey;
