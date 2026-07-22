@@ -14,17 +14,14 @@
   <style>
     *{box-sizing:border-box}html,body{position:fixed;inset:0;width:100%;height:100%;min-height:100dvh;margin:0;background:#f1f4f7;overflow:hidden;overscroll-behavior:none}
     #app{position:fixed;inset:0;display:block;width:100vw;height:100vh;height:var(--app-viewport-height,100dvh);border:0;background:#f1f4f7;overscroll-behavior:none}
-    html.login-screen-open,body.login-screen-open{background:#102f47}
+    html.login-screen-open,body.login-screen-open{background:#313a46}
     body.login-screen-open #app{background:#102f47}
-    #loginSafeRoad{position:fixed;z-index:20;left:0;right:0;bottom:calc(0px - env(safe-area-inset-bottom,0px));width:100%;height:calc(44px + env(safe-area-inset-bottom,0px));background:#102f47 url('./assets/es90-login-road-safe-area-v1.jpg') center top/100% 100% no-repeat;-webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.18) 6px,rgba(0,0,0,.72) 16px,#000 25px);mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.18) 6px,rgba(0,0,0,.72) 16px,#000 25px);pointer-events:none}
-    body:not(.login-screen-open) #loginSafeRoad{display:none}
     #status{position:fixed;z-index:10;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(17,40,61,.94);color:#fff;font:600 13px/1.2 system-ui,sans-serif;box-shadow:0 4px 18px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .2s}
     #status.show{opacity:1}
   </style>
 </head>
 <body class="login-screen-open">
   <iframe id="app" title="Volvo ES90 경쟁력 분석 도구"></iframe>
-  <div id="loginSafeRoad" aria-hidden="true"></div>
   <div id="status" role="status" aria-live="polite"></div>
   <script>
     const appFrame = document.getElementById('app');
