@@ -19476,7 +19476,7 @@ function initLoginCover(){
       if(!AUTHORIZED_CDSID_HASHES.has(hash)){
         failedAttempts += 1;
         writeLoginGuard(failedAttempts,0);
-        message.textContent = `등록되지 않은 CDSID 입니다. CDSID 관련문의는 컴피턴스 팀 김남태 과장에게 연락바랍니다. (연속 오류 ${failedAttempts}/5회)`;
+        message.textContent = `등록되지 않은 CDSID 입니다. CDSID 관련문의는 소속 지점장에게 연락바랍니다. (연속 오류 ${failedAttempts}/5회)`;
         input.select();
         if(failedAttempts >= 5) setLocked();
         return;
