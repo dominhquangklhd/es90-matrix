@@ -872,17 +872,17 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .step.done .step-kicker{color:#41725a;}
 .step.done .slabel{color:#35556a;}
 .step-meteor-group{position:absolute;z-index:2;left:52%;right:0;top:0;bottom:0;overflow:visible;clip-path:inset(-100px -100px -100px 0);pointer-events:none;}
-.step-meteor-group b{position:absolute;display:block;height:1.6px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.82) 0%,rgba(255,106,43,.48) 18%,rgba(255,126,70,.10) 60%,rgba(255,112,55,0) 100%);filter:blur(var(--blur,0)) drop-shadow(0 0 2px rgba(255,105,45,.22));transform:rotate(-28deg);transform-origin:left center;opacity:0;animation:stepMeteorOnce var(--duration,4.8s) cubic-bezier(.45,0,.55,1) var(--delay,0s) 1 both;}
+.step-meteor-group b{position:absolute;display:block;height:1.6px;border-radius:999px;background:linear-gradient(90deg,rgba(255,255,255,.82) 0%,rgba(255,106,43,.48) 18%,rgba(255,126,70,.10) 60%,rgba(255,112,55,0) 100%);filter:blur(var(--blur,0)) drop-shadow(0 0 2px rgba(255,105,45,.22));transform:rotate(var(--angle,-28deg));transform-origin:left center;opacity:0;animation:stepMeteorOnce var(--duration,4.8s) cubic-bezier(.45,0,.55,1) var(--delay,0s) 1 both;}
 .step-meteor-group b:after{content:"";position:absolute;left:-3px;top:50%;width:7px;height:7px;clip-path:polygon(50% 0,61% 35%,98% 38%,69% 59%,79% 96%,50% 74%,21% 96%,31% 59%,2% 38%,39% 35%);background:#ff7843;box-shadow:0 0 5px rgba(255,255,255,.78);transform:translateY(-50%);}
-.step-meteor-group b:nth-child(1){top:1px;right:-55px;width:82px;height:1.8px;--peak:.62;--delay:.08s;--duration:5.5s;}
-.step-meteor-group b:nth-child(2){top:10px;right:-8px;width:29px;height:1.2px;--peak:.30;--delay:1.30s;--blur:.25px;}
-.step-meteor-group b:nth-child(3){top:-3px;right:-24px;width:47px;height:1.4px;--peak:.46;--delay:1.68s;}
-.step-meteor-group b:nth-child(4){top:15px;right:18px;width:16px;height:1px;--peak:.22;--delay:2.05s;--blur:.45px;}
-.step-meteor-group b:nth-child(5){top:4px;right:-38px;width:52px;height:1.3px;--peak:.40;--delay:2.42s;--blur:.15px;}
-.step-meteor-group b:nth-child(6){top:12px;right:2px;width:32px;height:1.1px;--peak:.28;--delay:2.80s;--blur:.35px;}
-.step-meteor-group b:nth-child(7){top:-1px;right:30px;width:19px;height:.9px;--peak:.18;--delay:3.18s;--blur:.55px;}
+.step-meteor-group b:nth-child(1){top:-5px;right:-58px;width:82px;height:1.8px;--peak:.62;--delay:.08s;--duration:5.5s;--dx:-166px;--dy:100px;--angle:-29deg;}
+.step-meteor-group b:nth-child(2){top:8px;right:4px;width:29px;height:1.2px;--peak:.30;--delay:1.30s;--blur:.25px;--dx:-126px;--dy:78px;--angle:-26deg;}
+.step-meteor-group b:nth-child(3){top:-9px;right:42px;width:47px;height:1.4px;--peak:.46;--delay:1.68s;--dx:-150px;--dy:91px;--angle:-28deg;}
+.step-meteor-group b:nth-child(4){top:19px;right:82px;width:16px;height:1px;--peak:.22;--delay:2.05s;--blur:.45px;--dx:-116px;--dy:72px;--angle:-25deg;}
+.step-meteor-group b:nth-child(5){top:2px;right:-20px;width:52px;height:1.3px;--peak:.40;--delay:2.42s;--blur:.15px;--dx:-176px;--dy:108px;--angle:-30deg;}
+.step-meteor-group b:nth-child(6){top:14px;right:54px;width:32px;height:1.1px;--peak:.28;--delay:2.80s;--blur:.35px;--dx:-139px;--dy:84px;--angle:-27deg;}
+.step-meteor-group b:nth-child(7){top:-2px;right:108px;width:19px;height:.9px;--peak:.18;--delay:3.18s;--blur:.55px;--dx:-160px;--dy:96px;--angle:-31deg;}
 .step-meteor-group b:nth-child(2):after,.step-meteor-group b:nth-child(4):after,.step-meteor-group b:nth-child(6):after{width:5px;height:5px}.step-meteor-group b:nth-child(7):after{width:4px;height:4px}
-@keyframes stepMeteorOnce{0%{opacity:0;transform:translate(26px,-14px) rotate(-28deg)}20%{opacity:var(--peak,.42)}56%{opacity:var(--peak,.42)}72%{opacity:.16}88%{opacity:.04}100%{opacity:0;transform:translate(-145px,92px) rotate(-28deg)}}
+@keyframes stepMeteorOnce{0%{opacity:0;transform:translate(26px,-14px) rotate(var(--angle,-28deg))}20%{opacity:var(--peak,.42)}56%{opacity:var(--peak,.42)}72%{opacity:.16}88%{opacity:.04}100%{opacity:0;transform:translate(var(--dx,-145px),var(--dy,92px)) rotate(var(--angle,-28deg))}}
 @media(prefers-reduced-motion:reduce){.step-meteor-group{display:none;}}
 
 /* Main canvas */
