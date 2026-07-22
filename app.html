@@ -17256,7 +17256,6 @@ function renderStep1(){
       const card = el(`
         <div class="trim-card" data-trim="${trim}">
           <div class="trim-card-inner">
-            <div class="trim-card-thumb"><img src="${es90TrimImage(trim)}" alt="${es90TrimDisplay(trim)} 차량" loading="eager"></div>
             <div class="trim-card-left">
               <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
                 <div class="trim-badge" style="margin-bottom:0;font-family:'Paperlogy','VolvoCentum SemiBold','VolvoCentum',sans-serif;">Volvo ES90</div>
@@ -17264,6 +17263,7 @@ function renderStep1(){
               </div>
               <div class="trim-name" style="font-family:'Paperlogy','VolvoCentum SemiBold','VolvoCentum',sans-serif;">${es90TrimDisplay(trim)}</div>
             </div>
+            <div class="trim-card-thumb"><img src="${es90TrimImage(trim)}" alt="${es90TrimDisplay(trim)} 차량" loading="eager"></div>
             <div class="trim-card-right">
               <div class="trim-price-big${isReservationBest?'':' navy'}">${(()=>{ const lbl = price? fmtWonRange(price.total, trim):'가격 미정'; const {main,sub} = splitPriceLabel(lbl); return sub ? `<span class="trim-price-main">${main}</span><span class="trim-price-sub">${sub}</span>` : `<span class="trim-price-main">${main}</span>`; })()}</div>
             </div>
