@@ -749,8 +749,8 @@ button{font-family:inherit;}
   html,body { min-height:100dvh; background:#102f47; }
   body { padding-bottom:0; }
   #app { padding-bottom:calc(72px + env(safe-area-inset-bottom, 0px)); }
-  .login-cover { bottom:calc(-1 * env(safe-area-inset-bottom, 0px)); min-height:calc(100dvh + env(safe-area-inset-bottom, 0px)); }
-  .login-cover-visual { bottom:0; min-height:100%; }
+  .login-cover { bottom:calc(-1 * env(safe-area-inset-bottom, 0px))!important; min-height:calc(100dvh + env(safe-area-inset-bottom, 0px))!important; }
+  .login-cover-visual { bottom:0!important; min-height:100%!important; }
 }
 
 /* ===== Result hero keyword badges ===== */
