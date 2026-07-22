@@ -19316,7 +19316,9 @@ function initLoginCover(){
   const savedValue = document.getElementById('loginSavedIdValue');
   const SESSION_KEY = 'es90_cdsid_session';
   const LAST_ID_KEY = 'es90_last_cdsid';
+  const LOGIN_GUARD_KEY = 'es90_login_guard_v1';
   const IDLE_LIMIT = 60 * 60 * 1000;
+  const LOGIN_LOCK_DURATION = 24 * 60 * 60 * 1000;
   let failedAttempts = 0;
   let lockTimer = null;
   let loginTransitioning = false;
@@ -19364,6 +19366,17 @@ function initLoginCover(){
     localStorage.setItem(SESSION_KEY,JSON.stringify({expiresAt:Date.now() + IDLE_LIMIT}));
     lastActivityWrite = Date.now();
   };
+  const readLoginGuard = ()=>{
+    try{return JSON.parse(localStorage.getItem(LOGIN_GUARD_KEY) || 'null');}
+    catch(error){return null;}
+  };
+  const writeLoginGuard = (count,lockedUntil=0)=>{
+    localStorage.setItem(LOGIN_GUARD_KEY,JSON.stringify({count,lockedUntil}));
+  };
+  const clearLoginGuard = ()=>{
+    failedAttempts = 0;
+    localStorage.removeItem(LOGIN_GUARD_KEY);
+  };
   const expireSession = ()=>{
     localStorage.removeItem(SESSION_KEY);
     loginTransitioning = false;
@@ -19398,23 +19411,27 @@ function initLoginCover(){
     if(session && Number(session.expiresAt) <= Date.now()) expireSession();
   },30000);
 
-  const setLocked = seconds=>{
-    let remaining = seconds;
+  const setLocked = (lockedUntil=Date.now()+LOGIN_LOCK_DURATION)=>{
+    writeLoginGuard(5,lockedUntil);
     input.disabled = true;
     button.disabled = true;
     const tick = ()=>{
+      const remaining = lockedUntil - Date.now();
       if(remaining <= 0){
         clearInterval(lockTimer);
         lockTimer = null;
-        failedAttempts = 0;
+        clearLoginGuard();
         input.disabled = false;
         button.disabled = false;
         message.textContent = '';
         input.focus();
         return;
       }
-      message.textContent = `입력 횟수를 초과했습니다. ${remaining}초 후 다시 시도해 주세요.`;
-      remaining -= 1;
+      const totalSeconds = Math.ceil(remaining/1000);
+      const hours = Math.floor(totalSeconds/3600);
+      const minutes = Math.floor((totalSeconds%3600)/60);
+      const seconds = totalSeconds%60;
+      message.textContent = `CDSID를 연속 5회 잘못 입력하여 24시간 사용이 제한되었습니다. 남은 시간 ${hours}시간 ${minutes}분 ${seconds}초`;
     };
     tick();
     lockTimer = setInterval(tick, 1000);
@@ -19437,12 +19454,13 @@ function initLoginCover(){
       const hash = await hashCdsid(cdsid);
       if(!AUTHORIZED_CDSID_HASHES.has(hash)){
         failedAttempts += 1;
-        message.textContent = '등록되지 않은 CDSID 입니다. CDSID 관련문의는 컴피턴스 팀 김남태 과장에게 연락바랍니다.';
+        writeLoginGuard(failedAttempts,0);
+        message.textContent = `등록되지 않은 CDSID 입니다. CDSID 관련문의는 컴피턴스 팀 김남태 과장에게 연락바랍니다. (연속 오류 ${failedAttempts}/5회)`;
         input.select();
-        if(failedAttempts >= 5) setLocked(30);
+        if(failedAttempts >= 5) setLocked();
         return;
       }
-      failedAttempts = 0;
+      clearLoginGuard();
       message.textContent = '';
       localStorage.setItem(LAST_ID_KEY,cdsid);
       writeSession();
@@ -19484,6 +19502,15 @@ function initLoginCover(){
     localStorage.removeItem(SESSION_KEY);
     input.value = '';
     savedPopup.hidden = true;
+    const savedGuard = readLoginGuard();
+    if(savedGuard && Number(savedGuard.lockedUntil) > Date.now()){
+      failedAttempts = Math.max(5,Number(savedGuard.count)||5);
+      setLocked(Number(savedGuard.lockedUntil));
+    }else if(savedGuard){
+      failedAttempts = Math.max(0,Math.min(4,Number(savedGuard.count)||0));
+      if(failedAttempts) writeLoginGuard(failedAttempts,0);
+      else clearLoginGuard();
+    }
   }
 }
 
