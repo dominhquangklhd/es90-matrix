@@ -871,10 +871,15 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 .step.done .snum{border-color:#bad3c5;background:#dce8e2;color:#286343;}
 .step.done .step-kicker{color:#41725a;}
 .step.done .slabel{color:#35556a;}
-.step-meteor{position:absolute;z-index:0;top:8px;right:28px;width:94px;height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(255,112,55,0) 0%,rgba(255,126,70,.18) 38%,rgba(255,106,43,.78) 82%,#fff 100%);filter:drop-shadow(0 0 3px rgba(255,105,45,.35));transform:rotate(-27deg);transform-origin:right center;opacity:0;pointer-events:none;animation:stepMeteorOnce 1.65s cubic-bezier(.18,.72,.28,1) .18s 1 both;}
-.step-meteor:after{content:"";position:absolute;right:-3px;top:50%;width:7px;height:7px;clip-path:polygon(50% 0,61% 35%,98% 38%,69% 59%,79% 96%,50% 74%,21% 96%,31% 59%,2% 38%,39% 35%);background:#ff7843;box-shadow:0 0 5px rgba(255,255,255,.85);transform:translateY(-50%);}
-@keyframes stepMeteorOnce{0%{opacity:0;transform:translate(28px,-15px) rotate(-27deg)}14%{opacity:1}72%{opacity:.92}100%{opacity:0;transform:translate(-128px,48px) rotate(-27deg)}}
-@media(prefers-reduced-motion:reduce){.step-meteor{display:none;}}
+.step-meteor-group{position:absolute;z-index:0;inset:0;overflow:hidden;pointer-events:none;}
+.step-meteor-group b{position:absolute;display:block;height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(255,112,55,0) 0%,rgba(255,126,70,.14) 40%,rgba(255,106,43,.68) 82%,rgba(255,255,255,.96) 100%);filter:drop-shadow(0 0 3px rgba(255,105,45,.30));transform:rotate(-27deg);transform-origin:right center;opacity:0;animation:stepMeteorOnce 2.35s cubic-bezier(.18,.72,.28,1) 1 both;}
+.step-meteor-group b:after{content:"";position:absolute;right:-3px;top:50%;width:7px;height:7px;clip-path:polygon(50% 0,61% 35%,98% 38%,69% 59%,79% 96%,50% 74%,21% 96%,31% 59%,2% 38%,39% 35%);background:#ff7843;box-shadow:0 0 5px rgba(255,255,255,.78);transform:translateY(-50%);}
+.step-meteor-group b:nth-child(1){top:5px;right:34px;width:88px;animation-delay:.12s;}
+.step-meteor-group b:nth-child(2){top:13px;right:76px;width:60px;height:1.6px;animation-delay:.34s;}
+.step-meteor-group b:nth-child(3){top:2px;right:128px;width:42px;height:1.4px;animation-delay:.58s;}
+.step-meteor-group b:nth-child(2):after{width:6px;height:6px}.step-meteor-group b:nth-child(3):after{width:5px;height:5px}
+@keyframes stepMeteorOnce{0%{opacity:0;transform:translate(28px,-16px) rotate(-27deg)}16%{opacity:.78}58%{opacity:.68}82%{opacity:.30}100%{opacity:0;transform:translate(-112px,53px) rotate(-27deg)}}
+@media(prefers-reduced-motion:reduce){.step-meteor-group{display:none;}}
 
 /* Main canvas */
 .content{width:100%;max-width:1440px;margin:0 auto;padding:20px 34px 80px;}
@@ -17014,7 +17019,7 @@ function renderSteps(){
     const cls = n < STATE.step ? 'done' : n === STATE.step ? 'active' : '';
     const clickable = n <= STATE.maxStep && n !== STATE.step;
     const cursor = clickable ? 'cursor:pointer;' : '';
-    return `<div class="step ${cls}" data-step="${n}" style="${cursor}" onclick="navigateToStep(${n})"><span class="snum">${n}</span><span class="step-copy"><span class="step-kicker">STEP ${n}</span><span class="slabel">${l}</span></span>${n===STATE.step?'<span class="step-meteor" aria-hidden="true"></span>':''}</div>`;
+    return `<div class="step ${cls}" data-step="${n}" style="${cursor}" onclick="navigateToStep(${n})"><span class="snum">${n}</span><span class="step-copy"><span class="step-kicker">STEP ${n}</span><span class="slabel">${l}</span></span>${n===STATE.step?'<span class="step-meteor-group" aria-hidden="true"><b></b><b></b><b></b></span>':''}</div>`;
   }).join('');
 }
 
