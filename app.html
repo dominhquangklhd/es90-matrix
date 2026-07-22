@@ -16878,7 +16878,10 @@ function computeProsConsSolutions(es90Trim, brandKey, compTrim){
   cons = cons.map(c=>{
     const upTrim = findUpgradeTrim(brandKey, c.catKey, c.name, es90Trim);
     if(upTrim){
-      return {...c, badge: shortTrimBadge(upTrim)};
+      const badge = es90Trim==='Twin Motor Ultra' && upTrim.includes('Performance Ultra')
+        ? 'Option 구매'
+        : shortTrimBadge(upTrim);
+      return {...c, badge};
     }
     return c;
   });
