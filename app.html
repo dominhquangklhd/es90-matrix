@@ -17088,11 +17088,18 @@ function formatDeploymentUpdatedAt(value){
   }).formatToParts(date).filter(part=>part.type!=='literal').map(part=>[part.type,part.value]));
   return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}`;
 }
+let LAST_DEPLOYED_VERSION = null;
 async function syncDeploymentUpdatedAt(){
   try{
     const response = await fetch(`./version.json?updated=${Date.now()}`, {cache:'no-store'});
     if(!response.ok) return;
     const versionInfo = await response.json();
+    const deployedVersion = String(versionInfo.version||'');
+    if(LAST_DEPLOYED_VERSION===null) LAST_DEPLOYED_VERSION = deployedVersion;
+    else if(deployedVersion && deployedVersion!==LAST_DEPLOYED_VERSION){
+      window.location.reload();
+      return;
+    }
     const deployedAt = formatDeploymentUpdatedAt(versionInfo.updatedAt);
     if(!deployedAt) return;
     D.meta.updated = deployedAt;
