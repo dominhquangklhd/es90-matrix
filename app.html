@@ -17977,7 +17977,7 @@ function pinOptionAnalysisFromDetail(event,categoryKey,itemName){
 // item: clicking a category card in "옵션구성 분석결과" keeps its color and tones down the other 7, then jumps to the matching tab
 function highlightCatCard(key){
   syncCatCardDim(key);
-  jumpToCategory(key);
+  selectOptionCategory(key);
 }
 function jumpToCategory(category){
   const tabs = document.getElementById('catTabs');
