@@ -19413,7 +19413,7 @@ function initLoginCover(){
       const hash = await hashCdsid(cdsid);
       if(!AUTHORIZED_CDSID_HASHES.has(hash)){
         failedAttempts += 1;
-        message.textContent = '등록되지 않은 CDSID입니다. 다시 확인해 주세요.';
+        message.textContent = '등록되지 않은 CDSID 입니다. CDSID 관련문의는 컴피턴스 팀 김남태 과장에게 연락바랍니다.';
         input.select();
         if(failedAttempts >= 5) setLocked(30);
         return;
