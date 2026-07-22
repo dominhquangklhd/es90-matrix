@@ -18058,7 +18058,7 @@ function pinOptionAnalysisFromDetail(event,categoryKey,itemName){
 // item: clicking a category bar in "카테고리별 옵션비교" jumps to the matching tab in "카테고리별 상세옵션"
 // item: clicking a category card in "옵션구성 분석결과" keeps its color and tones down the other 7, then jumps to the matching tab
 function highlightCatCard(key){
-  syncCatCardDim(key);
+  selectOptionCategory(key);
 }
 function jumpToCategory(category){
   const tabs = document.getElementById('catTabs');
