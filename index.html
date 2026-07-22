@@ -26,7 +26,13 @@
     const statusEl = document.getElementById('status');
 
     function syncAppViewportHeight() {
-      const viewportHeight = Math.ceil(window.visualViewport?.height || window.innerHeight || document.documentElement.clientHeight);
+      // iPad 홈 화면 모드의 visualViewport는 하단 안전영역을 제외해 더 작게 보고될 수 있다.
+      // 전체 레이아웃 높이 후보 중 가장 큰 값을 사용해 프레임 하단이 잘리지 않게 한다.
+      const viewportHeight = Math.ceil(Math.max(
+        window.innerHeight || 0,
+        document.documentElement.clientHeight || 0,
+        window.visualViewport?.height || 0
+      ));
       document.documentElement.style.setProperty('--app-viewport-height', `${viewportHeight}px`);
     }
     syncAppViewportHeight();
