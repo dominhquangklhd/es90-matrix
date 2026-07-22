@@ -17109,6 +17109,7 @@ async function syncDeploymentUpdatedAt(){
   }
 }
 syncDeploymentUpdatedAt();
+setInterval(syncDeploymentUpdatedAt,60000);
 const TRIM_GROUPS = [
   {
     label: 'PLUS 트림(2종)',
