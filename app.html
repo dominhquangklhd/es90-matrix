@@ -1121,13 +1121,12 @@ body{background-image:radial-gradient(circle at 82% -10%,rgba(40,75,104,.10),tra
 }
 
 /* ===== ES90 로그인 표지 ===== */
-body.cover-open{overflow:hidden;background:#102f47 url('assets/es90-login-cover-v3.png') center/cover no-repeat fixed;}
+body.cover-open{overflow:hidden;background:#102f47;}
 .login-cover{position:fixed;inset:0;z-index:9999;display:block;min-height:100dvh;overflow:hidden;background:#102f47;color:#fff;opacity:1;transform:scale(1);transition:opacity .55s ease,transform .55s cubic-bezier(.22,.78,.24,1);}
 .login-cover[hidden]{display:none;}
 .login-cover.is-leaving{opacity:1;transform:none;background:#102f47;pointer-events:none;}
 .login-cover-visual,.login-cover-panel{transition:opacity .28s ease;}
 .login-cover.is-leaving .login-cover-visual,.login-cover.is-leaving .login-cover-panel{opacity:0;}
-.login-cover.is-revealing{opacity:0;transition:opacity .18s ease;}
 .login-cover-visual{position:absolute;inset:0;display:block;overflow:hidden;padding:0;background:#102f47;isolation:isolate;}
 .login-cover-visual:after{content:"";position:absolute;z-index:-3;inset:-2px;background:url('assets/es90-login-cover-v3.png') center center/cover no-repeat;opacity:.76;filter:brightness(.68) contrast(.96) saturate(1.05);}
 .login-cover-visual:before{content:"";position:absolute;z-index:-1;inset:0;background:radial-gradient(ellipse 150px 62px at 50% 32px,rgba(7,27,42,.58),transparent 100%),linear-gradient(180deg,rgba(8,29,45,.76) 0,rgba(8,29,45,.60) 54px,rgba(8,29,45,.38) 104px,rgba(8,29,45,.16) 154px,transparent 218px),linear-gradient(90deg,rgba(7,28,44,.66) 0%,rgba(10,37,57,.27) 42%,rgba(8,30,47,.48) 100%),linear-gradient(180deg,transparent 0%,transparent 55%,rgba(7,27,42,.80) 100%);pointer-events:none;}
@@ -19421,7 +19420,6 @@ function initLoginCover(){
       const transitionDelay = 1000;
       setTimeout(()=>cover?.classList.add('is-leaving'),transitionDelay - 550);
       setTimeout(()=>resetAll(),transitionDelay - 200);
-      setTimeout(()=>cover?.classList.add('is-revealing'),transitionDelay - 180);
       setTimeout(()=>{
         closeLoginCover();
         cover?.classList.remove('is-leaving','is-revealing');
