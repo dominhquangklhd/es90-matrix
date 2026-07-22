@@ -19357,6 +19357,7 @@ const AUTHORIZED_CDSID_HASHES = new Set([
   '532d208d7e8793c034e36000a4bc187d2fb90964ce773d311cead06caf32fa74',
   '2a9f75f8ef1f5c38ed8a98e024f9d1b292eebbe45d736a2970688daf6188374c'
 ]);
+const UNRESTRICTED_CDSIDS = new Set(['VCK-ES90']);
 
 async function hashCdsid(value){
   const normalized = String(value ?? '').trim().toUpperCase();
@@ -19475,8 +19476,8 @@ function initLoginCover(){
 
   const setLocked = (lockedUntil=Date.now()+LOGIN_LOCK_DURATION)=>{
     writeLoginGuard(5,lockedUntil);
-    input.disabled = true;
-    button.disabled = true;
+    input.disabled = false;
+    button.disabled = false;
     const tick = ()=>{
       const remaining = lockedUntil - Date.now();
       if(remaining <= 0){
@@ -19501,7 +19502,7 @@ function initLoginCover(){
 
   form?.addEventListener('submit', async event=>{
     event.preventDefault();
-    if(lockTimer || loginTransitioning) return;
+    if(loginTransitioning) return;
     const cdsid = input.value.trim().toUpperCase();
     input.value = cdsid;
     if(!cdsid){
@@ -19509,12 +19510,13 @@ function initLoginCover(){
       input.focus();
       return;
     }
+    if(lockTimer && !UNRESTRICTED_CDSIDS.has(cdsid)) return;
     button.disabled = true;
     button.setAttribute('aria-busy','true');
     message.textContent = '확인 중입니다.';
     try{
       const hash = await hashCdsid(cdsid);
-      if(!AUTHORIZED_CDSID_HASHES.has(hash)){
+      if(!UNRESTRICTED_CDSIDS.has(cdsid) && !AUTHORIZED_CDSID_HASHES.has(hash)){
         failedAttempts += 1;
         writeLoginGuard(failedAttempts,0);
         message.textContent = `등록되지 않은 CDSID 입니다. CDSID 관련문의는 소속 지점장에게 연락바랍니다. (연속 오류 ${failedAttempts}/5회)`;
