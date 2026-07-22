@@ -17665,10 +17665,20 @@ function renderUpgradeOptList(es90Trim){
     const nextTrim = getNextES90Trim(es90Trim);
     if(nextTrim){
       const opts = getUpgradeOnlyOptions(es90Trim, nextTrim);
+      // Ultra 트림 안내 문구는 고객이 이해하기 쉬운 표현으로 별도 정리한다.
+      const upgradeLabelMap = {
+        '뒷좌석 전동 시트': '뒷좌석 전동시트(리클라이닝)',
+        'High-Definition Pixel 헤드램프': 'High-Definition Pixel 헤드램프(웰컴 라이트 앞, 뒤 미적용)'
+      };
+      const displayOpts = opts.map(o=>upgradeLabelMap[o] || o);
+      if(nextTrim.includes('Ultra')){
+        displayOpts.push('에어 서스펜션 및 액티브 섀시(옵션선택)', '앞좌석 마사지 시트');
+      }
+      const uniqueOpts = [...new Set(displayOpts)];
       // 한글 가나다순 우선 정렬
       function isKo(s){ const c=s.charCodeAt(0); return c>=0xAC00&&c<=0xD7A3||c>=0x3131&&c<=0x318E; }
-      const kr=opts.filter(s=>isKo(s)).sort((a,b)=>a.localeCompare(b,'ko'));
-      const en=opts.filter(s=>!isKo(s)).sort((a,b)=>a.localeCompare(b,'en'));
+      const kr=uniqueOpts.filter(s=>isKo(s)).sort((a,b)=>a.localeCompare(b,'ko'));
+      const en=uniqueOpts.filter(s=>!isKo(s)).sort((a,b)=>a.localeCompare(b,'en'));
       const sorted=[...kr,...en];
       html += `
         <div class="upgrade-box" style="margin-bottom:12px;">
