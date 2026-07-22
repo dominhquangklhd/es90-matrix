@@ -17134,6 +17134,28 @@ function showPanel(n){
   }
 }
 
+// STEP 3 keeps the outer app shell fixed, while wheel input scrolls the inner report document.
+// This fallback is needed for desktop browsers that do not reliably route wheel events through
+// the full-viewport iframe. Native scrolling inside modals or other scrollable controls is kept.
+function hasScrollableWheelAncestor(start, deltaY){
+  for(let node=start instanceof Element ? start : null; node && node!==document.body; node=node.parentElement){
+    const overflowY = getComputedStyle(node).overflowY;
+    if(!/(auto|scroll)/.test(overflowY) || node.scrollHeight<=node.clientHeight+1) continue;
+    const canMoveUp = deltaY<0 && node.scrollTop>0;
+    const canMoveDown = deltaY>0 && node.scrollTop+node.clientHeight<node.scrollHeight-1;
+    if(canMoveUp || canMoveDown) return true;
+  }
+  return false;
+}
+window.addEventListener('wheel', event=>{
+  const resultPanel = document.getElementById('panel4');
+  if(STATE.step!==3 || !resultPanel?.classList.contains('show') || event.ctrlKey || !event.deltaY) return;
+  if(hasScrollableWheelAncestor(event.target,event.deltaY)) return;
+  event.preventDefault();
+  const unit = event.deltaMode===1 ? 40 : (event.deltaMode===2 ? window.innerHeight : 1);
+  window.scrollBy({top:event.deltaY*unit,left:0,behavior:'auto'});
+},{passive:false});
+
 // ---------------- STEP 1: ES90 trim ----------------
 // item: ES90 실시간 예약(잔여계약) 현황 — 대기고객의 선택 섹션에 쓰임. 추후 실데이터 연동 시 이 객체만 교체하면 됨.
 const RESERVATION_DATA = {
