@@ -974,7 +974,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .subsidy-guide strong{color:#506a79;font-weight:700;}
 @media(max-width:900px){.subsidy-guide{position:static;width:100%;margin:0 0 14px;}}
 .waitlist-total-num{color:var(--orange-deep)!important;}
-.waitlist-total-value{display:inline-flex;align-items:baseline;min-width:3ch;overflow:visible;font-variant-numeric:tabular-nums;}
+.waitlist-total-value{display:inline-flex;align-items:baseline;min-width:3ch;overflow:visible;font-variant-numeric:tabular-nums;-webkit-text-stroke:1px currentColor;paint-order:stroke fill;}
 .waitlist-total-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 2.1s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 @keyframes waitlistDigitDrop{0%{opacity:0;transform:translateY(-20px);filter:blur(2.5px);}64%{opacity:1;filter:blur(0);}100%{opacity:1;transform:translateY(0);filter:blur(0);}}
 .waitlist-bar-track{background:#edf1f4!important;border-radius:7px 7px 0 0!important;overflow:hidden;}
