@@ -45,7 +45,7 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
       <div class="field"><label for="neighborhood">동</label><select id="neighborhood"></select></div>
       <button class="find" onclick="findChargers()">가까운 충전소 찾기</button>
     </div>
-    <div class="privacy">고객 위치는 이 화면에 저장하거나 외부로 전송하지 않는 샘플 방식입니다.</div>
+    <div class="privacy">고객 위치는 이 화면에 저장하거나 외부로 전송하지 않습니다. <span id="adminDataStatus">행정동 목록 불러오는 중</span></div>
   </section>
   <section class="summary">
     <div class="metric"><div class="metric-label">전국 350kW 충전소</div><div class="metric-value">—<small>개</small></div><div class="metric-sub">공식 API 연결 후 전국 집계</div></div>
@@ -64,7 +64,7 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
 <div class="toast" id="toast"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const regions={
+let regions={
 '서울특별시':['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
 '부산광역시':['강서구','금정구','기장군','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구'],
 '대구광역시':['군위군','남구','달서구','달성군','동구','북구','서구','수성구','중구'],
@@ -73,7 +73,7 @@ const regions={
 '대전광역시':['대덕구','동구','서구','유성구','중구'],
 '울산광역시':['남구','동구','북구','울주군','중구'],
 '세종특별자치시':['세종시 전역']};
-const neighborhoods={
+let neighborhoods={
 '서울특별시|서초구':['전체','서초동','반포동','방배동','양재동','우면동','잠원동','내곡동'],
 '서울특별시|강남구':['전체','신사동','논현동','압구정동','청담동','삼성동','대치동','도곡동','개포동','수서동'],
 '서울특별시|송파구':['전체','잠실동','신천동','문정동','가락동','방이동','오금동','위례동'],
@@ -94,10 +94,36 @@ const regionCenters={
 '광주광역시':[35.1595,126.8526],
 '대전광역시':[36.3504,127.3845],
 '울산광역시':[35.5384,129.3114],
-'세종특별자치시':[36.4800,127.2890]};
+'세종특별자치시':[36.4800,127.2890],
+'경기도':[37.4138,127.5183],
+'강원특별자치도':[37.8228,128.1555],
+'충청북도':[36.6357,127.4917],
+'충청남도':[36.6588,126.6728],
+'전라북도':[35.7175,127.1530],
+'전북특별자치도':[35.7175,127.1530],
+'전라남도':[34.8679,126.9910],
+'경상북도':[36.4919,128.8889],
+'경상남도':[35.4606,128.2132],
+'제주특별자치도':[33.4996,126.5312]};
 const stationOffsets=[[-.022,-.018],[.016,.027],[-.031,.038],[-.043,-.034],[.048,.046]];
 const province=document.getElementById('province'),district=document.getElementById('district'),neighborhood=document.getElementById('neighborhood');let selected=0,current=[];
 let map,mapMarkers=[],homeMarker,radiusCircle;
+async function loadAdministrativeAreas(){
+  const response=await fetch('./administrative-dongs.json',{cache:'no-store'});
+  if(!response.ok)throw new Error('행정동 데이터를 불러오지 못했습니다.');
+  const data=await response.json();
+  const nextRegions={},nextNeighborhoods={};
+  Object.entries(data.regions||{}).forEach(([sido,districts])=>{
+    nextRegions[sido]=Object.keys(districts);
+    Object.entries(districts).forEach(([sigungu,dongs])=>{
+      nextNeighborhoods[`${sido}|${sigungu}`]=['전체',...dongs];
+    });
+  });
+  if(!Object.keys(nextRegions).length)throw new Error('행정동 데이터가 비어 있습니다.');
+  regions=nextRegions;
+  neighborhoods=nextNeighborhoods;
+  document.getElementById('adminDataStatus').textContent=`행정안전부 행정동 코드 기준 · ${data.updatedAt} 갱신`;
+}
 function fillProvinces(){province.innerHTML=Object.keys(regions).map(x=>`<option${x==='서울특별시'?' selected':''}>${x}</option>`).join('');fillDistricts('서초구')}
 function fillDistricts(preferred){district.innerHTML=regions[province.value].map(x=>`<option${x===preferred?' selected':''}>${x}</option>`).join('');fillNeighborhoods()}
 function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||['전체'];neighborhood.innerHTML=items.map(x=>`<option value="${x}">${x==='전체'?'동 전체':x}</option>`).join('')}
@@ -132,7 +158,10 @@ function findChargers(){selected=0;buildData();render();updateSummary();const do
 function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(!fromMap&&mapMarkers[i]){map.panTo(mapMarkers[i].getLatLng());mapMarkers[i].openTooltip()}}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
-province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;fillProvinces();findChargers();
+province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;
+loadAdministrativeAreas().catch(()=>{
+  document.getElementById('adminDataStatus').textContent='기본 행정동 목록 사용 중';
+}).finally(()=>{fillProvinces();findChargers()});
 </script>
 </body>
 </html>
