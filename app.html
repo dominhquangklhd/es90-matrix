@@ -482,8 +482,8 @@ button{font-family:inherit;}
 .waitlist-meta-slot.is-placeholder{visibility:hidden;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price{margin:0;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price,.waitlist-meta .subsidy-benefit-badge,.waitlist-meta .tax-benefit-badge{width:78px;box-sizing:border-box;justify-content:center;text-align:center;}
-.waitlist-status-icons{height:24px;display:flex;align-items:center;justify-content:center;gap:6px;}
-.waitlist-best-row{width:146px;height:18px;display:flex;align-items:center;justify-content:flex-start;}
+.waitlist-status-icons{height:24px;display:flex;align-items:center;justify-content:center;gap:4px;}
+.waitlist-best-row{width:110px;height:18px;display:flex;align-items:center;justify-content:flex-start;}
 .waitlist-best-row.is-placeholder{visibility:hidden;}
 .waitlist-best-label{width:78px;height:18px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;border:1px solid #df9a69;border-radius:999px;background:#fff2e8;color:#bf5a20;font-size:7.5px;font-weight:800;line-height:1;box-shadow:0 1px 3px rgba(191,90,32,.13);}
 .waitlist-status-icon{width:28px;height:24px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;border:1px solid #afc1ce;border-radius:7px;background:#eef4f7;color:#264f69;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.08);}
@@ -17381,7 +17381,7 @@ function renderStep1(){
               <div class="waitlist-best-row${isTop?'':' is-placeholder'}"><span class="waitlist-best-label">★ 실시간 BEST</span></div>
               <div class="waitlist-status-icons">
                 <div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div>
-                <span class="waitlist-status-icon is-subsidy${['Single Motor Ultra','Single Motor Plus','Twin Motor Plus'].includes(t.trim)?'':' is-placeholder'}" title="보조금 50% 적용" aria-label="보조금 50% 적용"><b>50%</b><small>OFF</small></span>
+                ${['Single Motor Ultra','Single Motor Plus','Twin Motor Plus'].includes(t.trim)?'<span class="waitlist-status-icon is-subsidy" title="보조금 50% 적용" aria-label="보조금 50% 적용"><b>50%</b><small>OFF</small></span>':''}
                 <span class="waitlist-status-icon is-eco" title="친환경차 세제혜택" aria-label="친환경차 세제혜택"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></span>
               </div>
             </div>
