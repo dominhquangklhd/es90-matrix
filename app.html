@@ -19642,5 +19642,11 @@ function toggleExclusiveWheelSelect(btn, name, price){
 
 renderApp();
 initLoginCover();
+if(window.parent !== window){
+  window.parent.postMessage({
+    type:'es90-app-ready',
+    loginOpen:!document.getElementById('loginCover')?.hidden
+  },window.location.origin);
+}
 </script>
 </body></html>

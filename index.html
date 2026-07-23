@@ -68,6 +68,7 @@
     let pendingVersion = null;
     let updateCheckRunning = false;
     let versionSwapRunning = false;
+    let pendingFrameSwap = null;
 
     function isSafeToAutoUpdate() {
       try {
@@ -91,19 +92,24 @@
       nextFrame.setAttribute('aria-hidden', 'true');
       nextFrame.style.visibility = 'hidden';
       nextFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
-      nextFrame.addEventListener('load', () => {
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          nextFrame.id = 'app';
-          nextFrame.removeAttribute('aria-hidden');
-          nextFrame.style.visibility = '';
-          previousFrame.replaceWith(nextFrame);
-          appFrame = nextFrame;
-          localStorage.setItem('es90-app-version', version);
-          versionSwapRunning = false;
-          showStatus('최신 업데이트 반영 완료', 3200);
-        }));
-      }, { once: true });
+      pendingFrameSwap = { previousFrame, nextFrame, version };
       document.body.insertBefore(nextFrame, statusEl);
+    }
+
+    function finishVersionSwap(loginOpen) {
+      if (!pendingFrameSwap) return;
+      const { previousFrame, nextFrame, version } = pendingFrameSwap;
+      pendingFrameSwap = null;
+      nextFrame.id = 'app';
+      nextFrame.removeAttribute('aria-hidden');
+      nextFrame.style.visibility = '';
+      previousFrame.replaceWith(nextFrame);
+      appFrame = nextFrame;
+      document.documentElement.classList.toggle('login-screen-open', loginOpen);
+      document.body.classList.toggle('login-screen-open', loginOpen);
+      localStorage.setItem('es90-app-version', version);
+      versionSwapRunning = false;
+      showStatus('최신 업데이트 반영 완료', 3200);
     }
 
     async function checkLatestApp() {
@@ -132,7 +138,12 @@
     }
 
     window.addEventListener('message', event => {
-      if (event.origin !== window.location.origin || event.source !== appFrame.contentWindow) return;
+      if (event.origin !== window.location.origin) return;
+      if (pendingFrameSwap && event.source === pendingFrameSwap.nextFrame.contentWindow && event.data?.type === 'es90-app-ready') {
+        finishVersionSwap(event.data.loginOpen === true);
+        return;
+      }
+      if (event.source !== appFrame.contentWindow) return;
       if (event.data?.type === 'es90-login-cover') {
         const loginOpen = event.data.open !== false;
         document.documentElement.classList.toggle('login-screen-open', loginOpen);
