@@ -17097,6 +17097,14 @@ function resetSelectionState(resetEs90){
   if(resetEs90) SELECTED_ES_AIR_SUSPENSION_TRIMS = new Set();
 }
 
+function openStep2WithDirectDefault(){
+  STATE.group = 'direct';
+  STATE.brandKey = null;
+  STATE.compTrim = null;
+  renderStep2();
+  showPanel(2);
+}
+
 let selectionToastTimer = null;
 function showSelectionToast(message='ES90 트림을 먼저 선택하세요'){
   const toast = document.getElementById('selectionToast');
@@ -17132,12 +17140,11 @@ function navigateToStep(n){
   if(n === 2){
     resetSelectionState(false);
     STATE.maxStep = 2;
-    renderStep2();
-    showPanel(2);
+    openStep2WithDirectDefault();
     return;
   }
   if(n === 3){
-    if(!STATE.es90Trim || !STATE.brandKey || !STATE.compTrim){ showPanel(2); return; }
+    if(!STATE.es90Trim || !STATE.brandKey || !STATE.compTrim){ openStep2WithDirectDefault(); return; }
     renderStep4();
     showPanel(3);
     return;
@@ -17301,7 +17308,7 @@ function selectTrimFromWaitlist(trim, colEl){
   STATE.es90Trim = trim;
   document.querySelectorAll('.waitlist-bar-col').forEach(c=>c.classList.remove('sel'));
   if(colEl) colEl.classList.add('sel');
-  setTimeout(()=>{ renderStep2(); showPanel(2); }, 180);
+  setTimeout(openStep2WithDirectDefault, 180);
 }
 function renderStep1(){
   const panel = document.getElementById('panel1');
@@ -17384,7 +17391,7 @@ function renderStep1(){
         STATE.es90Trim = trim;
         document.querySelectorAll('.trim-card').forEach(c=>c.classList.remove('sel'));
         card.classList.add('sel');
-        setTimeout(()=>{ renderStep2(); showPanel(2); }, 180);
+        setTimeout(openStep2WithDirectDefault, 180);
       });
       cards.appendChild(card);
     });
@@ -17793,7 +17800,7 @@ if(score.priceDiff !== null){
     <div class="footer-actions">
       <button class="btn-secondary" onclick="resetAll()">← 처음부터 다시</button>
       <button class="btn-secondary" onclick="showPanel(1); setTimeout(()=>{ const el=document.getElementById('waitlistCard'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 60);">ES90 대기고객 선택</button>
-      <button class="btn-secondary" onclick="renderStep2(); showPanel(2)">다른 경쟁모델과 비교</button>
+      <button class="btn-secondary" onclick="openStep2WithDirectDefault()">다른 경쟁모델과 비교</button>
       <button class="btn-secondary" onclick="openAdminEmail()">✉ 데이터 수정 시 연락</button>
     </div>
 
