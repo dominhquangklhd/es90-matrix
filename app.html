@@ -493,10 +493,11 @@ button{font-family:inherit;}
 .waitlist-status-icon.is-eco{border-color:#91b89d;background:#eef7f0;color:#477e57;box-shadow:0 1px 3px rgba(71,126,87,.12);}
 .waitlist-status-icon.is-subsidy b{font-size:8px;line-height:1;letter-spacing:-.35px;}
 .waitlist-status-icon.is-placeholder{visibility:hidden;}
-.waitlist-icon-legend{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:16px;margin:10px 2px 0;color:var(--ink-faint);font-size:9px;}
+.waitlist-icon-legend{position:relative;top:34px;z-index:1;display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:16px;margin:10px 2px 0;color:var(--ink-faint);font-size:9px;}
 .waitlist-icon-legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
 .waitlist-icon-legend .waitlist-status-icon{width:28px;height:24px;border-radius:7px;flex:0 0 auto;}
-.waitlist-card .waitlist-footnote{position:relative;top:-7px;}
+.waitlist-card .waitlist-footnote{position:relative;top:-11px;}
+@media(max-width:640px){.waitlist-icon-legend{top:0}.waitlist-card .waitlist-footnote{top:0}}
 .tax-benefit-badge,.subsidy-benefit-badge{display:inline-flex;align-items:center;min-height:16px;padding:1px 6px;border-radius:999px;font-size:7.5px;font-weight:700;line-height:1;white-space:nowrap;}
 .tax-benefit-badge{color:#2f6748;background:#edf7f0;border:1px solid #b9d8c4;}
 .subsidy-benefit-badge{color:#376282;background:#edf5fb;border:1px solid #bdd2e2;}
