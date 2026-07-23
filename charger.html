@@ -105,11 +105,34 @@ function buildData(){const p=province.value,d=district.value;const seed=(p.lengt
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(){document.getElementById('list').innerHTML=current.map((s,i)=>`<button class="station ${i===selected?'sel':''}" data-i="${i}"><span class="station-top"><span class="station-name"><span class="station-index">${i+1}</span><span class="name">${esc(s.name)}</span></span><span class="distance">${s.distance.toFixed(1)}km</span></span><span class="meta"><span class="power">⚡ ${s.power}kW</span><span class="status">● ${esc(s.status)}</span><span class="operator">${esc(s.operator)}</span></span><span class="station-bottom"><span class="address">${esc(s.address)} · 24시간</span><span class="actions"><span class="mini">상세정보</span><span class="mini route">길찾기</span></span></span></button>`).join('');document.querySelectorAll('.station').forEach(b=>b.onclick=()=>select(+b.dataset.i));document.getElementById('count').textContent=current.length}
 function updateSummary(){document.getElementById('nearest').innerHTML=`${current[0].distance.toFixed(1)}<small>km</small>`;document.getElementById('nearestName').textContent=current[0].name;document.getElementById('within10').innerHTML=`${current.filter(x=>x.distance<=10).length}<small>개</small>`;document.getElementById('within20').innerHTML=`${current.filter(x=>x.distance<=20).length}<small>개</small>`;document.getElementById('available').innerHTML=`${current.filter(x=>!x.status.includes('전체')).length}<small>개소</small>`}
-function findChargers(){selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;document.getElementById('mapRegion').textContent=label;document.getElementById('homeLabel').textContent=`${dong?neighborhood.value:district.value} 기준 위치`;notice(`${label} 기준의 샘플 결과입니다.`)}
-function select(i){selected=i;document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',+p.dataset.i===i));render()}
+function chargerIcon(i,isSelected=false){return L.divIcon({className:'charger-marker-wrap',html:`<div class="charger-marker${isSelected?' sel':''}"><span>${i+1}</span></div>`,iconSize:isSelected?[40,40]:[34,34],iconAnchor:isSelected?[20,36]:[17,31]})}
+function renderMap(label){
+  const center=regionCenters[province.value]||regionCenters['서울특별시'];
+  if(!map){
+    map=L.map('leafletMap',{zoomControl:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,dragging:true,tap:true}).setView(center,13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+  }
+  mapMarkers.forEach(marker=>marker.remove());
+  mapMarkers=[];
+  if(homeMarker)homeMarker.remove();
+  if(radiusCircle)radiusCircle.remove();
+  homeMarker=L.marker(center,{icon:L.divIcon({className:'home-marker-wrap',html:'<div class="home-marker">⌂</div>',iconSize:[42,42],iconAnchor:[21,21]})}).addTo(map).bindTooltip(`${label} 고객 기준 위치`,{direction:'bottom',offset:[0,18]});
+  radiusCircle=L.circle(center,{radius:5000,color:'#ef6b37',weight:1,dashArray:'5 5',fillColor:'#ef6b37',fillOpacity:.035,interactive:false}).addTo(map);
+  current.forEach((station,i)=>{
+    const marker=L.marker([station.lat,station.lng],{icon:chargerIcon(i,i===selected)}).addTo(map);
+    marker.bindTooltip(`${i+1}. ${station.name}`,{direction:'top',offset:[0,-24]});
+    marker.on('click',()=>select(i,true));
+    mapMarkers.push(marker);
+  });
+  const bounds=L.latLngBounds([center,...current.map(s=>[s.lat,s.lng])]);
+  map.fitBounds(bounds,{padding:[38,38],maxZoom:13});
+  setTimeout(()=>map.invalidateSize(),0);
+}
+function findChargers(){selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;document.getElementById('mapRegion').textContent=label;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
+function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(!fromMap&&mapMarkers[i]){map.panTo(mapMarkers[i].getLatLng());mapMarkers[i].openTooltip()}}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
-province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;document.querySelectorAll('.pin').forEach(p=>p.onclick=()=>select(+p.dataset.i));fillProvinces();findChargers();
+province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;fillProvinces();findChargers();
 </script>
 </body>
 </html>
