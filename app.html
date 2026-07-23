@@ -17427,7 +17427,7 @@ function renderStep2(){
         </div>
         <div class="group-selection-share" aria-label="${g.name} 선택 비율 ${getGroupSelectionPercent(key)}%">
           <span class="group-selection-label"><span class="group-selection-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.8"/></svg></span>관심도</span>
-          <span class="group-selection-value" data-group-share="${key}">${getGroupSelectionPercent(key)}<small>%</small></span>
+          <span class="group-selection-value" data-group-share="${key}">0.0<small>%</small></span>
         </div>
       </div>
     `);
@@ -19529,6 +19529,29 @@ async function syncEs90VisitStats(visitorHash=''){
   if(rows?.[0]) renderEs90VisitStats(rows[0]);
 }
 
+function animateGroupSelectionPercent(node,targetValue){
+  if(!node) return;
+  const target = Number(targetValue||0);
+  const from = Number.parseFloat(node.textContent)||0;
+  const token = (node._percentAnimationToken||0)+1;
+  node._percentAnimationToken = token;
+  const renderValue = value=>{ node.innerHTML = `${value.toFixed(1)}<small>%</small>`; };
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches || Math.abs(target-from)<0.05){
+    renderValue(target);
+    return;
+  }
+  const startedAt = performance.now();
+  const tick = now=>{
+    if(node._percentAnimationToken!==token) return;
+    const progress = Math.min((now-startedAt)/1000,1);
+    const eased = 1-Math.pow(1-progress,3);
+    renderValue(from+(target-from)*eased);
+    if(progress<1) requestAnimationFrame(tick);
+    else renderValue(target);
+  };
+  requestAnimationFrame(tick);
+}
+
 function renderEs90ComparisonStats(stats){
   GROUP_SELECTION_STATS = {
     direct_count:Number(stats?.direct_count||0),
@@ -19537,7 +19560,7 @@ function renderEs90ComparisonStats(stats){
   };
   document.querySelectorAll('[data-group-share]').forEach(node=>{
     const key = node.dataset.groupShare;
-    node.innerHTML = `${getGroupSelectionPercent(key)}<small>%</small>`;
+    animateGroupSelectionPercent(node,getGroupSelectionPercent(key));
     node.closest('.group-selection-share')?.setAttribute('aria-label',`${key==='direct'?'직접 경쟁':'간접 경쟁'} 선택 비율 ${getGroupSelectionPercent(key)}%`);
   });
 }
