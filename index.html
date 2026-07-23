@@ -92,14 +92,22 @@
       nextFrame.setAttribute('aria-hidden', 'true');
       nextFrame.style.visibility = 'hidden';
       nextFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
-      pendingFrameSwap = { previousFrame, nextFrame, version };
+      const timeoutId = window.setTimeout(() => {
+        if (!pendingFrameSwap || pendingFrameSwap.nextFrame !== nextFrame) return;
+        nextFrame.remove();
+        pendingFrameSwap = null;
+        versionSwapRunning = false;
+        pendingVersion = version;
+      }, 15000);
+      pendingFrameSwap = { previousFrame, nextFrame, version, timeoutId };
       document.body.insertBefore(nextFrame, statusEl);
     }
 
     function finishVersionSwap(loginOpen) {
       if (!pendingFrameSwap) return;
-      const { previousFrame, nextFrame, version } = pendingFrameSwap;
+      const { previousFrame, nextFrame, version, timeoutId } = pendingFrameSwap;
       pendingFrameSwap = null;
+      window.clearTimeout(timeoutId);
       nextFrame.id = 'app';
       nextFrame.removeAttribute('aria-hidden');
       nextFrame.style.visibility = '';
