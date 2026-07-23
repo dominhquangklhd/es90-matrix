@@ -794,6 +794,13 @@ body.ipad-selection-scroll-lock{
   overscroll-behavior:none;
   touch-action:none;
 }
+body.ipad-step3-scroll-limit #app,
+body.ipad-step3-scroll-limit .content{
+  padding-bottom:0!important;
+}
+body.ipad-step3-scroll-limit #panel4.panel.show{
+  padding-bottom:8px!important;
+}
 @media (display-mode: standalone) and (min-width:1024px) and (orientation:landscape) {
   html{min-height:100dvh;}
   body:not(.cover-open){min-height:100dvh;overflow-x:hidden;background-image:none;}
@@ -17206,6 +17213,7 @@ function syncIpadStep1ScrollLock(step){
   const isIpad = /iPad/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   const isIpadViewport = window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
   document.body.classList.toggle('ipad-selection-scroll-lock', isIpad && isIpadViewport && step<=2 && !document.body.classList.contains('cover-open'));
+  document.body.classList.toggle('ipad-step3-scroll-limit', isIpad && isIpadViewport && step===3 && !document.body.classList.contains('cover-open'));
 }
 document.addEventListener('touchmove',event=>{
   if(document.body.classList.contains('ipad-selection-scroll-lock')) event.preventDefault();
@@ -19174,6 +19182,7 @@ function logoutToLogin(){
   cover?.classList.remove('is-leaving','is-revealing');
   if(cover) cover.hidden = false;
   document.body.classList.remove('ipad-selection-scroll-lock');
+  document.body.classList.remove('ipad-step3-scroll-limit');
   document.body.classList.add('cover-open');
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
   if(input){ input.value = ''; input.blur(); }
@@ -19774,6 +19783,7 @@ function initLoginCover(){
     cover?.classList.remove('is-leaving','is-revealing');
     if(cover) cover.hidden = false;
     document.body.classList.remove('ipad-selection-scroll-lock');
+    document.body.classList.remove('ipad-step3-scroll-limit');
     document.body.classList.add('cover-open');
     if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
     input.value = '';
