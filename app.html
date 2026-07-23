@@ -17205,6 +17205,19 @@ const RESERVATION_DATA = {
     {trim:'Twin Motor Plus', count:7}
   ]
 };
+const BRAND_STATUS_BADGES = {
+  'Audi': '2025년 08월 출시',
+  'BMW i5': '2023년 10월 출시',
+  'Genesis': '2024년 09월 출시',
+  'Mercedes-Benz': '2022년 09월 출시',
+  'Tesla Model S': '2026년 6월 단종',
+  'BMW iX3': '2021년 11월 출시',
+  'BMW 6 Series GT': '2024년 12월 단종',
+  'Hyundai': '2022년 11월 출시',
+  'Polestar 3': '2026년 07월 출시',
+  'Polestar 4': '2024년 08월 출시',
+  'Tesla': '2026년 04월 출시'
+};
 let GROUP_SELECTION_STATS = {direct_count:0, indirect_count:0, total_count:0};
 let BRAND_SELECTION_STATS = {};
 let BRAND_SELECTION_TOTAL = 0;
@@ -17449,7 +17462,7 @@ function renderBrandTrimSection(){
     const imgSrc = BRAND_IMAGES[b];
     const card = el(`
       <div class="brand-pick-card${STATE.brandKey===b?' sel':''}${isTopBrandInCurrentGroup(b)?' is-popular-top':''}" data-brand="${b}" role="button" tabindex="0" aria-label="${BRAND_DISPLAY_FULL[b]} 트림 및 가격 보기, 선택 비중 ${getBrandSelectionPercent(b)}%">
-        ${b==='Audi'?'<span class="brand-discontinued-badge">2025년 08월 출시</span>':b==='BMW i5'?'<span class="brand-discontinued-badge">2023년 10월 출시</span>':b==='Tesla Model S'?'<span class="brand-discontinued-badge">2026년 6월 단종</span>':b==='BMW 6 Series GT'?'<span class="brand-discontinued-badge">2024년 12월 단종</span>':''}
+          ${BRAND_STATUS_BADGES[b]?`<span class="brand-discontinued-badge">${BRAND_STATUS_BADGES[b]}</span>`:''}
         <span class="brand-pick-thumb">${imgSrc?`<img src="${imgSrc}" alt="">`:''}</span>
         <span class="brand-pick-name">${b==='Tesla' ? 'Tesla Model Y<span class="brand-pick-subname">Longwheelbase</span>' : BRAND_DISPLAY_FULL[b]}</span>
         <span class="brand-selection-share" data-brand-share="${b}">${getBrandSelectionPercent(b)}<small>%</small></span>
