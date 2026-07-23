@@ -17336,7 +17336,7 @@ function renderStep1(){
         </table>
       </div>
       <div class="waitlist-total-row">
-        <div class="waitlist-total-num">${RESERVATION_DATA.total.toLocaleString('ko-KR')}<span class="waitlist-total-unit">명</span></div>
+        <div class="waitlist-total-num"><span class="waitlist-total-value" data-target="${RESERVATION_DATA.total}">0</span><span class="waitlist-total-unit">명</span></div>
         <div class="waitlist-total-label">누적 예약 고객</div>
       </div>
       <div class="waitlist-bars">
@@ -17572,16 +17572,39 @@ function buildPriceGapHtml(esTotal, compTotal, es90Trim, compName, fallbackLabel
 // item: animates .vbar-fill bars (orange/gray) from 0 to their target height when they scroll into view
 function initBarAnimations(){
   const bars = document.querySelectorAll('.vbar-fill[data-h], .waitlist-bar-fill[data-h]');
+  const waitlistTotal = document.querySelector('.waitlist-total-value[data-target]');
+  const animateWaitlistTotal = ()=>{
+    if(!waitlistTotal || waitlistTotal.dataset.animated==='true') return;
+    waitlistTotal.dataset.animated = 'true';
+    const target = Number(waitlistTotal.dataset.target||0);
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      waitlistTotal.textContent = target.toLocaleString('ko-KR');
+      return;
+    }
+    const startedAt = performance.now();
+    const tick = now=>{
+      const progress = Math.min((now-startedAt)/1000,1);
+      const eased = 1-Math.pow(1-progress,3);
+      waitlistTotal.textContent = Math.round(target*eased).toLocaleString('ko-KR');
+      if(progress<1) requestAnimationFrame(tick);
+      else waitlistTotal.textContent = target.toLocaleString('ko-KR');
+    };
+    requestAnimationFrame(tick);
+  };
   if(!bars.length) return;
   if(!('IntersectionObserver' in window)){
     bars.forEach(el=>{ el.style.height = el.getAttribute('data-h')+'%'; });
+    animateWaitlistTotal();
     return;
   }
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(entry=>{
       if(entry.isIntersecting){
         const el = entry.target;
-        requestAnimationFrame(()=>{ el.style.height = el.getAttribute('data-h')+'%'; });
+        requestAnimationFrame(()=>{
+          el.style.height = el.getAttribute('data-h')+'%';
+          if(el.classList.contains('waitlist-bar-fill')) animateWaitlistTotal();
+        });
         io.unobserve(el);
       }
     });
