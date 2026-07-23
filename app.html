@@ -1117,7 +1117,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .pkg-calc-vprice.es90-price,.pkg-calc-vprice.competitor-price{color:var(--orange-deep)!important;font-weight:800!important;}
 .pkg-calc-row span:last-child{color:var(--orange-deep)!important;font-weight:800!important;}
 .pkg-calc-total span:last-child{color:var(--orange-deep)!important;font-weight:800!important;}
-.footer-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px!important;}
+.footer-actions{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px!important;}
 .footer-actions .btn-secondary{width:100%;min-width:0;}
 
 @media(max-width:900px){
@@ -17107,6 +17107,9 @@ function hideUpdateModal(){ document.getElementById('updateModal').classList.rem
 function openAdminEmail(){
   window.location.href = 'mailto:?subject=ES90%20경쟁력%20분석%20데이터%20수정%20요청%28%2A구체적으로%20기술%29';
 }
+function open350kwChargerNetwork(){
+  showSelectionToast('350kW 초고속 충전소 네트워크를 준비 중입니다.');
+}
 
 const STEP_LABELS = ['Volvo ES90 선택','비교모델 및 트림 선택','종합분석 결과'];
 function renderSteps(){
@@ -17872,6 +17875,7 @@ if(score.priceDiff !== null){
       <button class="btn-secondary" onclick="resetAll()">← 처음부터 다시</button>
       <button class="btn-secondary" onclick="showPanel(1); setTimeout(()=>{ const el=document.getElementById('waitlistCard'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 60);">ES90 대기고객 선택</button>
       <button class="btn-secondary" onclick="openStep2WithDirectDefault()">다른 경쟁모델과 비교</button>
+      <button class="btn-secondary" onclick="open350kwChargerNetwork()">⚡ 350kW 충전소</button>
       <button class="btn-secondary" onclick="openAdminEmail()">✉ 데이터 수정 시 연락</button>
     </div>
 
