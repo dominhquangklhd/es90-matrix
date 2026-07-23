@@ -985,8 +985,9 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .brand-pick-name{min-width:0;color:inherit;font-size:12px;font-weight:600;line-height:1.35;overflow-wrap:anywhere;}
 .brand-selection-share{position:absolute;right:10px;bottom:7px;color:#1f2933;font-size:18px;font-weight:800;line-height:1;letter-spacing:-.5px;}
 .brand-selection-share small{margin-left:1px;font-size:11px;font-weight:750;letter-spacing:0;}
-.brand-pick-card:hover,.brand-pick-card.sel{border-color:var(--orange)!important;background:var(--orange-bg)!important;color:var(--orange-deep)!important;box-shadow:0 0 0 2px rgba(241,90,36,.09)!important;}
-.brand-pick-card:hover .brand-pick-thumb,.brand-pick-card.sel .brand-pick-thumb{background:#fff;}
+.brand-pick-card:hover{border-color:var(--navy-soft)!important;background:#fff!important;color:var(--ink)!important;box-shadow:none!important;}
+.brand-pick-card.sel{border-color:var(--orange)!important;background:var(--orange-bg)!important;color:var(--orange-deep)!important;box-shadow:0 0 0 2px rgba(241,90,36,.09)!important;}
+.brand-pick-card.sel .brand-pick-thumb{background:#fff;}
 .brand-discontinued-badge{position:absolute;right:-5px;top:-8px;z-index:2;padding:3px 7px;border:1px solid currentColor;border-radius:999px;background:#fff;color:inherit;font-size:8.5px;font-weight:700;line-height:1;white-space:nowrap;box-shadow:0 2px 6px rgba(16,42,67,.08);}
 .brand-pick-card.sel .brand-discontinued-badge{border-color:#f0b69f;background:#fff4ef;color:#c84b20;}
 .brand-image-box{margin-top:12px!important;border:1px solid var(--line)!important;border-radius:14px!important;background:linear-gradient(145deg,#f8fafb,#eef3f6)!important;box-shadow:none!important;}
@@ -17477,8 +17478,6 @@ function renderBrandTrimSection(){
       renderTrimPick();
       updateCompareBtn();
     };
-    card.addEventListener('mouseenter', activateBrand);
-    card.addEventListener('focus', activateBrand);
     card.addEventListener('click', activateBrand);
     card.addEventListener('keydown', e=>{
       if(e.key==='Enter' || e.key===' '){ e.preventDefault(); activateBrand(); }
