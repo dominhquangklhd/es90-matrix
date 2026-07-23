@@ -17224,6 +17224,7 @@ function showPanel(n){
   const direction = previousStep === n ? '' : (n > previousStep ? 'forward' : 'back');
   swapPanel();
   syncIpadStep1ScrollLock(n);
+  if(n===1) setTimeout(()=>playWaitlistTotalAnimation(true),80);
   const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
   activePanel?.classList.remove('panel-enter-forward','panel-enter-back');
   const skipIpadResultMotion = n===3 && CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
@@ -17642,26 +17643,27 @@ function buildPriceGapHtml(esTotal, compTotal, es90Trim, compName, fallbackLabel
 }
 
 // item: animates .vbar-fill bars (orange/gray) from 0 to their target height when they scroll into view
+function playWaitlistTotalAnimation(force=false){
+  const waitlistTotal = document.querySelector('.waitlist-total-value[data-target]');
+  if(!waitlistTotal) return;
+  if(!force && waitlistTotal.dataset.animated==='true') return;
+  waitlistTotal.dataset.animated='true';
+  const target = Number(waitlistTotal.dataset.target||0);
+  const finalText = target.toLocaleString('ko-KR');
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    waitlistTotal.textContent = finalText;
+    return;
+  }
+  waitlistTotal.innerHTML = [...finalText].map((digit,index)=>
+    `<span class="waitlist-total-digit" style="--digit-delay:${index*300}ms">${digit}</span>`
+  ).join('');
+}
 function initBarAnimations(){
   const bars = document.querySelectorAll('.vbar-fill[data-h], .waitlist-bar-fill[data-h]');
-  const waitlistTotal = document.querySelector('.waitlist-total-value[data-target]');
-  const animateWaitlistTotal = ()=>{
-    if(!waitlistTotal || waitlistTotal.dataset.animated==='true') return;
-    waitlistTotal.dataset.animated = 'true';
-    const target = Number(waitlistTotal.dataset.target||0);
-    const finalText = target.toLocaleString('ko-KR');
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-      waitlistTotal.textContent = finalText;
-      return;
-    }
-    waitlistTotal.innerHTML = [...finalText].map((digit,index)=>
-      `<span class="waitlist-total-digit" style="--digit-delay:${index*300}ms">${digit}</span>`
-    ).join('');
-  };
   if(!bars.length) return;
   if(!('IntersectionObserver' in window)){
     bars.forEach(el=>{ el.style.height = el.getAttribute('data-h')+'%'; });
-    animateWaitlistTotal();
+    playWaitlistTotalAnimation();
     return;
   }
   const io = new IntersectionObserver((entries)=>{
@@ -17670,7 +17672,7 @@ function initBarAnimations(){
         const el = entry.target;
         requestAnimationFrame(()=>{
           el.style.height = el.getAttribute('data-h')+'%';
-          if(el.classList.contains('waitlist-bar-fill')) animateWaitlistTotal();
+          if(el.classList.contains('waitlist-bar-fill')) playWaitlistTotalAnimation();
         });
         io.unobserve(el);
       }
@@ -19156,6 +19158,7 @@ function closeLoginCover(){
   if(cover) cover.hidden = true;
   document.body.classList.remove('cover-open');
   syncIpadStep1ScrollLock(STATE.step);
+  if(STATE.step===1) setTimeout(()=>playWaitlistTotalAnimation(true),80);
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:false},window.location.origin);
 }
 
