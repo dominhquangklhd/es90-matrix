@@ -807,6 +807,9 @@ body.ipad-step3-scroll-limit #panel4.panel.show{
   body:not(.cover-open) #app{min-height:calc(100dvh + 1px);padding-bottom:calc(140px + env(safe-area-inset-bottom, 0px))!important;}
   body:not(.cover-open) .content{padding-bottom:calc(140px + env(safe-area-inset-bottom, 0px))!important;}
   body:not(.cover-open) .panel.show{padding-bottom:32px;}
+  body.ipad-step3-scroll-limit:not(.cover-open) #app,
+  body.ipad-step3-scroll-limit:not(.cover-open) .content{padding-bottom:0!important;}
+  body.ipad-step3-scroll-limit:not(.cover-open) #panel4.panel.show{padding-bottom:8px!important;}
 }
 
 /* ===== Result hero keyword badges ===== */
