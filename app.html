@@ -19155,6 +19155,7 @@ function closeLoginCover(){
   const cover = document.getElementById('loginCover');
   if(cover) cover.hidden = true;
   document.body.classList.remove('cover-open');
+  syncIpadStep1ScrollLock(STATE.step);
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:false},window.location.origin);
 }
 
@@ -19169,6 +19170,7 @@ function logoutToLogin(){
   const savedPopup = document.getElementById('loginSavedId');
   cover?.classList.remove('is-leaving','is-revealing');
   if(cover) cover.hidden = false;
+  document.body.classList.remove('ipad-step1-scroll-lock');
   document.body.classList.add('cover-open');
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
   if(input){ input.value = ''; input.blur(); }
@@ -19768,6 +19770,7 @@ function initLoginCover(){
     button.removeAttribute('aria-busy');
     cover?.classList.remove('is-leaving','is-revealing');
     if(cover) cover.hidden = false;
+    document.body.classList.remove('ipad-step1-scroll-lock');
     document.body.classList.add('cover-open');
     if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
     input.value = '';
