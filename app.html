@@ -783,6 +783,17 @@ button{font-family:inherit;}
   .login-cover { bottom:calc(-1 * env(safe-area-inset-bottom, 0px))!important; min-height:calc(100dvh + env(safe-area-inset-bottom, 0px))!important; }
   .login-cover-visual { bottom:0!important; min-height:100%!important; }
 }
+
+/* iPad STEP 1: keep the full selection screen fixed during finger gestures. */
+body.ipad-step1-scroll-lock{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100dvh;
+  overflow:hidden!important;
+  overscroll-behavior:none;
+  touch-action:none;
+}
 @media (display-mode: standalone) and (min-width:1024px) and (orientation:landscape) {
   html{min-height:100dvh;}
   body:not(.cover-open){min-height:100dvh;overflow-x:hidden;background-image:none;}
@@ -17191,6 +17202,14 @@ function navigateToStep(n){
 }
 
 const STEP_PANEL_IDS = ['panel1','panel2','panel4'];
+function syncIpadStep1ScrollLock(step){
+  const isIpad = /iPad/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  const isIpadViewport = window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
+  document.body.classList.toggle('ipad-step1-scroll-lock', isIpad && isIpadViewport && step===1 && !document.body.classList.contains('cover-open'));
+}
+document.addEventListener('touchmove',event=>{
+  if(document.body.classList.contains('ipad-step1-scroll-lock')) event.preventDefault();
+},{passive:false});
 function showPanel(n){
   const previousStep = STATE.step || n;
   const swapPanel = ()=>{
@@ -17204,6 +17223,7 @@ function showPanel(n){
   };
   const direction = previousStep === n ? '' : (n > previousStep ? 'forward' : 'back');
   swapPanel();
+  syncIpadStep1ScrollLock(n);
   const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
   activePanel?.classList.remove('panel-enter-forward','panel-enter-back');
   const skipIpadResultMotion = n===3 && CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
