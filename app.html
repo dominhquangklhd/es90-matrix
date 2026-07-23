@@ -19495,6 +19495,31 @@ function renderEs90ComparisonStats(stats){
   });
 }
 
+function renderEs90ComparisonBrandStats(rows){
+  BRAND_SELECTION_STATS = {};
+  rows.forEach(row=>{ BRAND_SELECTION_STATS[row.brand_key] = Number(row.selection_count||0); });
+  BRAND_SELECTION_TOTAL = Number(rows?.[0]?.total_count||0);
+  const visibleBrands = GROUPS[STATE.group]?.brands || [];
+  const topCount = Math.max(0,...visibleBrands.map(key=>Number(BRAND_SELECTION_STATS[key]||0)));
+  document.querySelectorAll('[data-brand-share]').forEach(node=>{
+    const brand = node.dataset.brandShare;
+    const percent = getBrandSelectionPercent(brand);
+    node.innerHTML = `${percent}<small>%</small>`;
+    const card = node.closest('.brand-pick-card');
+    card?.classList.toggle('is-popular-top',topCount>0 && Number(BRAND_SELECTION_STATS[brand]||0)===topCount);
+    card?.setAttribute('aria-label',`${BRAND_DISPLAY_FULL[brand]} 트림 및 가격 보기, 선택 비중 ${percent}%`);
+  });
+}
+
+async function syncEs90ComparisonBrandStats(){
+  const response = await fetch(`${ES90_STATS_API_URL}/rest/v1/rpc/get_es90_comparison_brand_stats`,{
+    method:'POST', headers:{apikey:ES90_STATS_API_KEY,'Content-Type':'application/json'},
+    body:'{}', cache:'no-store', credentials:'omit'
+  });
+  if(!response.ok) throw new Error(`comparison brand stats ${response.status}`);
+  renderEs90ComparisonBrandStats(await response.json());
+}
+
 async function syncEs90ComparisonStats(){
   const response = await fetch(`${ES90_STATS_API_URL}/rest/v1/rpc/get_es90_comparison_group_stats`,{
     method:'POST', headers:{apikey:ES90_STATS_API_KEY,'Content-Type':'application/json'},
@@ -19503,6 +19528,7 @@ async function syncEs90ComparisonStats(){
   if(!response.ok) throw new Error(`comparison stats ${response.status}`);
   const rows = await response.json();
   if(rows?.[0]) renderEs90ComparisonStats(rows[0]);
+  syncEs90ComparisonBrandStats().catch(()=>{});
 }
 
 async function recordEs90ComparisonSelection(){
@@ -19523,6 +19549,7 @@ async function recordEs90ComparisonSelection(){
   if(!response.ok) throw new Error(`record comparison ${response.status}`);
   const rows = await response.json();
   if(rows?.[0]) renderEs90ComparisonStats(rows[0]);
+  syncEs90ComparisonBrandStats().catch(()=>{});
 }
 
 function initLoginCover(){
