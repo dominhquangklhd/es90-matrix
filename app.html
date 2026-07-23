@@ -1325,6 +1325,10 @@ body.cover-open{overflow:hidden;background:#05070a;}
 .login-submit:disabled,.login-id-input:disabled{cursor:not-allowed;opacity:.62;}
 .login-submit[aria-busy="true"]{cursor:wait;}
 .login-footer{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;margin:12px 0 0 2px;color:rgba(226,232,236,.86);font-size:11.5px;font-weight:500;line-height:1.4;letter-spacing:.1px;text-align:left;text-shadow:0 1px 3px rgba(5,20,31,.72);white-space:nowrap;}
+.login-visit-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;color:rgba(255,255,255,.92);}
+.login-visit-stat{display:flex;align-items:center;justify-content:space-between;min-height:32px;padding:0 11px;border:1px solid rgba(255,255,255,.13);border-radius:7px;background:rgba(12,40,59,.52);font-size:10.5px;}
+.login-visit-stat span{color:rgba(226,232,236,.72);font-weight:550;}
+.login-visit-stat strong{color:#fff;font-size:12px;font-weight:750;}
 .login-footer-since{color:inherit;font:inherit;letter-spacing:inherit;white-space:nowrap;}
 .login-footer-since:before{content:'·';margin-right:8px;color:inherit;}
 @media screen and (min-width:821px) and (max-width:1366px) and (orientation:landscape){
@@ -1383,6 +1387,10 @@ body.cover-open{overflow:hidden;background:#05070a;}
       </div>
       <button class="login-submit" type="submit"><span class="login-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="5.5"/><path d="M12 2.8V9"/><path d="M6.8 10h10.4"/><path d="M12 5.2v1.6"/></svg></span><span class="login-submit-text">ES90 경쟁력 분석 시작</span></button>
       <div class="login-message" id="loginCoverMessage" aria-live="polite"></div>
+      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite">
+        <div class="login-visit-stat"><span>누적 접속자</span><strong id="loginTotalVisitors">—</strong></div>
+        <div class="login-visit-stat"><span>오늘 접속자</span><strong id="loginTodayVisitors">—</strong></div>
+      </div>
       <div class="login-security"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" stroke-width="1.7"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke-width="1.7" stroke-linecap="round"/></svg><span>볼보 공식 딜러사 소속 영업직원 · 스페셜리스트만 이용 가능합니다.</span></div>
       <div class="login-footer"><span>Copyright (C) Volvo Car Korea. All rights reserved.</span><span class="login-footer-since">Since 260722</span></div>
     </form>
@@ -19404,6 +19412,8 @@ const AUTHORIZED_CDSID_HASHES = new Set([
   'd3c41cec3704d196040ec83fa1cd5ccbf7046ba6a294ea21e75fd8e79b3c1128'
 ]);
 const UNRESTRICTED_CDSIDS = new Set(['VCK-ES90']);
+const ES90_STATS_API_URL = 'https://wxxmnqzdctjcmyawlbxw.supabase.co';
+const ES90_STATS_API_KEY = 'sb_publishable_VQniodm5kuCxhnbIcYQe4g_6MzioD98';
 
 async function hashCdsid(value){
   const normalized = String(value ?? '').trim().toUpperCase();
@@ -19411,6 +19421,27 @@ async function hashCdsid(value){
   const bytes = new TextEncoder().encode(normalized);
   const digest = await crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest), byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+
+function renderEs90VisitStats(stats){
+  const total = document.getElementById('loginTotalVisitors');
+  const today = document.getElementById('loginTodayVisitors');
+  if(total) total.textContent = `${Number(stats?.total_visitors||0).toLocaleString('ko-KR')}명`;
+  if(today) today.textContent = `${Number(stats?.today_visitors||0).toLocaleString('ko-KR')}명`;
+}
+
+async function syncEs90VisitStats(visitorHash=''){
+  const functionName = visitorHash ? 'record_es90_visit' : 'get_es90_visit_stats';
+  const response = await fetch(`${ES90_STATS_API_URL}/rest/v1/rpc/${functionName}`,{
+    method:'POST',
+    headers:{apikey:ES90_STATS_API_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify(visitorHash?{p_visitor_hash:visitorHash}:{}),
+    cache:'no-store',
+    credentials:'omit'
+  });
+  if(!response.ok) throw new Error(`visit stats ${response.status}`);
+  const rows = await response.json();
+  if(rows?.[0]) renderEs90VisitStats(rows[0]);
 }
 
 function initLoginCover(){
@@ -19432,6 +19463,7 @@ function initLoginCover(){
   let lockTimer = null;
   let loginTransitioning = false;
   let lastActivityWrite = 0;
+  syncEs90VisitStats().catch(()=>{});
 
   input?.addEventListener('input', ()=>{
     const start = input.selectionStart;
@@ -19571,6 +19603,7 @@ function initLoginCover(){
         return;
       }
       clearLoginGuard();
+      syncEs90VisitStats(hash).catch(()=>{});
       message.textContent = '';
       localStorage.setItem(LAST_ID_KEY,cdsid);
       writeSession();
