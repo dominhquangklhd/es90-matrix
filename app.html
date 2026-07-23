@@ -483,12 +483,12 @@ button{font-family:inherit;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price{margin:0;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price,.waitlist-meta .subsidy-benefit-badge,.waitlist-meta .tax-benefit-badge{width:78px;box-sizing:border-box;justify-content:center;text-align:center;}
 .waitlist-status-icons{height:30px;display:flex;align-items:center;justify-content:center;gap:4px;}
-.waitlist-status-icon{width:28px;height:24px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;border:1px solid #9fb5c5;border-radius:7px;background:#f4f8fb;color:#214d6b;font-size:8px;font-weight:800;line-height:1;letter-spacing:-.2px;box-shadow:0 1px 2px rgba(22,48,70,.08);}
-.waitlist-status-icon.is-best{border-color:#f0a17e;background:#fff4ee;color:#e6531d;font-size:12px;}
+.waitlist-status-icon{width:28px;height:24px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;border:1px solid #afc1ce;border-radius:7px;background:#eef4f7;color:#264f69;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.08);}
+.waitlist-status-icon svg{width:14px;height:14px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .waitlist-status-icon.is-placeholder{visibility:hidden;}
 .waitlist-icon-legend{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:12px;margin:10px 2px 0;color:var(--ink-faint);font-size:9px;}
 .waitlist-icon-legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
-.waitlist-icon-legend .waitlist-status-icon{width:24px;height:20px;border-radius:6px;flex:0 0 auto;}
+.waitlist-icon-legend .waitlist-status-icon{width:28px;height:24px;border-radius:7px;flex:0 0 auto;}
 .tax-benefit-badge,.subsidy-benefit-badge{display:inline-flex;align-items:center;min-height:16px;padding:1px 6px;border-radius:999px;font-size:7.5px;font-weight:700;line-height:1;white-space:nowrap;}
 .tax-benefit-badge{color:#2f6748;background:#edf7f0;border:1px solid #b9d8c4;}
 .subsidy-benefit-badge{color:#376282;background:#edf5fb;border:1px solid #bdd2e2;}
@@ -17371,9 +17371,9 @@ function renderStep1(){
           <div class="waitlist-bar-col" onclick="selectTrimFromWaitlist('${t.trim}', this)">
             <div class="waitlist-meta">
               <div class="waitlist-status-icons">
-                <span class="waitlist-status-icon is-best${isTop?'':' is-placeholder'}" title="실시간 BEST" aria-label="실시간 BEST">★</span>
-                <span class="waitlist-status-icon${['Single Motor Ultra','Single Motor Plus','Twin Motor Plus'].includes(t.trim)?'':' is-placeholder'}" title="보조금 50% 적용가능" aria-label="보조금 50% 적용가능">50</span>
-                <span class="waitlist-status-icon" title="친환경차 세제혜택" aria-label="친환경차 세제혜택">ECO</span>
+                <span class="waitlist-status-icon${isTop?'':' is-placeholder'}" title="실시간 BEST" aria-label="실시간 BEST"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.6 5.3 5.9.9-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.9L12 3Z"/></svg></span>
+                <span class="waitlist-status-icon${['Single Motor Ultra','Single Motor Plus','Twin Motor Plus'].includes(t.trim)?'':' is-placeholder'}" title="보조금 50% 적용가능" aria-label="보조금 50% 적용가능"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/><path d="m18.5 4.5-13 15"/></svg></span>
+                <span class="waitlist-status-icon" title="친환경차 세제혜택" aria-label="친환경차 세제혜택"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></span>
               </div>
               <div class="waitlist-meta-slot"><div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div></div>
             </div>
@@ -17384,9 +17384,9 @@ function renderStep1(){
         }).join('')}
       </div>
       <div class="waitlist-icon-legend" aria-label="그래프 아이콘 안내">
-        <span><i class="waitlist-status-icon is-best">★</i>실시간 BEST</span>
-        <span><i class="waitlist-status-icon">50</i>보조금 50% 적용가능</span>
-        <span><i class="waitlist-status-icon">ECO</i>친환경차 세제혜택</span>
+        <span><i class="waitlist-status-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.6 5.3 5.9.9-4.3 4.2 1 5.9-5.2-2.8-5.2 2.8 1-5.9-4.3-4.2 5.9-.9L12 3Z"/></svg></i>실시간 BEST</span>
+        <span><i class="waitlist-status-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7.5" cy="7.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/><path d="m18.5 4.5-13 15"/></svg></i>보조금 50% 적용가능</span>
+        <span><i class="waitlist-status-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></i>친환경차 세제혜택</span>
       </div>
       <div class="spec-excluded-note" style="margin-top:24px;padding:0;"><span class="note-flag">🚧</span><span>상기 정보는 Update 시점 기준, 잔여예약 현황이며 수시로 변경될 수 있습니다.</span></div>
       <div class="spec-excluded-note" style="margin-top:5px;padding:0;"><span class="note-flag">🚧</span><span>Single Motor ER Ultra 및 Twin Motor Ultra 경우, 에어 서스펜션 제외 후 가격</span></div>
