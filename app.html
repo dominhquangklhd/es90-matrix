@@ -17223,13 +17223,13 @@ let BRAND_SELECTION_STATS = {};
 let BRAND_SELECTION_TOTAL = 0;
 function getGroupSelectionPercent(key){
   const total = Number(GROUP_SELECTION_STATS.total_count||0);
-  if(total <= 0) return 0;
-  const direct = Math.round(Number(GROUP_SELECTION_STATS.direct_count||0) / total * 100);
-  return key === 'direct' ? direct : 100 - direct;
+  if(total <= 0) return '0.0';
+  const direct = Number(GROUP_SELECTION_STATS.direct_count||0) / total * 100;
+  return key === 'direct' ? direct.toFixed(1) : (100 - direct).toFixed(1);
 }
 function getBrandSelectionPercent(brand){
-  if(BRAND_SELECTION_TOTAL <= 0) return 0;
-  return Math.round(Number(BRAND_SELECTION_STATS[brand]||0) / BRAND_SELECTION_TOTAL * 100);
+  if(BRAND_SELECTION_TOTAL <= 0) return '0.0';
+  return (Number(BRAND_SELECTION_STATS[brand]||0) / BRAND_SELECTION_TOTAL * 100).toFixed(1);
 }
 function isTopBrandInCurrentGroup(brand){
   const brands = GROUPS[STATE.group]?.brands || [];
