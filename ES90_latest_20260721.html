@@ -952,6 +952,9 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .subsidy-guide strong{color:#506a79;font-weight:700;}
 @media(max-width:900px){.subsidy-guide{position:static;width:100%;margin:0 0 14px;}}
 .waitlist-total-num{color:var(--orange)!important;}
+.waitlist-total-value{display:inline-flex;align-items:baseline;min-width:3ch;overflow:visible;font-variant-numeric:tabular-nums;}
+.waitlist-total-digit{display:inline-block;opacity:0;transform:translateY(-24px);animation:waitlistDigitDrop .72s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--digit-delay,0ms);}
+@keyframes waitlistDigitDrop{0%{opacity:0;transform:translateY(-24px);filter:blur(3px);}58%{opacity:1;filter:blur(0);}100%{opacity:1;transform:translateY(0);filter:blur(0);}}
 .waitlist-bar-track{background:#edf1f4!important;border-radius:7px 7px 0 0!important;overflow:hidden;}
 .waitlist-bar-fill{background:linear-gradient(180deg,#ff7b45,var(--orange))!important;}
 .waitlist-bar-fill.navy{background:linear-gradient(180deg,#476b88,var(--navy))!important;}
@@ -17337,7 +17340,7 @@ function renderStep1(){
         </table>
       </div>
       <div class="waitlist-total-row">
-        <div class="waitlist-total-num"><span class="waitlist-total-value" data-target="${RESERVATION_DATA.total}">0</span><span class="waitlist-total-unit">명</span></div>
+        <div class="waitlist-total-num"><span class="waitlist-total-value" data-target="${RESERVATION_DATA.total}" aria-label="${RESERVATION_DATA.total.toLocaleString('ko-KR')}"></span><span class="waitlist-total-unit">명</span></div>
         <div class="waitlist-total-label">누적 예약 고객</div>
       </div>
       <div class="waitlist-bars">
@@ -17578,19 +17581,14 @@ function initBarAnimations(){
     if(!waitlistTotal || waitlistTotal.dataset.animated==='true') return;
     waitlistTotal.dataset.animated = 'true';
     const target = Number(waitlistTotal.dataset.target||0);
+    const finalText = target.toLocaleString('ko-KR');
     if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-      waitlistTotal.textContent = target.toLocaleString('ko-KR');
+      waitlistTotal.textContent = finalText;
       return;
     }
-    const startedAt = performance.now();
-    const tick = now=>{
-      const progress = Math.min((now-startedAt)/1000,1);
-      const eased = 1-Math.pow(1-progress,3);
-      waitlistTotal.textContent = Math.round(target*eased).toLocaleString('ko-KR');
-      if(progress<1) requestAnimationFrame(tick);
-      else waitlistTotal.textContent = target.toLocaleString('ko-KR');
-    };
-    requestAnimationFrame(tick);
+    waitlistTotal.innerHTML = [...finalText].map((digit,index)=>
+      `<span class="waitlist-total-digit" style="--digit-delay:${index*120}ms">${digit}</span>`
+    ).join('');
   };
   if(!bars.length) return;
   if(!('IntersectionObserver' in window)){
