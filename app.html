@@ -1325,10 +1325,11 @@ body.cover-open{overflow:hidden;background:#05070a;}
 .login-submit:disabled,.login-id-input:disabled{cursor:not-allowed;opacity:.62;}
 .login-submit[aria-busy="true"]{cursor:wait;}
 .login-footer{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;margin:12px 0 0 2px;color:rgba(226,232,236,.86);font-size:11.5px;font-weight:500;line-height:1.4;letter-spacing:.1px;text-align:left;text-shadow:0 1px 3px rgba(5,20,31,.72);white-space:nowrap;}
-.login-visit-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px;color:rgba(255,255,255,.92);}
-.login-visit-stat{display:flex;align-items:center;justify-content:space-between;min-height:32px;padding:0 11px;border:1px solid rgba(255,255,255,.13);border-radius:7px;background:rgba(12,40,59,.52);font-size:10.5px;}
-.login-visit-stat span{color:rgba(226,232,236,.72);font-weight:550;}
-.login-visit-stat strong{color:#fff;font-size:12px;font-weight:750;}
+.login-visit-stats{display:flex;align-items:center;gap:6px;margin:9px 0 0 2px;color:rgba(226,232,236,.62);font-size:10.5px;font-weight:500;line-height:1.35;white-space:nowrap;text-shadow:0 1px 3px rgba(5,20,31,.62);}
+.login-visit-stats:before{content:"";width:4px;height:4px;border-radius:50%;background:rgba(226,232,236,.46);}
+.login-visit-label{color:rgba(226,232,236,.72);}
+.login-visit-sep{color:rgba(226,232,236,.34);}
+.login-visit-stats strong{color:rgba(255,255,255,.78);font-size:inherit;font-weight:600;}
 .login-footer-since{color:inherit;font:inherit;letter-spacing:inherit;white-space:nowrap;}
 .login-footer-since:before{content:'·';margin-right:8px;color:inherit;}
 @media screen and (min-width:821px) and (max-width:1366px) and (orientation:landscape){
@@ -1387,10 +1388,7 @@ body.cover-open{overflow:hidden;background:#05070a;}
       </div>
       <button class="login-submit" type="submit"><span class="login-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="5.5"/><path d="M12 2.8V9"/><path d="M6.8 10h10.4"/><path d="M12 5.2v1.6"/></svg></span><span class="login-submit-text">ES90 경쟁력 분석 시작</span></button>
       <div class="login-message" id="loginCoverMessage" aria-live="polite"></div>
-      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite">
-        <div class="login-visit-stat"><span>누적 접속자</span><strong id="loginTotalVisitors">—</strong></div>
-        <div class="login-visit-stat"><span>오늘 접속자</span><strong id="loginTodayVisitors">—</strong></div>
-      </div>
+      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite"><span class="login-visit-label">접속 현황</span><span class="login-visit-sep">·</span><span>오늘 <strong id="loginTodayVisitors">—</strong></span><span class="login-visit-sep">·</span><span>누적 <strong id="loginTotalVisitors">—</strong></span></div>
       <div class="login-security"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" stroke-width="1.7"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke-width="1.7" stroke-linecap="round"/></svg><span>볼보 공식 딜러사 소속 영업직원 · 스페셜리스트만 이용 가능합니다.</span></div>
       <div class="login-footer"><span>Copyright (C) Volvo Car Korea. All rights reserved.</span><span class="login-footer-since">Since 260722</span></div>
     </form>
