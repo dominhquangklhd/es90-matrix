@@ -17341,8 +17341,8 @@ function renderStep1(){
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
-          const pct = Math.round(t.count/RESERVATION_DATA.total*1000)/10;
-          const h = Math.max(pct,4);
+          const pct = (t.count/RESERVATION_DATA.total*100).toFixed(1);
+          const h = Math.max(Number(pct),4);
           const isTop = i===0;
           const price = getES90Price(t.trim);
           const priceLbl = price? fmtWonRange(price.total, t.trim) : '';
