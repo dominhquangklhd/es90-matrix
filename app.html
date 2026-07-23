@@ -17137,12 +17137,13 @@ function showPanel(n){
   const direction = previousStep === n ? '' : (n > previousStep ? 'forward' : 'back');
   swapPanel();
   const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
-  if(n===3) initIpadPinnedResultHero();
   activePanel?.classList.remove('panel-enter-forward','panel-enter-back');
-  if(direction && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const skipIpadResultMotion = n===3 && CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
+  if(direction && !skipIpadResultMotion && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     activePanel?.classList.add(direction === 'forward' ? 'panel-enter-forward' : 'panel-enter-back');
     setTimeout(()=>activePanel?.classList.remove('panel-enter-forward','panel-enter-back'),780);
   }
+  if(n===3) initIpadPinnedResultHero();
   window.scrollTo({top:0, behavior:'smooth'});
   if(window.parent !== window){
     window.parent.postMessage({type:'es90-step-change',step:n},window.location.origin);
@@ -17775,7 +17776,6 @@ if(score.priceDiff !== null){
 }
 
 function initIpadPinnedResultHero(){
-  window.clearTimeout(window._ipadHeroSettleTimer);
   if(window._ipadHeroResizeHandler){
     window.removeEventListener('resize',window._ipadHeroResizeHandler);
     window.removeEventListener('orientationchange',window._ipadHeroResizeHandler);
@@ -17785,7 +17785,7 @@ function initIpadPinnedResultHero(){
   const hero = slot?.querySelector('.result-hero');
   const panel = document.getElementById('panel4');
   const isIpadWebKit = CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
-  if(!slot || !hero || !panel || !isIpadWebKit) return;
+  if(!slot || !hero || !panel || !isIpadWebKit || !panel.classList.contains('show')) return;
   const syncPinnedHero = ()=>{
     const rect = panel.getBoundingClientRect();
     slot.style.setProperty('--ipad-hero-left',`${Math.round(rect.left)}px`);
@@ -17795,8 +17795,6 @@ function initIpadPinnedResultHero(){
     slot.style.height = `${heroHeight}px`;
   };
   syncPinnedHero();
-  requestAnimationFrame(syncPinnedHero);
-  window._ipadHeroSettleTimer = window.setTimeout(syncPinnedHero,820);
   window._ipadHeroResizeHandler = syncPinnedHero;
   window.addEventListener('resize',syncPinnedHero,{passive:true});
   window.addEventListener('orientationchange',syncPinnedHero,{passive:true});
