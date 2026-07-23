@@ -966,11 +966,13 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .group-name{color:var(--navy-deep)!important;font-size:17px!important;font-weight:600!important;}
 .group-sub{min-height:34px;color:var(--ink-soft)!important;line-height:1.55!important;}
 .group-brand-list{margin-top:13px!important;padding-top:12px!important;border-top:1px solid var(--line-soft)!important;}
-.group-selection-share{position:absolute;right:21px;bottom:17px;display:flex;align-items:center;gap:8px;pointer-events:none;}
-.group-selection-icon{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#fff1ea;color:var(--orange);font-size:14px;font-weight:800;box-shadow:inset 0 0 0 1px rgba(241,90,36,.18);}
+.group-selection-share{position:absolute;right:21px;bottom:17px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none;}
+.group-selection-label{display:flex;align-items:center;gap:4px;color:var(--orange-deep);font-size:10.5px;font-weight:700;line-height:1;letter-spacing:-.15px;}
+.group-selection-icon{display:block;width:14px;height:14px;color:var(--orange);}
+.group-selection-icon svg{display:block;width:100%;height:100%;}
 .group-selection-value{display:flex;align-items:baseline;color:var(--orange-deep);font-size:31px;font-weight:800;line-height:1;letter-spacing:-1.2px;}
 .group-selection-value small{margin-left:1px;font-size:15px;font-weight:750;letter-spacing:-.2px;}
-.group-card[data-group="indirect"] .group-selection-icon{background:#edf5fb;color:#4e8fca;box-shadow:inset 0 0 0 1px rgba(78,143,202,.18);}
+.group-card[data-group="indirect"] .group-selection-label,.group-card[data-group="indirect"] .group-selection-icon{color:#477da9;}
 .group-card[data-group="indirect"] .group-selection-value{color:#477da9;}
 .picker-section-label{display:flex;align-items:center;min-height:43px;margin:20px 0 0!important;padding:0 14px!important;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:#f7f9fa;color:var(--navy-deep)!important;font-size:12px!important;font-weight:600!important;}
 .brand-pick-grid,.trim-pick-grid{margin:0!important;padding:14px!important;border:1px solid var(--line);border-radius:0 0 12px 12px;background:#fff;gap:8px!important;}
@@ -17400,7 +17402,7 @@ function renderStep2(){
           ${g.brands.map(b=>`<div class="group-brand-row"><span class="logo-badge"></span><span>${BRAND_DISPLAY_FULL[b]}${b==='Tesla Model S'?' <span style="color:var(--ink-faint);font-weight:500;">(2026년 6월 단종)</span>':b==='BMW 6 Series GT'?' <span style="color:var(--ink-faint);font-weight:500;">(2024년 12월 단종)</span>':''}</span></div>`).join('')}
         </div>
         <div class="group-selection-share" aria-label="${g.name} 선택 비율 ${getGroupSelectionPercent(key)}%">
-          <span class="group-selection-icon" aria-hidden="true">✓</span>
+          <span class="group-selection-label"><span class="group-selection-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.8"/></svg></span>관심도</span>
           <span class="group-selection-value" data-group-share="${key}">${getGroupSelectionPercent(key)}<small>%</small></span>
         </div>
       </div>
