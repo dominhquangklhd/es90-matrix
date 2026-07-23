@@ -156,8 +156,23 @@ function findChargers(){selected=0;buildData();render();updateSummary();const do
 function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(!fromMap&&mapMarkers[i]){map.panTo(mapMarkers[i].getLatLng());mapMarkers[i].openTooltip()}}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
+let chargerPageReady=false;
+function resetChargerToDefaults(){
+  fillProvinces();
+  province.value='서울특별시';
+  fillDistricts('서초구');
+  neighborhood.value='전체';
+  findChargers();
+  window.scrollTo({top:0,behavior:'auto'});
+}
 province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;
-loadAdministrativeAreas().catch(()=>{}).finally(()=>{fillProvinces();findChargers()});
+loadAdministrativeAreas().catch(()=>{}).finally(()=>{
+  chargerPageReady=true;
+  resetChargerToDefaults();
+});
+window.addEventListener('pageshow',event=>{
+  if(event.persisted && chargerPageReady) requestAnimationFrame(resetChargerToDefaults);
+});
 </script>
 </body>
 </html>
