@@ -17200,7 +17200,13 @@ const RESERVATION_DATA = {
     {trim:'Twin Motor Plus', count:7}
   ]
 };
-const GROUP_SELECTION_SHARE = {direct:82, indirect:18};
+let GROUP_SELECTION_STATS = {direct_count:0, indirect_count:0, total_count:0};
+function getGroupSelectionPercent(key){
+  const total = Number(GROUP_SELECTION_STATS.total_count||0);
+  if(total <= 0) return 0;
+  const direct = Math.round(Number(GROUP_SELECTION_STATS.direct_count||0) / total * 100);
+  return key === 'direct' ? direct : 100 - direct;
+}
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
@@ -17378,9 +17384,9 @@ function renderStep2(){
           <div class="group-sort-note">A·B·C 순</div>
           ${g.brands.map(b=>`<div class="group-brand-row"><span class="logo-badge"></span><span>${BRAND_DISPLAY_FULL[b]}${b==='Tesla Model S'?' <span style="color:var(--ink-faint);font-weight:500;">(2026년 6월 단종)</span>':b==='BMW 6 Series GT'?' <span style="color:var(--ink-faint);font-weight:500;">(2024년 12월 단종)</span>':''}</span></div>`).join('')}
         </div>
-        <div class="group-selection-share" aria-label="${g.name} 선택 비율 ${GROUP_SELECTION_SHARE[key]}%">
+        <div class="group-selection-share" aria-label="${g.name} 선택 비율 ${getGroupSelectionPercent(key)}%">
           <span class="group-selection-icon" aria-hidden="true">✓</span>
-          <span class="group-selection-value">${GROUP_SELECTION_SHARE[key]}<small>%</small></span>
+          <span class="group-selection-value" data-group-share="${key}">${getGroupSelectionPercent(key)}<small>%</small></span>
         </div>
       </div>
     `);
@@ -17404,6 +17410,7 @@ function renderStep2(){
   });
   renderBrandTrimSection();
   updateCompareBtn();
+  syncEs90ComparisonStats().catch(()=>{});
 }
 
 function renderBrandTrimSection(){
@@ -17493,6 +17500,7 @@ function updateCompareBtn(){
 // ---------------- STEP 4: comparison results ----------------
 function runCompare(){
   if(!STATE.es90Trim || !STATE.brandKey || !STATE.compTrim) return;
+  recordEs90ComparisonSelection().catch(()=>{});
   STATE.activeTab = CAT_ORDER[0];
   STATE.profile = null;
   renderStep4();
@@ -19426,6 +19434,7 @@ const AUTHORIZED_CDSID_HASHES = new Set([
 const UNRESTRICTED_CDSIDS = new Set(['VCK-ES90']);
 const ES90_STATS_API_URL = 'https://wxxmnqzdctjcmyawlbxw.supabase.co';
 const ES90_STATS_API_KEY = 'sb_publishable_VQniodm5kuCxhnbIcYQe4g_6MzioD98';
+let ACTIVE_VISITOR_HASH = '';
 
 async function hashCdsid(value){
   const normalized = String(value ?? '').trim().toUpperCase();
@@ -19454,6 +19463,49 @@ async function syncEs90VisitStats(visitorHash=''){
   if(!response.ok) throw new Error(`visit stats ${response.status}`);
   const rows = await response.json();
   if(rows?.[0]) renderEs90VisitStats(rows[0]);
+}
+
+function renderEs90ComparisonStats(stats){
+  GROUP_SELECTION_STATS = {
+    direct_count:Number(stats?.direct_count||0),
+    indirect_count:Number(stats?.indirect_count||0),
+    total_count:Number(stats?.total_count||0)
+  };
+  document.querySelectorAll('[data-group-share]').forEach(node=>{
+    const key = node.dataset.groupShare;
+    node.innerHTML = `${getGroupSelectionPercent(key)}<small>%</small>`;
+    node.closest('.group-selection-share')?.setAttribute('aria-label',`${key==='direct'?'직접 경쟁':'간접 경쟁'} 선택 비율 ${getGroupSelectionPercent(key)}%`);
+  });
+}
+
+async function syncEs90ComparisonStats(){
+  const response = await fetch(`${ES90_STATS_API_URL}/rest/v1/rpc/get_es90_comparison_group_stats`,{
+    method:'POST', headers:{apikey:ES90_STATS_API_KEY,'Content-Type':'application/json'},
+    body:'{}', cache:'no-store', credentials:'omit'
+  });
+  if(!response.ok) throw new Error(`comparison stats ${response.status}`);
+  const rows = await response.json();
+  if(rows?.[0]) renderEs90ComparisonStats(rows[0]);
+}
+
+async function recordEs90ComparisonSelection(){
+  if(!ACTIVE_VISITOR_HASH){
+    const savedId = String(localStorage.getItem('es90_last_cdsid')||'').trim();
+    if(savedId) ACTIVE_VISITOR_HASH = await hashCdsid(savedId);
+  }
+  if(!ACTIVE_VISITOR_HASH || !STATE.group || !STATE.brandKey || !STATE.compTrim) return;
+  const response = await fetch(`${ES90_STATS_API_URL}/rest/v1/rpc/record_es90_comparison_selection`,{
+    method:'POST', headers:{apikey:ES90_STATS_API_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({
+      p_visitor_hash:ACTIVE_VISITOR_HASH,
+      p_competition_group:STATE.group,
+      p_brand_key:STATE.brandKey,
+      p_trim_key:STATE.compTrim
+    }), cache:'no-store', credentials:'omit'
+  });
+  if(!response.ok) throw new Error(`record comparison ${response.status}`);
+  const rows = await response.json();
+  if(rows?.[0]) renderEs90ComparisonStats(rows[0]);
 }
 
 function initLoginCover(){
@@ -19615,6 +19667,7 @@ function initLoginCover(){
         return;
       }
       clearLoginGuard();
+      ACTIVE_VISITOR_HASH = hash;
       syncEs90VisitStats(hash).catch(()=>{});
       message.textContent = '';
       localStorage.setItem(LAST_ID_KEY,cdsid);
@@ -19647,6 +19700,8 @@ function initLoginCover(){
 
   const existingSession = readSession();
   if(existingSession && Number(existingSession.expiresAt) > Date.now()){
+    const savedId = getSavedId();
+    if(savedId) hashCdsid(savedId).then(hash=>{ ACTIVE_VISITOR_HASH = hash; }).catch(()=>{});
     lastActivityWrite = Date.now();
     closeLoginCover();
     requestAnimationFrame(()=>{
