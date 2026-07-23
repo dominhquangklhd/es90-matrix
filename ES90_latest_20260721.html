@@ -910,6 +910,8 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .trim-group-label{min-height:24px;margin-bottom:13px;color:var(--navy-deep);font-size:13px;font-weight:600;line-height:1.2;align-items:center;}
 .trim-group-label::after{align-self:center;}
 .trim-group-sub{display:inline-flex;align-items:center;min-height:24px;color:var(--ink-faint);font-weight:400;line-height:1.2;}
+.trim-group-label::after{order:2;}
+.trim-group-share{order:3;flex:0 0 auto;color:var(--navy-deep);font-size:13px;font-weight:800;line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums;}
 .trim-sub-emphasis{position:relative;display:inline-block;margin:0;color:inherit;line-height:inherit;vertical-align:baseline;-webkit-text-emphasis:none;text-emphasis:none;}
 .trim-sub-emphasis::before{content:'';position:absolute;left:0;top:-5px;width:100%;height:4px;background:radial-gradient(circle at 12.5% 50%,currentColor 0 1.2px,transparent 1.4px),radial-gradient(circle at 37.5% 50%,currentColor 0 1.2px,transparent 1.4px),radial-gradient(circle at 62.5% 50%,currentColor 0 1.2px,transparent 1.4px),radial-gradient(circle at 87.5% 50%,currentColor 0 1.2px,transparent 1.4px);pointer-events:none;}
 .trim-col-cards{gap:10px;}
@@ -17362,8 +17364,10 @@ function renderStep1(){
   TRIM_GROUPS.forEach(grp=>{
     const col = document.createElement('div');
     col.className = 'trim-split-col';
+    const groupCount = grp.trims.reduce((sum,trim)=>sum+(RESERVATION_DATA.byTrim.find(item=>item.trim===trim)?.count||0),0);
+    const groupPercent = RESERVATION_DATA.total > 0 ? (groupCount / RESERVATION_DATA.total * 100).toFixed(1) : '0.0';
     col.innerHTML = `
-      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span></div>
+      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share">${groupPercent}%</span></div>
       <div class="trim-col-cards" data-grp="${grp.label}"></div>
     `;
     const cards = col.querySelector('.trim-col-cards');
