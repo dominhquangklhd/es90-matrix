@@ -45,7 +45,6 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
       <div class="field"><label for="neighborhood">동</label><select id="neighborhood"></select></div>
       <button class="find" onclick="findChargers()">가까운 충전소 찾기</button>
     </div>
-    <div class="privacy">고객 위치는 이 화면에 저장하거나 외부로 전송하지 않습니다. <span id="adminDataStatus">행정동 목록 불러오는 중</span></div>
   </section>
   <section class="summary">
     <div class="metric"><div class="metric-label">전국 350kW 충전소</div><div class="metric-value">—<small>개</small></div><div class="metric-sub">공식 API 연결 후 전국 집계</div></div>
@@ -122,7 +121,6 @@ async function loadAdministrativeAreas(){
   if(!Object.keys(nextRegions).length)throw new Error('행정동 데이터가 비어 있습니다.');
   regions=nextRegions;
   neighborhoods=nextNeighborhoods;
-  document.getElementById('adminDataStatus').textContent=`행정안전부 행정동 코드 기준 · ${data.updatedAt} 갱신`;
 }
 function fillProvinces(){province.innerHTML=Object.keys(regions).map(x=>`<option${x==='서울특별시'?' selected':''}>${x}</option>`).join('');fillDistricts('서초구')}
 function fillDistricts(preferred){district.innerHTML=regions[province.value].map(x=>`<option${x===preferred?' selected':''}>${x}</option>`).join('');fillNeighborhoods()}
@@ -159,9 +157,7 @@ function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>m
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
 province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;
-loadAdministrativeAreas().catch(()=>{
-  document.getElementById('adminDataStatus').textContent='기본 행정동 목록 사용 중';
-}).finally(()=>{fillProvinces();findChargers()});
+loadAdministrativeAreas().catch(()=>{}).finally(()=>{fillProvinces();findChargers()});
 </script>
 </body>
 </html>
