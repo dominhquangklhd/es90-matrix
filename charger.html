@@ -5,9 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071b2c">
 <title>ES90 350kW 초고속 충전 네트워크</title>
+<script>
+fetch('./app.html',{cache:'force-cache'}).then(response=>response.text()).then(source=>{
+  const faces=source.match(/@font-face\s*\{[\s\S]*?\}/g)||[];
+  const volvoFaces=faces.filter(face=>face.includes("font-family:'VolvoCentum"));
+  if(volvoFaces.length){
+    const style=document.createElement('style');
+    style.dataset.sharedBrandFonts='true';
+    style.textContent=volvoFaces.join('\n');
+    document.head.appendChild(style);
+  }
+}).catch(()=>{});
+</script>
 <style>
+@font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;unicode-range:U+AC00-D7A3,U+1100-11FF,U+3130-318F,U+A960-A97F,U+D7B0-D7FF}
 :root{--navy:#102a43;--deep:#071b2c;--blue:#385a72;--orange:#ef6b37;--orange2:#ce541f;--ink:#243746;--muted:#6c7f8d;--faint:#94a2ac;--line:#dbe3e8;--line2:#e9eef1;--soft:#eef2f5;--paper:#fff;--green:#38805b;--shadow:0 9px 25px rgba(16,42,67,.07)}
-*{box-sizing:border-box}body{margin:0;background:var(--soft);color:var(--ink);font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;font-weight:400}button,input,select{font:inherit}button{cursor:pointer}
+*{box-sizing:border-box}body{margin:0;background:var(--soft);color:var(--ink);font-family:'Paperlogy','VolvoCentum Regular','VolvoCentum',-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;letter-spacing:-.2px}button,input,select{font:inherit}button{cursor:pointer}
 .top{position:sticky;top:0;z-index:20;background:rgba(7,27,44,.97);box-shadow:0 7px 24px rgba(7,27,44,.15)}.top-in{max-width:1280px;min-height:68px;margin:auto;padding:11px 22px;display:flex;align-items:center;justify-content:space-between}.back{border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.07);color:#fff;padding:9px 13px;font-size:11px;font-weight:600}.brand{color:#fff;text-align:right;font-size:13px;font-weight:650;letter-spacing:2px}.brand small{display:block;margin-top:3px;color:rgba(255,255,255,.52);font-size:8px;font-weight:400;letter-spacing:.8px}
 main{max-width:1280px;margin:auto;padding:22px 20px 42px}.hero{position:relative;overflow:hidden;border-radius:16px;padding:26px 28px;background:linear-gradient(135deg,var(--deep),var(--navy) 64%,var(--blue));color:#fff;box-shadow:var(--shadow)}.hero:after{content:"350";position:absolute;right:20px;top:-34px;color:rgba(255,255,255,.04);font-size:176px;font-weight:700}.kicker{position:relative;z-index:1;color:#ffb18e;font-size:9px;font-weight:600;letter-spacing:1.4px}.hero h1{position:relative;z-index:1;margin:7px 0 6px;font-size:clamp(25px,3.7vw,39px);font-weight:650;line-height:1.16;letter-spacing:-.7px}.hero p{position:relative;z-index:1;margin:0;color:rgba(255,255,255,.66);font-size:12px;font-weight:400;line-height:1.65}.sample{position:relative;z-index:1;display:inline-block;margin-top:14px;padding:6px 9px;border:1px solid rgba(255,177,142,.28);border-radius:999px;background:rgba(239,107,55,.11);color:#ffd1bd;font-size:9px;font-weight:500}
 .location{position:relative;z-index:3;margin:-11px 16px 0;padding:17px 18px;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:var(--shadow)}.location-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:11px}.location-title{font-size:14px;font-weight:600}.location-help{color:var(--faint);font-size:10.5px;font-weight:400}.location-row{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(170px,.9fr) minmax(190px,1.2fr) auto;gap:9px}.field{display:flex;flex-direction:column;gap:5px}.field label{color:var(--muted);font-size:10.5px;font-weight:500}.field select,.field input{height:41px;border:1px solid var(--line);border-radius:8px;background:#f9fbfc;color:var(--ink);padding:0 11px;outline:none;font-size:12px;font-weight:450}.field select:focus,.field input:focus{border-color:#8ea7b8;box-shadow:0 0 0 3px rgba(56,90,114,.07)}.find{align-self:end;height:41px;border:0;border-radius:8px;background:var(--orange);color:#fff;padding:0 17px;font-size:12px;font-weight:600}.find:hover{background:var(--orange2)}.privacy{margin-top:9px;color:var(--faint);font-size:9.5px;font-weight:400}
