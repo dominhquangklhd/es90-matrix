@@ -1884,7 +1884,7 @@ body.cover-open{overflow:hidden;background:#05070a;}
       "Rear motor": {
         "battery_kwh": 92,
         "battery_maker": "CATL",
-        "range_km": 603,
+        "range_km": 456,
         "power_ps": 333,
         "torque_kgm": 48.9,
         "accel_0_100": 6.5,
@@ -17903,7 +17903,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
       es: esSpec.drive_type||'확인 불가', comp: compSpec?(compSpec.drive_type||'확인 불가'):'확인 불가', compare:true, lowerBetter:false},
     {label:'1회 충전 주행거리', esVal:esSpec.range_km!=null? esSpec.range_km:null,     compVal:compSpec?compSpec.range_km:null,
       es: esSpec.range_km!=null? `<span style="color:var(--ink);">${esSpec.range_km}km (WLTP 기준)<span class="ov-opt certification-pending-badge">인증진행중</span></span>`:'확인 불가',
-      comp: compSpec&&compSpec.range_km!=null? (brandKey==='Polestar 3'&&compTrim==='Rear motor'? `<span style="color:var(--ink);">${compSpec.range_km}km (WLTP 기준)<span class="ov-opt certification-pending-badge">인증진행중</span></span>`:compSpec.range_km+'km'):(['Hyundai','BMW 6 Series GT'].includes(brandKey)?'해당 없음':'확인 불가'), compare:true, score:false, lowerBetter:false},
+      comp: compSpec&&compSpec.range_km!=null? (brandKey==='Polestar 3'&&compTrim==='Rear motor'? `<span style="color:var(--ink);">${compSpec.range_km}km<span class="ov-opt certification-pending-badge">인증진행중</span></span>`:compSpec.range_km+'km'):(['Hyundai','BMW 6 Series GT'].includes(brandKey)?'해당 없음':'확인 불가'), compare:true, score:false, lowerBetter:false},
     {label:'최고 출력',        esVal:esSpec.power_ps,     compVal:compSpec?compSpec.power_ps:null,
       es: esSpec.power_ps!=null? esSpec.power_ps+'ps':'확인 불가', comp: compSpec&&compSpec.power_ps!=null? compSpec.power_ps+'ps':'확인 불가', compare:true, lowerBetter:false},
     {label:'최대 토크',        esVal:esSpec.torque_kgm,   compVal:compSpec?compSpec.torque_kgm:null,
