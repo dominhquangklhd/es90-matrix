@@ -17449,7 +17449,7 @@ function renderBrandTrimSection(){
     const imgSrc = BRAND_IMAGES[b];
     const card = el(`
       <div class="brand-pick-card${STATE.brandKey===b?' sel':''}${isTopBrandInCurrentGroup(b)?' is-popular-top':''}" data-brand="${b}" role="button" tabindex="0" aria-label="${BRAND_DISPLAY_FULL[b]} 트림 및 가격 보기, 선택 비중 ${getBrandSelectionPercent(b)}%">
-        ${b==='Tesla Model S'?'<span class="brand-discontinued-badge">2026년 6월 단종</span>':b==='BMW 6 Series GT'?'<span class="brand-discontinued-badge">2024년 12월 단종</span>':''}
+        ${b==='Audi'?'<span class="brand-discontinued-badge">2025년 08월 출시</span>':b==='Tesla Model S'?'<span class="brand-discontinued-badge">2026년 6월 단종</span>':b==='BMW 6 Series GT'?'<span class="brand-discontinued-badge">2024년 12월 단종</span>':''}
         <span class="brand-pick-thumb">${imgSrc?`<img src="${imgSrc}" alt="">`:''}</span>
         <span class="brand-pick-name">${b==='Tesla' ? 'Tesla Model Y<span class="brand-pick-subname">Longwheelbase</span>' : BRAND_DISPLAY_FULL[b]}</span>
         <span class="brand-selection-share" data-brand-share="${b}">${getBrandSelectionPercent(b)}<small>%</small></span>
