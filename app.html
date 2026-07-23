@@ -16817,7 +16817,8 @@ function analyzeCategories(es90Trim, brandKey, compTrim){
       const isSelectedEsAirOption = it.name.trim()==='에어 서스펜션 및 액티브 섀시'
         && SELECTED_ES_AIR_SUSPENSION_TRIMS.has(es90Trim);
       const ev = isSelectedEsAirOption ? true : it.es90[es90Trim];
-      const cv = it.competitor[compTrim];
+      let cv = it.competitor[compTrim];
+      if(brandKey==='Hyundai' && compTrim==='Premium' && it.name.trim()==='투어링 섀시') cv = null;
       return {name: it.name, es90: ev, comp: cv, category:cat.category};
     });
     let es90Count=0, compCount=0, total=0;
