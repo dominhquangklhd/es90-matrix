@@ -29,7 +29,7 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
     <div class="location-row">
       <div class="field"><label for="province">시·도</label><select id="province"></select></div>
       <div class="field"><label for="district">시군구</label><select id="district"></select></div>
-      <div class="field"><label for="detail">동 또는 상담 메모 · 선택사항</label><input id="detail" placeholder="예: 반포동, 고객 자택 인근"></div>
+      <div class="field"><label for="neighborhood">동</label><select id="neighborhood"></select></div>
       <button class="find" onclick="findChargers()">가까운 충전소 찾기</button>
     </div>
     <div class="privacy">고객 위치는 이 화면에 저장하거나 외부로 전송하지 않는 샘플 방식입니다.</div>
@@ -59,19 +59,32 @@ const regions={
 '대전광역시':['대덕구','동구','서구','유성구','중구'],
 '울산광역시':['남구','동구','북구','울주군','중구'],
 '세종특별자치시':['세종시 전역']};
+const neighborhoods={
+'서울특별시|서초구':['전체','서초동','반포동','방배동','양재동','우면동','잠원동','내곡동'],
+'서울특별시|강남구':['전체','신사동','논현동','압구정동','청담동','삼성동','대치동','도곡동','개포동','수서동'],
+'서울특별시|송파구':['전체','잠실동','신천동','문정동','가락동','방이동','오금동','위례동'],
+'서울특별시|마포구':['전체','공덕동','도화동','서교동','합정동','상암동','망원동','연남동'],
+'부산광역시|해운대구':['전체','우동','중동','좌동','송정동','반여동','재송동'],
+'대구광역시|수성구':['전체','범어동','만촌동','수성동','황금동','두산동','지산동'],
+'인천광역시|연수구':['전체','송도동','연수동','동춘동','옥련동','청학동'],
+'광주광역시|서구':['전체','상무동','치평동','금호동','풍암동','화정동'],
+'대전광역시|유성구':['전체','봉명동','도룡동','관평동','노은동','전민동'],
+'울산광역시|남구':['전체','삼산동','달동','무거동','옥동','신정동'],
+'세종특별자치시|세종시 전역':['전체','나성동','도담동','어진동','보람동','새롬동','한솔동']};
 const baseNames=['센트럴 초고속 충전 라운지','도심 EV 플래그십','테크노밸리 충전소','복합문화센터 충전 허브','광역교통 초고속 충전소'];
-const province=document.getElementById('province'),district=document.getElementById('district');let selected=0,current=[];
+const province=document.getElementById('province'),district=document.getElementById('district'),neighborhood=document.getElementById('neighborhood');let selected=0,current=[];
 function fillProvinces(){province.innerHTML=Object.keys(regions).map(x=>`<option${x==='서울특별시'?' selected':''}>${x}</option>`).join('');fillDistricts('서초구')}
-function fillDistricts(preferred){district.innerHTML=regions[province.value].map(x=>`<option${x===preferred?' selected':''}>${x}</option>`).join('')}
+function fillDistricts(preferred){district.innerHTML=regions[province.value].map(x=>`<option${x===preferred?' selected':''}>${x}</option>`).join('');fillNeighborhoods()}
+function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||['전체'];neighborhood.innerHTML=items.map(x=>`<option value="${x}">${x==='전체'?'동 전체':x}</option>`).join('')}
 function buildData(){const p=province.value,d=district.value;const seed=(p.length+d.length)%5;const distances=[4.8+seed*.3,7.6+seed*.5,12.9+seed*.4,18.2+seed*.6,26.4+seed*.8];current=baseNames.map((n,i)=>({name:`${d} ${n}`,distance:distances[i],power:i===1||i===4?400:350,status:i===3?'전체 충전 중':`${i+1}기 사용 가능`,operator:`샘플 네트워크 ${String.fromCharCode(65+i)}`,address:`${p} ${d} 주요 도로 인근`}))}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(){document.getElementById('list').innerHTML=current.map((s,i)=>`<button class="station ${i===selected?'sel':''}" data-i="${i}"><span class="station-top"><span class="name">${esc(s.name)}</span><span class="distance">${s.distance.toFixed(1)}km</span></span><span class="meta"><span class="power">⚡ ${s.power}kW</span><span class="status">● ${esc(s.status)}</span><span class="operator">${esc(s.operator)}</span></span><span class="address">${esc(s.address)} · 24시간</span><span class="actions"><span class="mini">상세정보</span><span class="mini route">길찾기</span></span></button>`).join('');document.querySelectorAll('.station').forEach(b=>b.onclick=()=>select(+b.dataset.i));document.getElementById('count').textContent=current.length}
 function updateSummary(){document.getElementById('nearest').innerHTML=`${current[0].distance.toFixed(1)}<small>km</small>`;document.getElementById('nearestName').textContent=current[0].name;document.getElementById('within10').innerHTML=`${current.filter(x=>x.distance<=10).length}<small>개</small>`;document.getElementById('within20').innerHTML=`${current.filter(x=>x.distance<=20).length}<small>개</small>`;document.getElementById('available').innerHTML=`${current.filter(x=>!x.status.includes('전체')).length}<small>개소</small>`}
-function findChargers(){selected=0;buildData();render();updateSummary();const label=`${province.value} ${district.value}`;document.getElementById('mapRegion').textContent=label;document.getElementById('homeLabel').textContent=`${district.value} 기준 위치`;notice(`${label} 기준의 샘플 결과입니다.`)}
+function findChargers(){selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;document.getElementById('mapRegion').textContent=label;document.getElementById('homeLabel').textContent=`${dong?neighborhood.value:district.value} 기준 위치`;notice(`${label} 기준의 샘플 결과입니다.`)}
 function select(i){selected=i;document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',+p.dataset.i===i));render()}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){if(document.referrer&&new URL(document.referrer).origin===location.origin)history.back();else location.href='./app.html'}
-province.onchange=()=>fillDistricts();document.querySelectorAll('.pin').forEach(p=>p.onclick=()=>select(+p.dataset.i));fillProvinces();findChargers();
+province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;document.querySelectorAll('.pin').forEach(p=>p.onclick=()=>select(+p.dataset.i));fillProvinces();findChargers();
 </script>
 </body>
 </html>
