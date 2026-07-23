@@ -1331,7 +1331,7 @@ body.cover-open{overflow:hidden;background:#05070a;}
 .login-visit-label{color:rgba(226,232,236,.72);}
 .login-visit-sep{color:rgba(226,232,236,.34);}
 .login-visit-sep-wide{margin:0 7px;}
-.login-visit-stats strong{color:rgba(255,255,255,.78);font-size:inherit;font-weight:600;}
+.login-visit-stats strong{color:#fff;font-size:inherit;font-weight:650;}
 .login-footer-since{color:inherit;font:inherit;letter-spacing:inherit;white-space:nowrap;}
 .login-footer-since:before{content:'·';margin-right:8px;color:inherit;}
 @media screen and (min-width:821px) and (max-width:1366px) and (orientation:landscape){
@@ -1390,7 +1390,7 @@ body.cover-open{overflow:hidden;background:#05070a;}
       </div>
       <button class="login-submit" type="submit"><span class="login-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="5.5"/><path d="M12 2.8V9"/><path d="M6.8 10h10.4"/><path d="M12 5.2v1.6"/></svg></span><span class="login-submit-text">ES90 경쟁력 분석 시작</span></button>
       <div class="login-message" id="loginCoverMessage" aria-live="polite"></div>
-      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite"><span class="login-visit-label">접속 현황</span><span class="login-visit-sep">·</span><span>오늘 <strong id="loginTodayVisitors">—</strong></span><span class="login-visit-sep login-visit-sep-wide">·</span><span>누적 <strong id="loginTotalVisitors">—</strong></span></div>
+      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite"><span class="login-visit-label">접속 현황</span><span class="login-visit-sep">·</span><span>오늘 <strong id="loginTodayVisitors">—</strong>명</span><span class="login-visit-sep login-visit-sep-wide">·</span><span>누적 <strong id="loginTotalVisitors">—</strong>명</span></div>
       <div class="login-security"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" stroke-width="1.7"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke-width="1.7" stroke-linecap="round"/></svg><span>볼보 공식 딜러사 소속 영업직원 · 스페셜리스트만 이용 가능합니다.</span></div>
       <div class="login-footer"><span>Copyright (C) Volvo Car Korea. All rights reserved.</span><span class="login-footer-since">Since 260722</span></div>
     </form>
@@ -19426,8 +19426,8 @@ async function hashCdsid(value){
 function renderEs90VisitStats(stats){
   const total = document.getElementById('loginTotalVisitors');
   const today = document.getElementById('loginTodayVisitors');
-  if(total) total.textContent = `${Number(stats?.total_visitors||0).toLocaleString('ko-KR')}명`;
-  if(today) today.textContent = `${Number(stats?.today_visitors||0).toLocaleString('ko-KR')}명`;
+  if(total) total.textContent = Number(stats?.total_visitors||0).toLocaleString('ko-KR');
+  if(today) today.textContent = Number(stats?.today_visitors||0).toLocaleString('ko-KR');
 }
 
 async function syncEs90VisitStats(visitorHash=''){
