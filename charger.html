@@ -96,7 +96,7 @@ function updateSummary(){document.getElementById('nearest').innerHTML=`${current
 function findChargers(){selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;document.getElementById('mapRegion').textContent=label;document.getElementById('homeLabel').textContent=`${dong?neighborhood.value:district.value} 기준 위치`;notice(`${label} 기준의 샘플 결과입니다.`)}
 function select(i){selected=i;document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',+p.dataset.i===i));render()}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
-function goBack(){if(document.referrer&&new URL(document.referrer).origin===location.origin)history.back();else location.href='./app.html'}
+function goBack(){location.href='./app.html?returnStep=3'}
 province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;document.querySelectorAll('.pin').forEach(p=>p.onclick=()=>select(+p.dataset.i));fillProvinces();findChargers();
 </script>
 </body>

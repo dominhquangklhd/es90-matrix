@@ -16562,6 +16562,7 @@ const STATE = {
   activeTab: null,
   profile: null
 };
+const CHARGER_RETURN_STATE_KEY = 'es90_charger_return_state';
 
 const ES_AIR_SUSPENSION_OPTION_PRICES = {
   'Single Motor Ultra': 2860000,
@@ -17126,7 +17127,35 @@ function openAdminEmail(){
   window.location.href = 'mailto:?subject=ES90%20경쟁력%20분석%20데이터%20수정%20요청%28%2A구체적으로%20기술%29';
 }
 function open350kwChargerNetwork(){
+  sessionStorage.setItem(CHARGER_RETURN_STATE_KEY, JSON.stringify({
+    es90Trim: STATE.es90Trim,
+    group: STATE.group,
+    brandKey: STATE.brandKey,
+    compTrim: STATE.compTrim
+  }));
   window.location.href = './charger.html';
+}
+
+function restoreChargerReturnStep(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('returnStep') !== '3') return false;
+  try{
+    const saved = JSON.parse(sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || 'null');
+    if(!saved?.es90Trim || !saved?.group || !saved?.brandKey || !saved?.compTrim) return false;
+    STATE.es90Trim = saved.es90Trim;
+    STATE.group = saved.group;
+    STATE.brandKey = saved.brandKey;
+    STATE.compTrim = saved.compTrim;
+    STATE.maxStep = 3;
+    renderStep2();
+    renderStep4();
+    showPanel(3);
+    sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
+    history.replaceState(null, '', window.location.pathname);
+    return true;
+  }catch(_){
+    return false;
+  }
 }
 
 const STEP_LABELS = ['Volvo ES90 선택','비교모델 및 트림 선택','종합분석 결과'];
@@ -19879,7 +19908,7 @@ function initLoginCover(){
         button.disabled = false;
         button.removeAttribute('aria-busy');
         requestAnimationFrame(()=>{
-          showPanel(1);
+          if(!restoreChargerReturnStep()) showPanel(1);
           window.scrollTo({top:0,behavior:'auto'});
         });
       },transitionDelay);
@@ -19900,7 +19929,7 @@ function initLoginCover(){
     lastActivityWrite = Date.now();
     closeLoginCover();
     requestAnimationFrame(()=>{
-      showPanel(1);
+      if(!restoreChargerReturnStep()) showPanel(1);
       window.scrollTo({top:0,behavior:'auto'});
     });
   }else{
