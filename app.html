@@ -784,8 +784,8 @@ button{font-family:inherit;}
   .login-cover-visual { bottom:0!important; min-height:100%!important; }
 }
 
-/* iPad STEP 1: keep the full selection screen fixed during finger gestures. */
-body.ipad-step1-scroll-lock{
+/* iPad STEPS 1–2: keep the selection screens fixed during finger gestures. */
+body.ipad-selection-scroll-lock{
   position:fixed;
   inset:0;
   width:100%;
@@ -17205,10 +17205,10 @@ const STEP_PANEL_IDS = ['panel1','panel2','panel4'];
 function syncIpadStep1ScrollLock(step){
   const isIpad = /iPad/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   const isIpadViewport = window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
-  document.body.classList.toggle('ipad-step1-scroll-lock', isIpad && isIpadViewport && step===1 && !document.body.classList.contains('cover-open'));
+  document.body.classList.toggle('ipad-selection-scroll-lock', isIpad && isIpadViewport && step<=2 && !document.body.classList.contains('cover-open'));
 }
 document.addEventListener('touchmove',event=>{
-  if(document.body.classList.contains('ipad-step1-scroll-lock')) event.preventDefault();
+  if(document.body.classList.contains('ipad-selection-scroll-lock')) event.preventDefault();
 },{passive:false});
 function showPanel(n){
   const previousStep = STATE.step || n;
@@ -19170,7 +19170,7 @@ function logoutToLogin(){
   const savedPopup = document.getElementById('loginSavedId');
   cover?.classList.remove('is-leaving','is-revealing');
   if(cover) cover.hidden = false;
-  document.body.classList.remove('ipad-step1-scroll-lock');
+  document.body.classList.remove('ipad-selection-scroll-lock');
   document.body.classList.add('cover-open');
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
   if(input){ input.value = ''; input.blur(); }
@@ -19770,7 +19770,7 @@ function initLoginCover(){
     button.removeAttribute('aria-busy');
     cover?.classList.remove('is-leaving','is-revealing');
     if(cover) cover.hidden = false;
-    document.body.classList.remove('ipad-step1-scroll-lock');
+    document.body.classList.remove('ipad-selection-scroll-lock');
     document.body.classList.add('cover-open');
     if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:true},window.location.origin);
     input.value = '';
