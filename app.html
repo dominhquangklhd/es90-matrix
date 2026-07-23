@@ -496,6 +496,7 @@ button{font-family:inherit;}
 .waitlist-icon-legend{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:16px;margin:10px 2px 0;color:var(--ink-faint);font-size:9px;}
 .waitlist-icon-legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
 .waitlist-icon-legend .waitlist-status-icon{width:28px;height:24px;border-radius:7px;flex:0 0 auto;}
+.waitlist-card .waitlist-footnote{position:relative;top:-7px;}
 .tax-benefit-badge,.subsidy-benefit-badge{display:inline-flex;align-items:center;min-height:16px;padding:1px 6px;border-radius:999px;font-size:7.5px;font-weight:700;line-height:1;white-space:nowrap;}
 .tax-benefit-badge{color:#2f6748;background:#edf7f0;border:1px solid #b9d8c4;}
 .subsidy-benefit-badge{color:#376282;background:#edf5fb;border:1px solid #bdd2e2;}
@@ -17395,8 +17396,8 @@ function renderStep1(){
         <span><i class="waitlist-status-icon is-subsidy"><b>50%</b></i>보조금 50% 적용</span>
         <span><i class="waitlist-status-icon is-eco"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></i>친환경차 세제혜택</span>
       </div>
-      <div class="spec-excluded-note" style="margin-top:24px;padding:0;"><span class="note-flag">🚧</span><span>상기 정보는 Update 시점 기준, 잔여예약 현황이며 수시로 변경될 수 있습니다.</span></div>
-      <div class="spec-excluded-note" style="margin-top:5px;padding:0;"><span class="note-flag">🚧</span><span>Single Motor ER Ultra 및 Twin Motor Ultra 경우, 에어 서스펜션 제외 후 가격</span></div>
+      <div class="spec-excluded-note waitlist-footnote" style="margin-top:24px;padding:0;"><span class="note-flag">🚧</span><span>상기 정보는 Update 시점 기준, 잔여예약 현황이며 수시로 변경될 수 있습니다.</span></div>
+      <div class="spec-excluded-note waitlist-footnote" style="margin-top:5px;padding:0;"><span class="note-flag">🚧</span><span>Single Motor ER Ultra 및 Twin Motor Ultra 경우, 에어 서스펜션 제외 후 가격</span></div>
     </div>
   `;
   const wrap = panel.querySelector('#trimGroupWrap');
