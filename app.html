@@ -17347,7 +17347,7 @@ function renderStep1(){
           return `
           <div class="waitlist-bar-col" onclick="selectTrimFromWaitlist('${t.trim}', this)">
             ${isTop? `<div class="waitlist-best-badge">★ 실시간 BEST</div>` : ''}
-            <div class="waitlist-price-row"><div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div><span class="tax-benefit-badge">친환경차 세제혜택</span>${['Single Motor Ultra','Single Motor Plus','Twin Motor Plus'].includes(t.trim)?'<span class="subsidy-benefit-badge">보조금 50% 적용</span>':''}</div>
+            <div class="waitlist-price-row"><div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div><span class="tax-benefit-badge">친환경차 세제혜택</span>${['Single Motor Ultra','Single Motor Plus','Twin Motor Plus'].includes(t.trim)?'<span class="subsidy-benefit-badge">보조금 50% 적용가능</span>':''}</div>
             <div class="waitlist-bar-track"><div class="waitlist-bar-fill${isTop?'':' navy'}" data-h="${h}" style="height:0%;"></div></div>
             <div class="waitlist-bar-count">${t.count}<span class="waitlist-bar-pct">(${pct}%)</span></div>
             <div class="waitlist-bar-label">${es90TrimDisplay(t.trim)}</div>
