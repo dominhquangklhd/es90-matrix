@@ -968,6 +968,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .group-brand-list{margin-top:13px!important;padding-top:12px!important;border-top:1px solid var(--line-soft)!important;}
 .picker-section-label{display:flex;align-items:center;min-height:43px;margin:20px 0 0!important;padding:0 14px!important;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:#f7f9fa;color:var(--navy-deep)!important;font-size:12px!important;font-weight:600!important;}
 .brand-pick-grid,.trim-pick-grid{margin:0!important;padding:14px!important;border:1px solid var(--line);border-radius:0 0 12px 12px;background:#fff;gap:8px!important;}
+.picker-empty-state{grid-column:1/-1;display:flex;align-items:center;justify-content:center;min-height:56px;color:var(--ink-faint);font-size:11px;font-weight:500;text-align:center;}
 .brand-pick-grid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;align-items:stretch;}
 .brand-pick-card{position:relative;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;min-width:0!important;min-height:78px!important;padding:8px 10px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:#fff!important;color:#495c6b!important;box-shadow:none!important;text-align:left!important;}
 .brand-pick-thumb{display:grid;place-items:center;flex:0 0 68px;width:68px;height:54px;overflow:hidden;border-radius:8px;background:#f3f6f8;}
@@ -17396,17 +17397,18 @@ function renderStep2(){
 function renderBrandTrimSection(){
   const container = document.getElementById('brandTrimSection');
   if(!container) return;
-  if(!STATE.group){
-    container.innerHTML = '';
-    return;
-  }
-  const group = GROUPS[STATE.group];
   container.innerHTML = `
     <div class="picker-section-label">경쟁 브랜드 선택</div>
     <div class="brand-pick-grid" id="brandPickGrid"></div>
     <div id="trimPickWrap"></div>
   `;
   const grid = container.querySelector('#brandPickGrid');
+  if(!STATE.group){
+    grid.innerHTML = '<div class="picker-empty-state">직접 경쟁 또는 간접 경쟁을 선택하면 브랜드가 표시됩니다.</div>';
+    renderTrimPick();
+    return;
+  }
+  const group = GROUPS[STATE.group];
   group.brands.forEach(b=>{
     const imgSrc = BRAND_IMAGES[b];
     const card = el(`
@@ -17433,25 +17435,23 @@ function renderBrandTrimSection(){
     });
     grid.appendChild(card);
   });
-  if(STATE.brandKey){
-    renderTrimPick();
-  }
+  renderTrimPick();
 }
 
 function renderTrimPick(){
   const wrap = document.getElementById('trimPickWrap');
   if(!wrap) return;
-  if(!STATE.brandKey){
-    wrap.innerHTML = '';
-    return;
-  }
-  const brandKey = STATE.brandKey;
-  const trims = getAvailableCompTrimsSorted(brandKey);
   wrap.innerHTML = `
     <div class="picker-section-label">트림/ 가격 선택</div>
     <div class="trim-pick-grid" id="trimPickGrid"></div>
   `;
   const grid = wrap.querySelector('#trimPickGrid');
+  if(!STATE.brandKey){
+    grid.innerHTML = '<div class="picker-empty-state">경쟁 브랜드를 선택하면 트림과 가격이 표시됩니다.</div>';
+    return;
+  }
+  const brandKey = STATE.brandKey;
+  const trims = getAvailableCompTrimsSorted(brandKey);
   trims.forEach(t=>{
     const p = getCompPrice(brandKey, t);
     const priceLabel = p ? fmtWon(p.total) : '가격 미정';
