@@ -976,11 +976,15 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .brand-pick-grid,.trim-pick-grid{margin:0!important;padding:14px!important;border:1px solid var(--line);border-radius:0 0 12px 12px;background:#fff;gap:8px!important;}
 .picker-empty-state{grid-column:1/-1;display:flex;align-items:center;justify-content:center;min-height:56px;color:var(--ink-faint);font-size:11px;font-weight:500;text-align:center;}
 .brand-pick-grid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;align-items:stretch;}
-.brand-pick-card{position:relative;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;min-width:0!important;min-height:78px!important;padding:8px 10px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:#fff!important;color:#495c6b!important;box-shadow:none!important;text-align:left!important;}
+.brand-pick-card{position:relative;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;min-width:0!important;min-height:96px!important;padding:9px 10px 27px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:#fff!important;color:#495c6b!important;box-shadow:none!important;text-align:left!important;}
 .brand-pick-thumb{display:grid;place-items:center;flex:0 0 68px;width:68px;height:54px;overflow:hidden;border-radius:8px;background:#f3f6f8;}
 .brand-pick-thumb img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;}
 .brand-pick-card[data-brand="Polestar 3"] .brand-pick-thumb img{width:82%;height:82%;}
 .brand-pick-name{min-width:0;color:inherit;font-size:12px;font-weight:600;line-height:1.35;overflow-wrap:anywhere;}
+.brand-selection-share{position:absolute;right:10px;bottom:7px;color:#477da9;font-size:18px;font-weight:800;line-height:1;letter-spacing:-.5px;}
+.brand-selection-share small{margin-left:1px;font-size:11px;font-weight:750;letter-spacing:0;}
+.brand-pick-card.is-popular-top{border-color:var(--orange)!important;background:linear-gradient(145deg,#fff,#fff5f0)!important;}
+.brand-pick-card.is-popular-top .brand-selection-share{color:var(--orange-deep);}
 .brand-pick-card:hover,.brand-pick-card.sel{border-color:var(--orange)!important;background:var(--orange-bg)!important;color:var(--orange-deep)!important;box-shadow:0 0 0 2px rgba(241,90,36,.09)!important;}
 .brand-pick-card:hover .brand-pick-thumb,.brand-pick-card.sel .brand-pick-thumb{background:#fff;}
 .brand-discontinued-badge{position:absolute;right:-5px;top:-8px;z-index:2;padding:3px 7px;border:1px solid #f0b69f;border-radius:999px;background:#fff4ef;color:#c84b20;font-size:8.5px;font-weight:700;line-height:1;white-space:nowrap;box-shadow:0 2px 6px rgba(16,42,67,.08);}
@@ -1105,7 +1109,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
   .result-hero{top:144px;}
   .result-title{font-size:20px!important;}
   .brand-pick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
-  .brand-pick-card{min-height:70px!important;}
+  .brand-pick-card{min-height:88px!important;padding-bottom:25px!important;}
   .brand-pick-thumb{flex-basis:58px;width:58px;height:46px;}
   .footer-actions{grid-template-columns:1fr!important;}
 }
@@ -1146,7 +1150,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
   #panel2 .group-card{min-height:268px;padding:22px!important;}
   #panel2 .picker-section-label{min-height:46px;margin-top:18px!important;}
   #panel2 .brand-pick-grid{min-height:142px;padding:16px!important;gap:10px!important;}
-  #panel2 .brand-pick-card{min-height:72px!important;padding:9px 11px!important;}
+  #panel2 .brand-pick-card{min-height:96px!important;padding:9px 11px 27px!important;}
   #panel2 .trim-pick-grid{min-height:142px;padding:16px!important;align-content:start;}
   #panel2 .picker-empty-state:only-child{min-height:108px;align-self:stretch;justify-self:stretch;}
   #panel2 .trim-pick-card{min-height:58px;padding:13px 15px!important;}
@@ -17201,11 +17205,22 @@ const RESERVATION_DATA = {
   ]
 };
 let GROUP_SELECTION_STATS = {direct_count:0, indirect_count:0, total_count:0};
+let BRAND_SELECTION_STATS = {};
+let BRAND_SELECTION_TOTAL = 0;
 function getGroupSelectionPercent(key){
   const total = Number(GROUP_SELECTION_STATS.total_count||0);
   if(total <= 0) return 0;
   const direct = Math.round(Number(GROUP_SELECTION_STATS.direct_count||0) / total * 100);
   return key === 'direct' ? direct : 100 - direct;
+}
+function getBrandSelectionPercent(brand){
+  if(BRAND_SELECTION_TOTAL <= 0) return 0;
+  return Math.round(Number(BRAND_SELECTION_STATS[brand]||0) / BRAND_SELECTION_TOTAL * 100);
+}
+function isTopBrandInCurrentGroup(brand){
+  const brands = GROUPS[STATE.group]?.brands || [];
+  const topCount = Math.max(0,...brands.map(key=>Number(BRAND_SELECTION_STATS[key]||0)));
+  return topCount > 0 && Number(BRAND_SELECTION_STATS[brand]||0) === topCount;
 }
 function getDocumentUpdatedAt(){
   return D.meta.updated;
@@ -17411,6 +17426,7 @@ function renderStep2(){
   renderBrandTrimSection();
   updateCompareBtn();
   syncEs90ComparisonStats().catch(()=>{});
+  syncEs90ComparisonBrandStats().catch(()=>{});
 }
 
 function renderBrandTrimSection(){
@@ -17431,10 +17447,11 @@ function renderBrandTrimSection(){
   group.brands.forEach(b=>{
     const imgSrc = BRAND_IMAGES[b];
     const card = el(`
-      <div class="brand-pick-card${STATE.brandKey===b?' sel':''}" data-brand="${b}" role="button" tabindex="0" aria-label="${BRAND_DISPLAY_FULL[b]} 트림 및 가격 보기">
+      <div class="brand-pick-card${STATE.brandKey===b?' sel':''}${isTopBrandInCurrentGroup(b)?' is-popular-top':''}" data-brand="${b}" role="button" tabindex="0" aria-label="${BRAND_DISPLAY_FULL[b]} 트림 및 가격 보기, 선택 비중 ${getBrandSelectionPercent(b)}%">
         ${b==='Tesla Model S'?'<span class="brand-discontinued-badge">2026년 6월 단종</span>':b==='BMW 6 Series GT'?'<span class="brand-discontinued-badge">2024년 12월 단종</span>':''}
         <span class="brand-pick-thumb">${imgSrc?`<img src="${imgSrc}" alt="">`:''}</span>
         <span class="brand-pick-name">${b==='Tesla' ? 'Tesla Model Y<span class="brand-pick-subname">Longwheelbase</span>' : BRAND_DISPLAY_FULL[b]}</span>
+        <span class="brand-selection-share" data-brand-share="${b}">${getBrandSelectionPercent(b)}<small>%</small></span>
       </div>
     `);
     const activateBrand = ()=>{
