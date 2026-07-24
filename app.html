@@ -489,6 +489,7 @@ button{font-family:inherit;}
 .waitlist-total-num{font-size:44px;font-weight:900;color:#b8460a;line-height:1;letter-spacing:-0.5px;}
 .waitlist-total-unit{font-size:18px;font-weight:700;margin-left:2px;}
 .waitlist-total-label{font-size:13px;color:var(--ink-soft);font-weight:600;}
+.waitlist-total-copy{display:inline-flex;align-items:baseline;gap:4px;white-space:nowrap;}
 .waitlist-daily-change{font-size:11px;color:rgba(184,70,10,.62);font-weight:500;letter-spacing:-.15px;white-space:nowrap;}
 .waitlist-bars{display:flex;align-items:stretch;gap:14px;padding-top:24px;}
 .waitlist-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;cursor:pointer;border-radius:10px;padding:4px 2px 0;transition:none;}
@@ -17735,8 +17736,7 @@ function renderStep1(){
       </div>
       <div class="waitlist-total-row">
         <div class="waitlist-total-num"><span class="waitlist-total-value" data-target="${RESERVATION_DATA.total}" aria-label="${RESERVATION_DATA.total.toLocaleString('ko-KR')}"></span><span class="waitlist-total-unit">명</span></div>
-        <div class="waitlist-total-label">누적 예약고객</div>
-        <div class="waitlist-daily-change">(+전일대비 ${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}% 증가)</div>
+        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">(+전일대비 ${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}% 증가)</div></div>
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
