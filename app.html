@@ -16741,6 +16741,7 @@ const STATE = {
 };
 const CHARGER_RETURN_STATE_KEY = 'es90_charger_return_state';
 const CHARGER_LAST_STEP3_STATE_KEY = 'es90_charger_last_step3_state';
+let PRESERVE_CHARGER_RETURN = new URLSearchParams(window.location.search).get('returnStep') === '3';
 
 const ES_AIR_SUSPENSION_OPTION_PRICES = {
   'Single Motor Ultra': 2860000,
@@ -17450,8 +17451,8 @@ function restoreChargerReturnStep(){
     renderStep2();
     renderStep4();
     showPanel(3);
+    PRESERVE_CHARGER_RETURN = true;
     sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
-    history.replaceState(null, '', window.location.pathname);
     return true;
   }catch(_){
     return false;
@@ -17511,6 +17512,12 @@ function navigateToStep(n){
     return;
   }
   if(n > STATE.maxStep || n === STATE.step) return;
+  if(n !== 3 && PRESERVE_CHARGER_RETURN){
+    PRESERVE_CHARGER_RETURN = false;
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('returnStep');
+    history.replaceState(null, '', `${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+  }
   if(n <= 1){
     if(PENDING_DEPLOYED_VERSION){
       window.location.reload();
@@ -17678,7 +17685,7 @@ async function syncDeploymentUpdatedAt(){
     const deployedVersion = String(versionInfo.version||'');
     if(LAST_DEPLOYED_VERSION===null) LAST_DEPLOYED_VERSION = deployedVersion;
     else if(deployedVersion && deployedVersion!==LAST_DEPLOYED_VERSION){
-      if(STATE.step === 1){
+      if(STATE.step === 1 && !PRESERVE_CHARGER_RETURN){
         window.location.reload();
         return;
       }
