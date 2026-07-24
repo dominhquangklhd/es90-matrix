@@ -469,10 +469,10 @@ button{font-family:inherit;}
 .waitlist-total-unit{font-size:18px;font-weight:700;margin-left:2px;}
 .waitlist-total-label{font-size:13px;color:var(--ink-soft);font-weight:600;}
 .waitlist-bars{display:flex;align-items:stretch;gap:14px;padding-top:24px;}
-.waitlist-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;cursor:pointer;border-radius:10px;padding:4px 2px 0;transition:background .15s,transform .1s;}
-.waitlist-bar-col:hover{background:rgba(28,61,90,.05);}
-.waitlist-bar-col:hover .waitlist-bar-track{filter:brightness(1.03);}
-.waitlist-bar-col.sel{background:rgba(253,100,8,.09);transform:translateY(-2px);}
+.waitlist-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;cursor:pointer;border-radius:10px;padding:4px 2px 0;transition:none;}
+.waitlist-bar-col:hover{background:transparent;}
+.waitlist-bar-col:hover .waitlist-bar-track{filter:none;}
+.waitlist-bar-col.sel{background:transparent;transform:none;}
 .waitlist-bar-price{font-size:10px;font-weight:700;color:var(--navy);background:rgba(28,61,90,.07);border:1px solid rgba(28,61,90,.18);border-radius:20px;padding:2.5px 9px;margin-bottom:7px;white-space:nowrap;letter-spacing:0px;}
 .waitlist-bar-price.isTop{color:var(--orange-deep);background:rgba(214,82,10,.08);border-color:rgba(214,82,10,.3);}
 .waitlist-price-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:7px;}
@@ -1002,7 +1002,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .waitlist-bar-track{background:#edf1f4!important;border-radius:7px 7px 0 0!important;overflow:hidden;}
 .waitlist-bar-fill{background:linear-gradient(180deg,#ff7b45,var(--orange))!important;}
 .waitlist-bar-fill.navy{background:linear-gradient(180deg,#476b88,var(--navy))!important;}
-.waitlist-bar-col{border-radius:10px;transition:background .16s ease;}
+.waitlist-bar-col{border-radius:10px;transition:none;}
 .waitlist-bar-col:hover{background:#f7f9fa;}
 
 /* Competitive vehicle filters */
@@ -17415,11 +17415,9 @@ const TRIM_GROUPS = [
   }
 ];
 // item: 대기고객 막대그래프 클릭 시 해당 트림을 선택하고 바로 STEP2로 이동
-function selectTrimFromWaitlist(trim, colEl){
+function selectTrimFromWaitlist(trim){
   STATE.es90Trim = trim;
-  document.querySelectorAll('.waitlist-bar-col').forEach(c=>c.classList.remove('sel'));
-  if(colEl) colEl.classList.add('sel');
-  setTimeout(openStep2WithDirectDefault, 180);
+  openStep2WithDirectDefault();
 }
 function renderStep1(){
   const panel = document.getElementById('panel1');
@@ -17456,7 +17454,7 @@ function renderStep1(){
           const price = getES90Price(t.trim);
           const priceLbl = price? fmtWonRange(price.total, t.trim) : '';
           return `
-          <div class="waitlist-bar-col" onclick="selectTrimFromWaitlist('${t.trim}', this)">
+          <div class="waitlist-bar-col" onclick="selectTrimFromWaitlist('${t.trim}')">
             <div class="waitlist-meta">
               <div class="waitlist-best-row${isTop?'':' is-placeholder'}"><span class="waitlist-best-label">★ 실시간 BEST</span></div>
               <div class="waitlist-status-icons">
