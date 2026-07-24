@@ -33,6 +33,16 @@ main{max-width:1280px;margin:auto;padding:22px 20px 42px}.hero{position:relative
 .charger-mix{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;color:#587080;font-size:8.5px;font-weight:500;white-space:nowrap}.mix-type{display:inline-flex;align-items:center;gap:3px}.mix-type i{display:inline-grid;place-items:center;width:15px;height:15px;border:1px solid #b8c8d2;border-radius:4px;background:#f7fafb;color:#385a72;font-size:8px;font-style:normal;font-weight:700}.mix-type.fast i{border-color:#adc4d2;background:#f3f8fb;color:#2f617e}.mix-type.hyper i{border-color:#d9b1a3;background:#fff7f3;color:#c76648}.mix-type em{font-style:normal}.mix-type b{min-width:1.2ch;color:var(--navy);font-weight:700;font-variant-numeric:tabular-nums;text-align:right}.address{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;padding:0 4px;color:var(--faint);font-size:8.5px;font-weight:400;line-height:1.6}.toast{position:fixed;left:50%;bottom:26px;z-index:50;padding:11px 17px;border-radius:8px;background:rgba(7,27,44,.95);color:#fff;font-size:10px;font-weight:500;opacity:0;transform:translate(-50%,12px);transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){.location-row{grid-template-columns:1fr 1fr}.find{height:41px}.summary{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.map{min-height:390px}.list{max-height:none}}@media(max-width:600px){main{padding:13px 11px 30px}.top-in{min-height:60px;padding:8px 12px;gap:8px}.top-actions{gap:5px}.meta-pill{padding:6px 8px;font-size:9px}.logout-btn{width:30px;padding:0;justify-content:center}.logout-btn span{display:none}.hero{padding:22px 18px}.hero:after{font-size:112px}.location{margin:-7px 0 0;padding:13px}.location-head{align-items:flex-start;flex-direction:column}.location-row{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.metric{min-height:76px;padding:12px}.metric-value{font-size:19px}.map{min-height:330px}footer{flex-direction:column}}
+@media screen and (min-width:901px){
+  html,body{height:100%;overflow:hidden}
+  main{height:calc(100dvh - 76px);padding-bottom:14px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);overflow:hidden}
+  .grid{min-height:0}
+  .grid>.panel{min-height:0}
+  .map-panel .map{height:100%;min-height:0}
+  .station-list-panel{display:flex;min-height:0;flex-direction:column}
+  .station-list-panel .head{flex:0 0 auto}
+  .station-list-panel .list{height:auto;min-height:0;flex:1 1 auto;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+}
 </style>
 </head>
 <body>
