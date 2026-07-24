@@ -16566,6 +16566,7 @@ const STATE = {
   profile: null
 };
 const CHARGER_RETURN_STATE_KEY = 'es90_charger_return_state';
+const CHARGER_LAST_STEP3_STATE_KEY = 'es90_charger_last_step3_state';
 
 const ES_AIR_SUSPENSION_OPTION_PRICES = {
   'Single Motor Ultra': 2860000,
@@ -17130,12 +17131,14 @@ function openAdminEmail(){
   window.location.href = 'mailto:?subject=ES90%20경쟁력%20분석%20데이터%20수정%20요청%28%2A구체적으로%20기술%29';
 }
 function open350kwChargerNetwork(){
-  sessionStorage.setItem(CHARGER_RETURN_STATE_KEY, JSON.stringify({
+  const returnState = JSON.stringify({
     es90Trim: STATE.es90Trim,
     group: STATE.group,
     brandKey: STATE.brandKey,
     compTrim: STATE.compTrim
-  }));
+  });
+  sessionStorage.setItem(CHARGER_RETURN_STATE_KEY, returnState);
+  localStorage.setItem(CHARGER_LAST_STEP3_STATE_KEY, returnState);
   window.location.href = './charger.html';
 }
 
@@ -17143,7 +17146,7 @@ function restoreChargerReturnStep(){
   const params = new URLSearchParams(window.location.search);
   if(params.get('returnStep') !== '3') return false;
   try{
-    const saved = JSON.parse(sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || 'null');
+    const saved = JSON.parse(sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || localStorage.getItem(CHARGER_LAST_STEP3_STATE_KEY) || 'null');
     if(!saved?.es90Trim || !saved?.group || !saved?.brandKey || !saved?.compTrim) return false;
     STATE.es90Trim = saved.es90Trim;
     STATE.group = saved.group;
@@ -17263,6 +17266,14 @@ function showPanel(n){
   };
   const direction = previousStep === n ? '' : (n > previousStep ? 'forward' : 'back');
   swapPanel();
+  if(n===3 && STATE.es90Trim && STATE.group && STATE.brandKey && STATE.compTrim){
+    localStorage.setItem(CHARGER_LAST_STEP3_STATE_KEY, JSON.stringify({
+      es90Trim:STATE.es90Trim,
+      group:STATE.group,
+      brandKey:STATE.brandKey,
+      compTrim:STATE.compTrim
+    }));
+  }
   syncIpadStep1ScrollLock(n);
   if(n===1) setTimeout(()=>playWaitlistTotalAnimation(true),80);
   const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
