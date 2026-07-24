@@ -1373,9 +1373,7 @@ body.cover-open{overflow:hidden;background:#05070a;}
   96%{opacity:.28;background-size:0 100%;transform:translate(-194px,112px) rotate(-27deg);}
   100%{opacity:0;background-size:0 100%;transform:translate(-202px,116px) rotate(-27deg);}
 }
-/* 로그인 타이틀 장식은 꼬리 없이 별만 천천히 회전한다. */
-.login-meteors b,.login-meteors b.hero-meteor{background:none;opacity:1;transform:none;filter:none;animation:none;}
-.login-meteors b:not(.hero-meteor){display:none;}
+/* 유성의 기존 이동은 유지하고 선 끝의 별 모양만 천천히 회전한다. */
 .login-meteors b:before,.login-meteors b:after{transform-origin:50% 50%;animation:loginStarTurn 16s linear infinite;}
 @keyframes loginStarTurn{
   from{transform:translateY(-50%) rotate(0deg);}
