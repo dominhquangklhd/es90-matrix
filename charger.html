@@ -107,7 +107,7 @@ const regionCenters={
 '제주특별자치도':[33.4996,126.5312]};
 const stationOffsets=[[-.022,-.018],[.016,.027],[-.031,.038],[-.043,-.034],[.048,.046]];
 const province=document.getElementById('province'),district=document.getElementById('district'),neighborhood=document.getElementById('neighborhood');let selected=0,current=[];
-let map,mapMarkers=[],homeMarker,radiusCircle;
+let map,mapMarkers=[],homeMarker,radiusCircle,activeStationTooltip;
 let administrativeCenters={};
 async function loadAdministrativeAreas(){
   const [response,centerResponse]=await Promise.all([
@@ -148,13 +148,13 @@ function renderMap(label){
   }
   mapMarkers.forEach(marker=>marker.remove());
   mapMarkers=[];
+  if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}
   if(homeMarker)homeMarker.remove();
   if(radiusCircle)radiusCircle.remove();
   homeMarker=L.marker(center,{icon:L.divIcon({className:'home-marker-wrap',html:'<div class="home-marker"><span class="customer-person"></span></div>',iconSize:[44,48],iconAnchor:[22,46]})}).addTo(map).bindTooltip(`${label} 고객 선택 위치`,{direction:'bottom',offset:[0,10]});
   radiusCircle=L.circle(center,{radius:5000,color:'#ef6b37',weight:1,dashArray:'5 5',fillColor:'#ef6b37',fillOpacity:.035,interactive:false}).addTo(map);
   current.forEach((station,i)=>{
     const marker=L.marker([station.lat,station.lng],{icon:chargerIcon(i,i===selected)}).addTo(map);
-    marker.bindTooltip(`${i+1}. ${station.name}`,{direction:'top',offset:[0,-24]});
     marker.on('click',()=>select(i,true));
     mapMarkers.push(marker);
   });
@@ -163,7 +163,7 @@ function renderMap(label){
   setTimeout(()=>map.invalidateSize(),0);
 }
 function findChargers(){selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;document.getElementById('mapRegion').textContent=label;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
-function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(!fromMap&&mapMarkers[i]){map.panTo(mapMarkers[i].getLatLng());mapMarkers[i].openTooltip()}}
+function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}homeMarker?.closeTooltip();const marker=mapMarkers[i];if(marker){if(!fromMap)map.panTo(marker.getLatLng());activeStationTooltip=L.tooltip({direction:'top',offset:[0,-24],permanent:false,interactive:false}).setLatLng(marker.getLatLng()).setContent(`${i+1}. ${esc(current[i].name)}`).addTo(map)}}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
 let chargerPageReady=false;
