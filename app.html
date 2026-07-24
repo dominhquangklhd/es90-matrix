@@ -177,6 +177,7 @@ button{font-family:inherit;}
 .hero-es-trim-selected-main,.hero-es-trim-selected-sub{display:inline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .hero-es-trim-selected-sub{margin-left:5px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.72);letter-spacing:.12px;}
 .hero-es-trim-trigger,.hero-comp-trim-trigger{position:relative;width:100%;height:42px;padding:5px 30px 5px 11px;border:1px solid rgba(255,255,255,.20);border-radius:7px;background:rgba(255,255,255,.075);color:#fff;text-align:left;cursor:pointer;transition:background .18s,border-color .18s;}
+.hero-comp-trim-static{display:flex;align-items:center;width:100%;height:42px;padding:5px 11px;border:1px solid rgba(255,255,255,.14);border-radius:7px;background:rgba(255,255,255,.055);color:rgba(255,255,255,.78);font-size:10px;font-weight:650;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .hero-es-trim-trigger:hover,.hero-es-trim-trigger:focus,.hero-comp-trim-trigger:hover,.hero-comp-trim-trigger:focus{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.32);outline:none;}
 .hero-es-trim-trigger:after,.hero-comp-trim-trigger:after{content:"";position:absolute;right:10px;top:50%;width:7px;height:7px;border-right:1.5px solid rgba(255,255,255,.82);border-bottom:1.5px solid rgba(255,255,255,.82);transform:translateY(-68%) rotate(45deg);}
 .hero-es-trim-trigger .hero-es-trim-selected,.hero-comp-trim-trigger .hero-es-trim-selected{position:static;display:block;transform:none;}
@@ -18134,7 +18135,7 @@ if(score.priceDiff !== null){
               <div class="hero-comp-trim-menu" role="listbox" aria-label="경쟁차 트림 목록">
                 ${compTrimChoices.map(t=>`<button type="button" class="hero-es-trim-option${t===compTrim?' is-selected':''}" role="option" aria-selected="${t===compTrim}" onclick="selectCompResultTrim(event,'${encodeURIComponent(t)}')"><span class="hero-es-trim-option-main">${compTrimDisplay(t)}</span></button>`).join('')}
               </div>
-            </div>`:''}
+            </div>`:`<div class="hero-comp-trim-select-wrap"><div class="hero-comp-trim-static" aria-label="경쟁차 단일 트림">${compTrimDisplay(compTrim)}</div></div>`}
           </div>
           <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.total):'가격 미확인'}</div>
         </div>
