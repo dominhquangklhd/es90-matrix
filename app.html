@@ -1314,10 +1314,14 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
     align-items:center;
     min-height:24px;
     margin:0;
-    grid-template-columns:repeat(3,max-content);
+    grid-template-columns:repeat(3,118px);
     column-gap:14px;
   }
-  #panel1 .waitlist-icon-legend>span:first-child{margin-right:12px;}
+  #panel1 .waitlist-icon-legend>span{
+    width:118px;
+    margin:0;
+    justify-content:flex-start;
+  }
   #panel1 .waitlist-bars + .spec-excluded-note{margin-top:28px!important;}
   #panel2 .group-grid{gap:16px;margin-bottom:18px;}
   #panel2 .group-card{min-height:268px;padding:22px!important;}
@@ -17613,7 +17617,7 @@ function renderStep1(){
         }).join('')}
       </div>
       <div class="waitlist-icon-legend" aria-label="그래프 아이콘 안내">
-        <span><i class="waitlist-status-icon is-best">★</i>실시간 BEST</span>
+        <span><i class="waitlist-status-icon is-best">★</i>실시간 BEST 모델</span>
         <span><i class="waitlist-status-icon is-subsidy"><b>50%</b></i>보조금 50% 적용</span>
         <span><i class="waitlist-status-icon is-eco"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></i>친환경차 세제혜택</span>
       </div>
