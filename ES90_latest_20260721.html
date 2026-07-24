@@ -997,7 +997,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 @media(max-width:900px){.subsidy-guide{position:static;width:100%;margin:0 0 14px;}}
 .waitlist-total-num{color:var(--orange-deep)!important;}
 .waitlist-total-value{display:inline-flex;align-items:baseline;min-width:3ch;overflow:visible;font-variant-numeric:tabular-nums;-webkit-text-stroke:1px currentColor;paint-order:stroke fill;}
-.waitlist-total-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 2.1s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
+.waitlist-total-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 @keyframes waitlistDigitDrop{0%{opacity:0;transform:translateY(-20px);filter:blur(2.5px);}64%{opacity:1;filter:blur(0);}100%{opacity:1;transform:translateY(0);filter:blur(0);}}
 .waitlist-bar-track{background:#edf1f4!important;border-radius:7px 7px 0 0!important;overflow:hidden;}
 .waitlist-bar-fill{background:linear-gradient(180deg,#ff7b45,var(--orange))!important;}
@@ -1023,8 +1023,8 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .group-selection-number{-webkit-text-stroke:1px currentColor;paint-order:stroke fill;}
 .group-selection-value small{margin-left:1px;font-size:15px;font-weight:750;letter-spacing:-.2px;}
 .group-selection-number{display:inline-flex;justify-content:flex-end;align-items:baseline;min-width:3.4ch;font-variant-numeric:tabular-nums;}
-.group-selection-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 2.1s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
-.step3-price-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 2.1s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
+.group-selection-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
+.step3-price-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 .group-selection-decimal{display:inline-block;}
 .group-card[data-group="indirect"] .group-selection-label,.group-card[data-group="indirect"] .group-selection-icon{color:#477da9;}
 .group-card[data-group="indirect"] .group-selection-value{color:#477da9;}
@@ -17683,7 +17683,7 @@ function buildPriceGapHtml(esTotal, compTotal, es90Trim, compName, fallbackLabel
   let priceDigitIndex = 0;
   const animatedAbsAmt = [...absAmt].map(character=>{
     if(!/[0-9,]/.test(character)) return character;
-    return `<span class="step3-price-digit" style="--digit-delay:${priceDigitIndex++*300}ms">${character}</span>`;
+    return `<span class="step3-price-digit" style="--digit-delay:${priceDigitIndex++*240}ms">${character}</span>`;
   }).join('');
   const pct = Math.abs(Math.round(priceDiffPct*100));
   const esCheaper = priceDiff > 0;
@@ -17712,7 +17712,7 @@ function playWaitlistTotalAnimation(force=false){
     return;
   }
   waitlistTotal.innerHTML = [...finalText].map((digit,index)=>
-    `<span class="waitlist-total-digit" style="--digit-delay:${index*300}ms">${digit}</span>`
+    `<span class="waitlist-total-digit" style="--digit-delay:${index*240}ms">${digit}</span>`
   ).join('');
 }
 function initBarAnimations(){
@@ -19675,7 +19675,7 @@ function animateGroupSelectionPercent(node,targetValue){
     if(character==='.'){
       return '<span class="group-selection-decimal">.</span>';
     }
-    const delay = digitIndex++ * 300;
+    const delay = digitIndex++ * 240;
     return `<span class="group-selection-digit" style="--digit-delay:${delay}ms">${character}</span>`;
   }).join('');
 }
