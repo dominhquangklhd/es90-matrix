@@ -176,6 +176,17 @@ button{font-family:inherit;}
 .hero-es-trim-selected{position:absolute;left:11px;right:30px;top:50%;transform:translateY(-50%);pointer-events:none;color:#fff;font-size:10px;font-weight:700;line-height:1.15;overflow:hidden;}
 .hero-es-trim-selected-main,.hero-es-trim-selected-sub{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .hero-es-trim-selected-sub{margin-top:2px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.72);letter-spacing:.12px;}
+.hero-es-trim-trigger{position:relative;width:100%;height:42px;padding:5px 30px 5px 11px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:rgba(255,255,255,.10);color:#fff;text-align:left;cursor:pointer;}
+.hero-es-trim-trigger:after{content:"";position:absolute;right:10px;top:50%;width:7px;height:7px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:translateY(-68%) rotate(45deg);}
+.hero-es-trim-trigger .hero-es-trim-selected{position:static;display:block;transform:none;}
+.hero-es-trim-menu{display:none;position:absolute;z-index:80;top:calc(100% + 3px);left:0;width:100%;min-width:220px;border:1px solid #aebbc6;border-radius:3px;background:#fff;box-shadow:0 10px 24px rgba(8,36,58,.22);overflow:hidden;}
+.hero-es-trim-select-wrap.is-open .hero-es-trim-menu{display:block;}
+.hero-es-trim-option{display:block;width:100%;min-height:35px;padding:6px 11px;border:0;border-bottom:1px solid #edf1f4;background:#fff;color:var(--navy-deep);text-align:left;cursor:pointer;}
+.hero-es-trim-option:last-child{border-bottom:0;}
+.hero-es-trim-option:hover,.hero-es-trim-option:focus,.hero-es-trim-option.is-selected{background:#1769cf;color:#fff;outline:none;}
+.hero-es-trim-option-main,.hero-es-trim-option-sub{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hero-es-trim-option-main{font-size:10px;font-weight:600;line-height:1.1;}
+.hero-es-trim-option-sub{margin-top:3px;font-size:8.5px;font-weight:500;line-height:1;color:inherit;opacity:.78;}
 .hero-price-vs{font-size:11px;color:rgba(255,255,255,.4);font-weight:700;flex-shrink:0;}
 .price-gap-banner{margin-top:16px;position:relative;padding-top:14px;border-top:1px dashed rgba(255,255,255,.14);}
 .price-gap-trim{color:rgba(255,255,255,0.6);font-size:14px;font-weight:700;margin-bottom:3px;}
@@ -16737,6 +16748,20 @@ function toggleEsAirSuspensionOption(event){
   renderStep4();
 }
 
+function toggleEs90ResultTrimMenu(event){
+  if(event){ event.preventDefault(); event.stopPropagation(); }
+  const wrap = document.querySelector('.hero-es-trim-select-wrap');
+  if(wrap) wrap.classList.toggle('is-open');
+}
+
+function selectEs90ResultTrim(event, trim, suspensionMode){
+  if(event){ event.preventDefault(); event.stopPropagation(); }
+  STATE.es90Trim = trim;
+  if(suspensionMode==='air') SELECTED_ES_AIR_SUSPENSION_TRIMS.add(trim);
+  else SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(trim);
+  renderStep4();
+}
+
 const GROUPS = {
   direct: {
     name: '직접 경쟁', icon: '⚡', desc: 'E 세그먼트 이면서 전기차 이면서 세단인',
@@ -17989,18 +18014,19 @@ if(score.priceDiff !== null){
           <div class="hpi-top">
             <div class="hpi-label">Volvo ES90</div>
             <div class="hero-es-trim-select-wrap">
-              <select id="heroEsTrimSelect" class="hero-trim-select" aria-label="ES90 트림 변경">
+              <button type="button" class="hero-es-trim-trigger" aria-label="ES90 트림 변경" aria-haspopup="listbox" onclick="toggleEs90ResultTrimMenu(event)">
+                <span class="hero-es-trim-selected">
+                  <span class="hero-es-trim-selected-main">${selectedEs90ResultTrim?.label||es90TrimMenuDisplay(es90Trim)}</span>
+                  ${selectedEs90ResultTrim?.suspensionLabel?`<span class="hero-es-trim-selected-sub">${selectedEs90ResultTrim.suspensionLabel}</span>`:''}
+                </span>
+              </button>
+              <div class="hero-es-trim-menu" role="listbox" aria-label="ES90 트림 목록">
                 ${ES90_RESULT_TRIM_OPTIONS.map(item=>{
                   const selectedAirSuspension = SELECTED_ES_AIR_SUSPENSION_TRIMS.has(item.trim);
                   const isSelected = item.trim===es90Trim && item.airSuspension===selectedAirSuspension;
-                  const optionLabel = `${item.label}${item.suspensionLabel?` · ${item.suspensionLabel}`:''}`;
-                  return `<option value="${item.trim}::${item.airSuspension?'air':'standard'}"${isSelected?' selected':''}>${optionLabel}</option>`;
+                  return `<button type="button" class="hero-es-trim-option${isSelected?' is-selected':''}" role="option" aria-selected="${isSelected}" onclick="selectEs90ResultTrim(event,'${item.trim}','${item.airSuspension?'air':'standard'}')"><span class="hero-es-trim-option-main">${item.label}</span>${item.suspensionLabel?`<span class="hero-es-trim-option-sub">${item.suspensionLabel}</span>`:''}</button>`;
                 }).join('')}
-              </select>
-              <span class="hero-es-trim-selected" aria-hidden="true">
-                <span class="hero-es-trim-selected-main">${selectedEs90ResultTrim?.label||es90TrimMenuDisplay(es90Trim)}</span>
-                ${selectedEs90ResultTrim?.suspensionLabel?`<span class="hero-es-trim-selected-sub">${selectedEs90ResultTrim.suspensionLabel}</span>`:''}
-              </span>
+              </div>
             </div>
           </div>
           <div class="hpi-value es90-price">${esPrice? fmtWonRange(getEffectiveES90Total(es90Trim), es90Trim):'가격 미정'}</div>
@@ -18187,16 +18213,6 @@ if(score.priceDiff !== null){
   initBarAnimations();
   initIpadPinnedResultHero();
 
-  const heroEsTrimSelect = document.getElementById('heroEsTrimSelect');
-  if(heroEsTrimSelect){
-    heroEsTrimSelect.addEventListener('change', ()=>{
-      const [trim, suspensionMode] = heroEsTrimSelect.value.split('::');
-      STATE.es90Trim = trim;
-      if(suspensionMode==='air') SELECTED_ES_AIR_SUSPENSION_TRIMS.add(trim);
-      else SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(trim);
-      renderStep4();
-    });
-  }
   const heroCompTrimSelect = document.getElementById('heroCompTrimSelect');
   if(heroCompTrimSelect){
     heroCompTrimSelect.addEventListener('change', ()=>{
