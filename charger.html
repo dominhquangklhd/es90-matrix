@@ -51,14 +51,14 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
   <section class="summary">
     <div class="metric"><div class="metric-label">전국 350kW 충전소</div><div class="metric-value">—<small>개</small></div><div class="metric-sub">공식 API 연결 후 전국 집계</div></div>
     <div class="metric"><div class="metric-label">고속도로 350kW 충전소</div><div class="metric-value">—<small>개</small></div><div class="metric-sub">휴게소·환승 거점 기준 집계</div></div>
-    <div class="metric primary"><div class="metric-label">가장 가까운 350kW 충전소</div><div class="metric-value" id="nearest">4.8<small>km</small></div><div class="metric-sub" id="nearestName">서초 센트럴 충전 라운지</div></div>
-    <div class="metric radius-selector" id="radius10Card" role="button" tabindex="0" onclick="setRadius(10)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(10)}"><div class="metric-label">반경 10km 이내</div><div class="metric-value" id="within10">3<small>개</small></div><div class="metric-sub">눌러서 10km 반경 표시</div></div>
-    <div class="metric radius-selector active" id="radius20Card" role="button" tabindex="0" onclick="setRadius(20)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(20)}"><div class="metric-label">반경 20km 이내</div><div class="metric-value" id="within20">5<small>개</small></div><div class="metric-sub">눌러서 20km 반경 표시</div></div>
-    <div class="metric"><div class="metric-label">현재 사용 가능</div><div class="metric-value" id="available">4<small>개소</small></div><div class="metric-sub">샘플 상태정보 기준</div></div>
+    <div class="metric primary"><div class="metric-label">가장 가까운 350kW 충전소</div><div class="metric-value" id="nearest">—<small>km</small></div><div class="metric-sub" id="nearestName">고객 위치 선택 후 확인</div></div>
+    <div class="metric radius-selector" id="radius10Card" role="button" tabindex="0" onclick="setRadius(10)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(10)}"><div class="metric-label">반경 10km 이내</div><div class="metric-value" id="within10">—<small>개</small></div><div class="metric-sub">눌러서 10km 반경 표시</div></div>
+    <div class="metric radius-selector" id="radius20Card" role="button" tabindex="0" onclick="setRadius(20)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(20)}"><div class="metric-label">반경 20km 이내</div><div class="metric-value" id="within20">—<small>개</small></div><div class="metric-sub">눌러서 20km 반경 표시</div></div>
+    <div class="metric"><div class="metric-label">현재 사용 가능</div><div class="metric-value" id="available">—<small>개소</small></div><div class="metric-sub">샘플 상태정보 기준</div></div>
   </section>
   <div class="grid">
-    <section class="panel"><div class="head"><div class="title"><span id="mapRegion">서울특별시 서초구</span> 주변</div><div class="note">고객 위치 중심 · 실제 지도</div></div><div class="map"><div id="leafletMap" class="leaflet-map" aria-label="선택 지역 주변 충전소 지도"></div><div class="legend"><span class="legend-item"><span class="legend-home" aria-hidden="true"><span class="home-marker"><span class="customer-home"></span></span></span>고객 선택 위치</span><span class="legend-item"><span class="legend-charger" aria-hidden="true"></span>350kW 이상</span></div></div></section>
-    <section class="panel"><div class="head"><div class="title"><span id="listTitleRange">반경 20km 내 충전소</span> <span id="count">4</span></div><div class="note">거리순</div></div><div class="list" id="list"></div></section>
+    <section class="panel"><div class="head"><div class="title"><span id="mapRegion">고객 위치를 선택해주세요</span></div><div class="note">고객 위치 중심 · 실제 지도</div></div><div class="map"><div id="leafletMap" class="leaflet-map" aria-label="선택 지역 주변 충전소 지도"></div><div class="legend"><span class="legend-item"><span class="legend-home" aria-hidden="true"><span class="home-marker"><span class="customer-home"></span></span></span>고객 선택 위치</span><span class="legend-item"><span class="legend-charger" aria-hidden="true"></span>350kW 이상</span></div></div></section>
+    <section class="panel"><div class="head"><div class="title"><span id="listTitleRange">고객 위치를 선택해주세요</span> <span id="count"></span></div><div class="note">거리순</div></div><div class="list" id="list"></div></section>
   </div>
   <footer><span>충전소명·위치·상태·거리는 UI 검토용 샘플이며 실제 운영정보가 아닙니다.</span><span>실서비스 적용 시 한국환경공단 공식 API와 도로거리 정보 연결 예정</span></footer>
 </main>
@@ -168,7 +168,7 @@ function renderMap(label){
   setTimeout(()=>map.invalidateSize(),0);
 }
 function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);document.getElementById('radius10Card').classList.toggle('active',km===10);document.getElementById('radius20Card').classList.toggle('active',km===20);render();renderMap(currentMapLabel);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
-function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=label;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
+function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}selected=0;buildData();document.getElementById('radius10Card').classList.toggle('active',activeRadius===10);document.getElementById('radius20Card').classList.toggle('active',activeRadius===20);render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=`${label} 주변`;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
 function showEmptyState(){
   current=[];selected=-1;currentMapLabel='';
   ensureMap();
