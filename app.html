@@ -1232,6 +1232,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 #panel1 .trim-card-thumb,#panel1 .trim-price-big,#panel1 .trim-price-big.navy,#panel1 .trim-price-big:not(.navy){border:1px solid #d5e0e7!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.55)!important;}
 #panel1 .trim-card-thumb{background:#f5f8fa!important;}
 #panel1 .trim-card:hover .trim-card-thumb,#panel1 .trim-card.sel .trim-card-thumb{background:#f8fafb!important;}
+#panel1 .trim-card.is-reservation-best .trim-card-thumb,#panel1 .trim-card.is-reservation-best .trim-price-big{border-color:rgba(214,82,10,.48)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.58)!important;}
 .hpi-value.es90-price{color:#fff!important;}
 .pkg-calc-vprice.es90-price,.pkg-calc-vprice.competitor-price{color:var(--orange-deep)!important;font-weight:800!important;}
 .pkg-calc-row span:last-child{color:var(--orange-deep)!important;font-weight:800!important;}
@@ -17811,7 +17812,7 @@ function renderStep1(){
       const cardPrice = price && item.airSuspension ? {...price, total:price.total+getEsAirSuspensionOptionPrice(trim)} : price;
       const isReservationBest = RESERVATION_DATA.byTrim[0] && RESERVATION_DATA.byTrim[0].trim===trim;
       const card = el(`
-        <div class="trim-card" data-trim="${trim}" data-air-suspension="${item.airSuspension===true?'true':'false'}">
+        <div class="trim-card${isReservationBest && item.airSuspension===true?' is-reservation-best':''}" data-trim="${trim}" data-air-suspension="${item.airSuspension===true?'true':'false'}">
           <div class="trim-card-inner">
             <div class="trim-card-left">
               <div class="trim-card-heading" style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
