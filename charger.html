@@ -56,7 +56,7 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
     <div class="metric radius-selector" id="radius20Card" role="button" tabindex="0" onclick="setRadius(20)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(20)}"><div class="metric-label">반경 20km 이내</div><div class="metric-value" id="within20">—<small>개</small></div><div class="metric-sub">눌러서 20km 반경 표시</div></div>
   </section>
   <div class="grid">
-    <section class="panel"><div class="head"><div class="title"><span id="mapRegion">고객 위치를 선택해주세요</span></div><div class="note">고객 위치 중심 · 실제 지도</div></div><div class="map"><div id="leafletMap" class="leaflet-map" aria-label="선택 지역 주변 충전소 지도"></div><div class="legend"><span class="legend-item"><span class="legend-home" aria-hidden="true"><span class="home-marker"><span class="customer-home"></span></span></span>고객 선택 위치</span><span class="legend-item"><span class="legend-charger" aria-hidden="true"></span>350kW 이상</span></div></div></section>
+    <section class="panel"><div class="head"><div class="title"><span id="mapRegion">고객 위치를 선택해주세요</span></div><div class="note">고객 위치 중심 · TMAP 지도</div></div><div class="map"><div id="tmapMap" class="leaflet-map tmap-map" aria-label="선택 지역 주변 TMAP 충전소 지도"></div><div class="legend"><span class="legend-item"><span class="legend-home" aria-hidden="true"><span class="home-marker"><span class="customer-home"></span></span></span>고객 선택 위치</span><span class="legend-item"><span class="legend-charger" aria-hidden="true"></span>350kW 이상</span></div></div></section>
     <section class="panel"><div class="head"><div class="title"><span id="listTitleRange">고객 위치를 선택해주세요</span> <span id="count"></span></div><div class="note">거리순</div></div><div class="list" id="list"></div></section>
   </div>
 </main>
@@ -148,7 +148,7 @@ function clearTmapMarkers(){mapMarkers.forEach(clearTmapOverlay);mapMarkers=[]}
 function ensureMap(center=[36.35,127.8],zoom=7){
   if(map)return;
   if(!window.Tmapv2)throw new Error('TMAP API를 불러오지 못했습니다.');
-  map=new Tmapv2.Map('leafletMap',{center:tmapPoint(center),width:'100%',height:'100%',zoom,zoomControl:true,scrollwheel:true});
+  map=new Tmapv2.Map('tmapMap',{center:tmapPoint(center),width:'100%',height:'100%',zoom,zoomControl:true,scrollwheel:true});
 }
 function renderMap(label){
   const center=getSelectedMapCenter();
