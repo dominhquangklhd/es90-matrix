@@ -121,7 +121,7 @@ const regionCenters={
 '제주특별자치도':[33.4996,126.5312]};
 const stationOffsets=[[-.022,-.018],[.016,.027],[-.031,.038],[-.043,-.034],[.048,.046]];
 const province=document.getElementById('province'),district=document.getElementById('district'),neighborhood=document.getElementById('neighborhood');let selected=0,current=[],activeRadius=20,currentMapLabel='';
-let map,mapMarkers=[],homeMarker,radiusCircle,activeStationTooltip;
+let map,mapMarkers=[],homeMarker,radiusCircle,activeStationTooltip,radiusZoomTimer;
 let administrativeCenters={};
 let chargerStations=[];
 const operatorCalls=Object.freeze({
@@ -228,7 +228,27 @@ homeMarker=new Tmapv2.Marker({position:tmapPoint(center),iconHTML:'<div class="h
   }
 }
 function updateRadiusCards(){[5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.toggle('active',activeRadius===km))}
-function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);updateRadiusCards();render();renderMap(currentMapLabel,true);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
+function animateRadiusViewport(km){
+  const center=getSelectedMapCenter();
+  const targetZoom=km===5?13:km===10?12:11;
+  if(radiusZoomTimer)clearTimeout(radiusZoomTimer);
+  map.setCenter(tmapPoint(center));
+  let currentZoom=typeof map.getZoom==='function'?Number(map.getZoom()):targetZoom;
+  if(!Number.isFinite(currentZoom))currentZoom=targetZoom;
+  const direction=targetZoom>currentZoom?1:-1;
+  const step=()=>{
+    if(currentZoom===targetZoom){
+      map.setCenter(tmapPoint(center));
+      radiusZoomTimer=null;
+      return;
+    }
+    currentZoom+=direction;
+    map.setZoom(currentZoom);
+    radiusZoomTimer=setTimeout(step,170);
+  };
+  requestAnimationFrame(step);
+}
+function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);updateRadiusCards();render();renderMap(currentMapLabel,true);animateRadiusViewport(km);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
 function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}activeRadius=20;selected=0;buildData();updateRadiusCards();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=`${label} 주변`;renderMap(label);notice(`${label} 기준 실제 350kW 충전소 결과입니다.`)}
 function showEmptyState(){
   current=[];selected=-1;currentMapLabel='';
