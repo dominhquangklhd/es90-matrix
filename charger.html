@@ -48,8 +48,8 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
     </div>
   </section>
   <section class="summary">
-    <div class="metric"><div class="metric-label">전국 350kW 충전소</div><div class="metric-value">—<small>개</small></div><div class="metric-sub">공식 API 연결 후 전국 집계</div></div>
-    <div class="metric"><div class="metric-label">고속도로 350kW 충전소</div><div class="metric-value">—<small>개</small></div><div class="metric-sub">휴게소·환승 거점 기준 집계</div></div>
+    <div class="metric"><div class="metric-label">전국 350kW 충전소</div><div class="metric-value" id="nationalTotal">—<small>개</small></div><div class="metric-sub">한국환경공단 실제 충전소 기준</div></div>
+    <div class="metric"><div class="metric-label">고속도로 350kW 충전소</div><div class="metric-value" id="highwayTotal">—<small>개</small></div><div class="metric-sub">휴게소·고속도로 거점 기준</div></div>
     <div class="metric primary"><div class="metric-label">가장 가까운 350kW 충전소</div><div class="metric-value" id="nearest">—<small>km</small></div><div class="metric-sub" id="nearestName">고객 위치 선택 후 확인</div></div>
     <div class="metric radius-selector" id="radius5Card" role="button" tabindex="0" onclick="setRadius(5)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(5)}"><div class="metric-label">반경 5km 이내</div><div class="metric-value" id="within5">—<small>개</small></div><div class="metric-sub">눌러서 5km 반경 표시</div></div>
     <div class="metric radius-selector" id="radius10Card" role="button" tabindex="0" onclick="setRadius(10)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(10)}"><div class="metric-label">반경 10km 이내</div><div class="metric-value" id="within10">—<small>개</small></div><div class="metric-sub">눌러서 10km 반경 표시</div></div>
@@ -108,10 +108,12 @@ const stationOffsets=[[-.022,-.018],[.016,.027],[-.031,.038],[-.043,-.034],[.048
 const province=document.getElementById('province'),district=document.getElementById('district'),neighborhood=document.getElementById('neighborhood');let selected=0,current=[],activeRadius=20,currentMapLabel='';
 let map,mapMarkers=[],homeMarker,radiusCircle,activeStationTooltip;
 let administrativeCenters={};
+let chargerStations=[];
 async function loadAdministrativeAreas(){
-  const [response,centerResponse]=await Promise.all([
+  const [response,centerResponse,chargerResponse]=await Promise.all([
     fetch('./administrative-dongs.json',{cache:'no-store'}),
-    fetch('./administrative-centers.json',{cache:'no-store'})
+    fetch('./administrative-centers.json',{cache:'no-store'}),
+    fetch('./charger-data-350kw.json',{cache:'no-store'})
   ]);
   if(!response.ok)throw new Error('행정동 데이터를 불러오지 못했습니다.');
   const data=await response.json();
@@ -119,6 +121,13 @@ async function loadAdministrativeAreas(){
     const centerData=await centerResponse.json();
     administrativeCenters=centerData.centers||{};
   }
+  if(!chargerResponse.ok)throw new Error('실제 충전소 데이터를 불러오지 못했습니다.');
+  const chargerData=await chargerResponse.json();
+  chargerStations=chargerData.stations||[];
+  document.getElementById('nationalTotal').innerHTML=`${chargerStations.length}<small>개</small>`;
+  const highwayPattern=/고속도로|휴게소|졸음쉼터|환승센터|하이패스/i;
+  const highwayCount=chargerStations.filter(x=>highwayPattern.test(`${x.name} ${x.address} ${x.kind||''} ${x.kindDetail||''}`)).length;
+  document.getElementById('highwayTotal').innerHTML=`${highwayCount}<small>개</small>`;
   const nextRegions={},nextNeighborhoods={};
   Object.entries(data.regions||{}).forEach(([sido,districts])=>{
     nextRegions[sido]=Object.keys(districts);
@@ -137,9 +146,10 @@ function fillProvinces(){province.innerHTML=promptOption()+Object.keys(regions).
 function fillDistricts(){const items=[...(regions[province.value]||[])].sort(koreanSort);district.innerHTML=promptOption()+items.map(x=>`<option value="${x}">${x}</option>`).join('');neighborhood.innerHTML=promptOption()}
 function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||[];const sorted=items.filter(x=>x!=='전체').sort(koreanSort);neighborhood.innerHTML=promptOption()+sorted.map(x=>`<option value="${x}">${x}</option>`).join('')}
 function getSelectedMapCenter(){const p=province.value,d=district.value,n=neighborhood.value;return (n&&n!=='전체'&&administrativeCenters[`${p}|${d}|${n}`])||administrativeCenters[`${p}|${d}`]||regionCenters[p]||regionCenters['서울특별시']}
-function buildData(){const p=province.value,d=district.value;const seed=(p.length+d.length)%5;const center=getSelectedMapCenter();const distances=[4.8+seed*.3,7.6+seed*.5,12.9+seed*.4,18.2+seed*.6,26.4+seed*.8],bearings=[225,45,135,205,20];current=baseNames.map((n,i)=>{const angle=bearings[i]*Math.PI/180,latKm=111.32,lngKm=111.32*Math.cos(center[0]*Math.PI/180);return{name:`${d} ${n}`,distance:distances[i],power:i===1||i===4?400:350,address:'정확한 지번 주소는 공식 충전소 API 연동 후 표시',lat:center[0]+Math.cos(angle)*distances[i]/latKm,lng:center[1]+Math.sin(angle)*distances[i]/lngKm}})}
+function distanceKm(a,b){const rad=Math.PI/180,dLat=(b[0]-a[0])*rad,dLng=(b[1]-a[1])*rad;const x=Math.sin(dLat/2)**2+Math.cos(a[0]*rad)*Math.cos(b[0]*rad)*Math.sin(dLng/2)**2;return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function buildData(){const center=getSelectedMapCenter();current=chargerStations.map(s=>({...s,distance:distanceKm(center,[s.lat,s.lng])})).sort((a,b)=>a.distance-b.distance)}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function render(){const visible=current.map((s,i)=>({s,i})).filter(({s})=>s.distance<=activeRadius);document.getElementById('list').innerHTML=visible.map(({s,i})=>`<button class="station ${i===selected?'sel':''}" data-i="${i}"><span class="station-top"><span class="station-name"><span class="station-index">${i+1}</span><span class="name">${esc(s.name)}</span></span><span class="distance">${s.distance.toFixed(1)}km</span></span><span class="meta"><span class="power">⚡ ${s.power}kW</span></span><span class="station-bottom"><span class="address">${esc(s.address)}</span><span class="actions"><span class="mini">상세정보</span></span></span></button>`).join('');document.querySelectorAll('.station').forEach(b=>b.onclick=()=>select(+b.dataset.i));document.getElementById('count').textContent='';document.getElementById('listTitleRange').innerHTML=`고객 거주지역 반경 <span class="range-emphasis">${activeRadius}km</span> 내 350kW 충전소 <span class="range-emphasis">${visible.length}개</span>`}
+function render(){const inRadius=current.map((s,i)=>({s,i})).filter(({s})=>s.distance<=activeRadius),visible=inRadius.slice(0,5);document.getElementById('list').innerHTML=visible.map(({s,i})=>`<button class="station ${i===selected?'sel':''}" data-i="${i}"><span class="station-top"><span class="station-name"><span class="station-index">${i+1}</span><span class="name">${esc(s.name)}</span></span><span class="distance">${s.distance.toFixed(1)}km</span></span><span class="meta"><span class="power">⚡ ${s.power}kW</span></span><span class="station-bottom"><span class="address">${esc(s.address)}</span><span class="actions"><span class="mini">상세정보</span></span></span></button>`).join('')||'<div class="empty-list">선택 반경 안에 350kW 이상 충전소가 없습니다.</div>';document.querySelectorAll('.station').forEach(b=>b.onclick=()=>select(+b.dataset.i));document.getElementById('count').textContent='';document.getElementById('listTitleRange').innerHTML=`고객 거주지역 반경 <span class="range-emphasis">${activeRadius}km</span> 내 350kW 충전소 <span class="range-emphasis">${inRadius.length}개</span>`}
 function updateSummary(){document.getElementById('nearest').innerHTML=`${current[0].distance.toFixed(1)}<small>km</small>`;document.getElementById('nearestName').textContent=current[0].name;document.getElementById('within5').innerHTML=`${current.filter(x=>x.distance<=5).length}<small>개</small>`;document.getElementById('within10').innerHTML=`${current.filter(x=>x.distance<=10).length}<small>개</small>`;document.getElementById('within20').innerHTML=`${current.filter(x=>x.distance<=20).length}<small>개</small>`}
 function tmapPoint(coords){return new Tmapv2.LatLng(coords[0],coords[1])}
 function chargerIconHtml(i,isSelected=false){return `<div class="charger-marker${isSelected?' sel':''}"><span>${i+1}</span></div>`}
@@ -159,7 +169,7 @@ function renderMap(label){
   clearTmapOverlay(radiusCircle);radiusCircle=null;
   homeMarker=new Tmapv2.Marker({position:tmapPoint(center),iconHTML:'<div class="home-marker map-home-icon"><span class="customer-home"></span></div>',iconSize:new Tmapv2.Size(36,35),map});
   radiusCircle=new Tmapv2.Circle({center:tmapPoint(center),radius:activeRadius*1000,strokeColor:'#ef6b37',strokeWeight:1,strokeOpacity:.78,fillColor:'#ef6b37',fillOpacity:.035,map});
-  current.forEach((station,i)=>{
+  current.slice(0,5).forEach((station,i)=>{
     if(station.distance>activeRadius)return;
     const marker=new Tmapv2.Marker({position:new Tmapv2.LatLng(station.lat,station.lng),iconHTML:chargerIconHtml(i,i===selected),iconSize:new Tmapv2.Size(i===selected?30:26,i===selected?36:32),map});
     marker.addListener('click',()=>select(i,true));
@@ -170,7 +180,7 @@ function renderMap(label){
 }
 function updateRadiusCards(){[5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.toggle('active',activeRadius===km))}
 function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);updateRadiusCards();render();renderMap(currentMapLabel);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
-function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}selected=0;buildData();updateRadiusCards();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=`${label} 주변`;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
+function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}selected=0;buildData();updateRadiusCards();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=`${label} 주변`;renderMap(label);notice(`${label} 기준 실제 350kW 충전소 결과입니다.`)}
 function showEmptyState(){
   current=[];selected=-1;currentMapLabel='';
   ensureMap();
