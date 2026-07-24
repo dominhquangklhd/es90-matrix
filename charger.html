@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071b2c">
 <title>ES90 350kW 초고속 충전 네트워크</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script>
 fetch('./app.html',{cache:'force-cache'}).then(response=>response.text()).then(source=>{
   const faces=source.match(/@font-face\s*\{[\s\S]*?\}/g)||[];
@@ -62,7 +61,7 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
   </div>
 </main>
 <div class="toast" id="toast"></div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=h0B5SsrrUz17nGaXEmvGZj9CN5eStv57lgU0QX7d"></script>
 <script>
 let regions={
 '서울특별시':['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
