@@ -108,10 +108,18 @@ const regionCenters={
 const stationOffsets=[[-.022,-.018],[.016,.027],[-.031,.038],[-.043,-.034],[.048,.046]];
 const province=document.getElementById('province'),district=document.getElementById('district'),neighborhood=document.getElementById('neighborhood');let selected=0,current=[];
 let map,mapMarkers=[],homeMarker,radiusCircle;
+let administrativeCenters={};
 async function loadAdministrativeAreas(){
-  const response=await fetch('./administrative-dongs.json',{cache:'no-store'});
+  const [response,centerResponse]=await Promise.all([
+    fetch('./administrative-dongs.json',{cache:'no-store'}),
+    fetch('./administrative-centers.json',{cache:'no-store'})
+  ]);
   if(!response.ok)throw new Error('행정동 데이터를 불러오지 못했습니다.');
   const data=await response.json();
+  if(centerResponse.ok){
+    const centerData=await centerResponse.json();
+    administrativeCenters=centerData.centers||{};
+  }
   const nextRegions={},nextNeighborhoods={};
   Object.entries(data.regions||{}).forEach(([sido,districts])=>{
     nextRegions[sido]=Object.keys(districts);
@@ -126,13 +134,14 @@ async function loadAdministrativeAreas(){
 function fillProvinces(){province.innerHTML=Object.keys(regions).map(x=>`<option${x==='서울특별시'?' selected':''}>${x}</option>`).join('');fillDistricts('서초구')}
 function fillDistricts(preferred){district.innerHTML=regions[province.value].map(x=>`<option${x===preferred?' selected':''}>${x}</option>`).join('');fillNeighborhoods()}
 function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||['전체'];neighborhood.innerHTML=items.map(x=>`<option value="${x}">${x==='전체'?'동 전체':x}</option>`).join('')}
-function buildData(){const p=province.value,d=district.value;const seed=(p.length+d.length)%5;const center=regionCenters[p]||regionCenters['서울특별시'];const distances=[4.8+seed*.3,7.6+seed*.5,12.9+seed*.4,18.2+seed*.6,26.4+seed*.8];current=baseNames.map((n,i)=>({name:`${d} ${n}`,distance:distances[i],power:i===1||i===4?400:350,status:i===3?'전체 충전 중':`${i+1}기 사용 가능`,operator:`샘플 네트워크 ${String.fromCharCode(65+i)}`,address:`${p} ${d} 주요 도로 인근`,lat:center[0]+stationOffsets[i][0],lng:center[1]+stationOffsets[i][1]}))}
+function getSelectedMapCenter(){const p=province.value,d=district.value,n=neighborhood.value;return (n&&n!=='전체'&&administrativeCenters[`${p}|${d}|${n}`])||administrativeCenters[`${p}|${d}`]||regionCenters[p]||regionCenters['서울특별시']}
+function buildData(){const p=province.value,d=district.value;const seed=(p.length+d.length)%5;const center=getSelectedMapCenter();const distances=[4.8+seed*.3,7.6+seed*.5,12.9+seed*.4,18.2+seed*.6,26.4+seed*.8];current=baseNames.map((n,i)=>({name:`${d} ${n}`,distance:distances[i],power:i===1||i===4?400:350,status:i===3?'전체 충전 중':`${i+1}기 사용 가능`,operator:`샘플 네트워크 ${String.fromCharCode(65+i)}`,address:`${p} ${d} 주요 도로 인근`,lat:center[0]+stationOffsets[i][0],lng:center[1]+stationOffsets[i][1]}))}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(){document.getElementById('list').innerHTML=current.map((s,i)=>`<button class="station ${i===selected?'sel':''}" data-i="${i}"><span class="station-top"><span class="station-name"><span class="station-index">${i+1}</span><span class="name">${esc(s.name)}</span></span><span class="distance">${s.distance.toFixed(1)}km</span></span><span class="meta"><span class="power">⚡ ${s.power}kW</span><span class="status">● ${esc(s.status)}</span><span class="operator">${esc(s.operator)}</span></span><span class="station-bottom"><span class="address">${esc(s.address)} · 24시간</span><span class="actions"><span class="mini">상세정보</span><span class="mini route">길찾기</span></span></span></button>`).join('');document.querySelectorAll('.station').forEach(b=>b.onclick=()=>select(+b.dataset.i));document.getElementById('count').textContent=current.length}
 function updateSummary(){document.getElementById('nearest').innerHTML=`${current[0].distance.toFixed(1)}<small>km</small>`;document.getElementById('nearestName').textContent=current[0].name;document.getElementById('within10').innerHTML=`${current.filter(x=>x.distance<=10).length}<small>개</small>`;document.getElementById('within20').innerHTML=`${current.filter(x=>x.distance<=20).length}<small>개</small>`;document.getElementById('available').innerHTML=`${current.filter(x=>!x.status.includes('전체')).length}<small>개소</small>`}
 function chargerIcon(i,isSelected=false){return L.divIcon({className:'charger-marker-wrap',html:`<div class="charger-marker${isSelected?' sel':''}"><span>${i+1}</span></div>`,iconSize:isSelected?[40,40]:[34,34],iconAnchor:isSelected?[20,36]:[17,31]})}
 function renderMap(label){
-  const center=regionCenters[province.value]||regionCenters['서울특별시'];
+  const center=getSelectedMapCenter();
   if(!map){
     map=L.map('leafletMap',{zoomControl:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,dragging:true,tap:true}).setView(center,13);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
@@ -166,7 +175,9 @@ function resetChargerToDefaults(){
   findChargers();
   window.scrollTo({top:0,behavior:'auto'});
 }
-province.onchange=()=>fillDistricts();district.onchange=fillNeighborhoods;
+province.onchange=()=>{fillDistricts();findChargers()};
+district.onchange=()=>{fillNeighborhoods();findChargers()};
+neighborhood.onchange=findChargers;
 loadAdministrativeAreas().catch(()=>{}).finally(()=>{
   chargerPageReady=true;
   resetChargerToDefaults();
