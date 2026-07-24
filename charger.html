@@ -132,21 +132,25 @@ async function loadAdministrativeAreas(){
   regions=nextRegions;
   neighborhoods=nextNeighborhoods;
 }
-function fillProvinces(){province.innerHTML=Object.keys(regions).map(x=>`<option${x==='서울특별시'?' selected':''}>${x}</option>`).join('');fillDistricts('서초구')}
-function fillDistricts(preferred){district.innerHTML=regions[province.value].map(x=>`<option${x===preferred?' selected':''}>${x}</option>`).join('');fillNeighborhoods()}
-function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||['전체'];neighborhood.innerHTML=items.map(x=>`<option value="${x}">${x==='전체'?'동 전체':x}</option>`).join('')}
+const locationPrompt='고객 위치를 선택해주세요';
+function promptOption(){return `<option value="" selected disabled>${locationPrompt}</option>`}
+function fillProvinces(){province.innerHTML=promptOption()+Object.keys(regions).map(x=>`<option value="${x}">${x}</option>`).join('');district.innerHTML=promptOption();neighborhood.innerHTML=promptOption()}
+function fillDistricts(){const items=regions[province.value]||[];district.innerHTML=promptOption()+items.map(x=>`<option value="${x}">${x}</option>`).join('');neighborhood.innerHTML=promptOption()}
+function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||[];neighborhood.innerHTML=promptOption()+items.map(x=>`<option value="${x}">${x==='전체'?'동 전체':x}</option>`).join('')}
 function getSelectedMapCenter(){const p=province.value,d=district.value,n=neighborhood.value;return (n&&n!=='전체'&&administrativeCenters[`${p}|${d}|${n}`])||administrativeCenters[`${p}|${d}`]||regionCenters[p]||regionCenters['서울특별시']}
 function buildData(){const p=province.value,d=district.value;const seed=(p.length+d.length)%5;const center=getSelectedMapCenter();const distances=[4.8+seed*.3,7.6+seed*.5,12.9+seed*.4,18.2+seed*.6,26.4+seed*.8],bearings=[225,45,135,205,20];current=baseNames.map((n,i)=>{const angle=bearings[i]*Math.PI/180,latKm=111.32,lngKm=111.32*Math.cos(center[0]*Math.PI/180);return{name:`${d} ${n}`,distance:distances[i],power:i===1||i===4?400:350,status:i===3?'전체 충전 중':`${i+1}기 사용 가능`,address:`${p} ${d} 주요 도로 인근`,lat:center[0]+Math.cos(angle)*distances[i]/latKm,lng:center[1]+Math.sin(angle)*distances[i]/lngKm}})}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function render(){const visible=current.map((s,i)=>({s,i})).filter(({s})=>s.distance<=activeRadius);document.getElementById('list').innerHTML=visible.map(({s,i})=>`<button class="station ${i===selected?'sel':''}" data-i="${i}"><span class="station-top"><span class="station-name"><span class="station-index">${i+1}</span><span class="name">${esc(s.name)}</span></span><span class="distance">${s.distance.toFixed(1)}km</span></span><span class="meta"><span class="power">⚡ ${s.power}kW</span><span class="status">● ${esc(s.status)}</span></span><span class="station-bottom"><span class="address">${esc(s.address)} · 24시간</span><span class="actions"><span class="mini">상세정보</span><span class="mini route">길찾기</span></span></span></button>`).join('');document.querySelectorAll('.station').forEach(b=>b.onclick=()=>select(+b.dataset.i));document.getElementById('count').textContent=visible.length;document.getElementById('listTitleRange').textContent=`반경 ${activeRadius}km 내 충전소`}
 function updateSummary(){document.getElementById('nearest').innerHTML=`${current[0].distance.toFixed(1)}<small>km</small>`;document.getElementById('nearestName').textContent=current[0].name;document.getElementById('within10').innerHTML=`${current.filter(x=>x.distance<=10).length}<small>개</small>`;document.getElementById('within20').innerHTML=`${current.filter(x=>x.distance<=20).length}<small>개</small>`;document.getElementById('available').innerHTML=`${current.filter(x=>!x.status.includes('전체')).length}<small>개소</small>`}
 function chargerIcon(i,isSelected=false){return L.divIcon({className:'charger-marker-wrap',html:`<div class="charger-marker${isSelected?' sel':''}"><span>${i+1}</span></div>`,iconSize:isSelected?[40,48]:[34,42],iconAnchor:isSelected?[20,46]:[17,40]})}
+function ensureMap(center=[36.35,127.8],zoom=7){
+  if(map)return;
+  map=L.map('leafletMap',{zoomControl:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,dragging:true,tap:true}).setView(center,zoom);
+  L.tileLayer('https://xdworld.vworld.kr/2d/Base/service/{z}/{x}/{y}.png',{minZoom:6,maxZoom:19,attribution:'지도: 국토교통부 브이월드'}).addTo(map);
+}
 function renderMap(label){
   const center=getSelectedMapCenter();
-  if(!map){
-    map=L.map('leafletMap',{zoomControl:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,dragging:true,tap:true}).setView(center,13);
-    L.tileLayer('https://xdworld.vworld.kr/2d/Base/service/{z}/{x}/{y}.png',{minZoom:6,maxZoom:19,attribution:'지도: 국토교통부 브이월드'}).addTo(map);
-  }
+  ensureMap(center,13);
   mapMarkers.forEach(marker=>marker.remove());
   mapMarkers=[];
   if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}
@@ -163,8 +167,26 @@ function renderMap(label){
   map.fitBounds(radiusCircle.getBounds(),{padding:[28,28],maxZoom:12});
   setTimeout(()=>map.invalidateSize(),0);
 }
-function setRadius(km){activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);document.getElementById('radius10Card').classList.toggle('active',km===10);document.getElementById('radius20Card').classList.toggle('active',km===20);render();renderMap(currentMapLabel);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
-function findChargers(){selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=label;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
+function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);document.getElementById('radius10Card').classList.toggle('active',km===10);document.getElementById('radius20Card').classList.toggle('active',km===20);render();renderMap(currentMapLabel);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
+function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}selected=0;buildData();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=label;renderMap(label);notice(`${label} 기준의 샘플 결과입니다.`)}
+function showEmptyState(){
+  current=[];selected=-1;currentMapLabel='';
+  ensureMap();
+  mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
+  if(homeMarker){homeMarker.remove();homeMarker=null}
+  if(radiusCircle){radiusCircle.remove();radiusCircle=null}
+  if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}
+  map.setView([36.35,127.8],7);
+  document.getElementById('mapRegion').textContent=locationPrompt;
+  document.getElementById('listTitleRange').textContent=locationPrompt;
+  document.getElementById('count').textContent='';
+  document.getElementById('list').innerHTML='';
+  document.getElementById('nearest').innerHTML='—<small>km</small>';
+  document.getElementById('nearestName').textContent='고객 위치 선택 후 확인';
+  document.getElementById('within10').innerHTML='—<small>개</small>';
+  document.getElementById('within20').innerHTML='—<small>개</small>';
+  document.getElementById('available').innerHTML='—<small>개소</small>';
+}
 function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}homeMarker?.closeTooltip();const marker=mapMarkers[i];if(marker){if(!fromMap)map.panTo(marker.getLatLng());activeStationTooltip=L.tooltip({direction:'top',offset:[0,-24],permanent:false,interactive:false}).setLatLng(marker.getLatLng()).setContent(`${i+1}. ${esc(current[i].name)}`).addTo(map)}}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
@@ -189,15 +211,11 @@ setInterval(syncDeploymentUpdatedAt,60000);
 let chargerPageReady=false;
 function resetChargerToDefaults(){
   fillProvinces();
-  province.value='서울특별시';
-  fillDistricts('서초구');
-  neighborhood.value='전체';
-  findChargers();
+  showEmptyState();
   window.scrollTo({top:0,behavior:'auto'});
 }
-province.onchange=()=>{fillDistricts();findChargers()};
-district.onchange=()=>{fillNeighborhoods();findChargers()};
-neighborhood.onchange=findChargers;
+province.onchange=fillDistricts;
+district.onchange=fillNeighborhoods;
 loadAdministrativeAreas().catch(()=>{}).finally(()=>{
   chargerPageReady=true;
   resetChargerToDefaults();
