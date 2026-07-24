@@ -17397,7 +17397,10 @@ function showPanel(n){
     }));
   }
   syncIpadStep1ScrollLock(n);
-  if(n===1) setTimeout(()=>playWaitlistTotalAnimation(true),80);
+  if(n===1) setTimeout(()=>{
+    playWaitlistTotalAnimation(true);
+    playWaitlistBarAnimations(true);
+  },120);
   const activePanel = document.getElementById(STEP_PANEL_IDS[n-1]);
   activePanel?.classList.remove('panel-enter-forward','panel-enter-back');
   const skipIpadResultMotion = n===3 && CSS.supports('(-webkit-touch-callout: none)') && window.matchMedia('(min-width:768px) and (max-width:1366px)').matches;
@@ -17853,6 +17856,26 @@ function playWaitlistTotalAnimation(force=false){
   waitlistTotal.innerHTML = [...finalText].map((digit,index)=>
     `<span class="waitlist-total-digit" style="--digit-delay:${index*240}ms">${digit}</span>`
   ).join('');
+}
+function playWaitlistBarAnimations(force=false){
+  const bars = [...document.querySelectorAll('.waitlist-bar-fill[data-h]')];
+  if(!bars.length) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    bars.forEach(el=>{ el.style.height = `${el.getAttribute('data-h')}%`; });
+    return;
+  }
+  bars.forEach(el=>{
+    if(!force && el.dataset.animated==='true') return;
+    el.dataset.animated = 'true';
+    el.style.transition = 'none';
+    el.style.height = '0%';
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    bars.forEach((el,index)=>{
+      el.style.transition = `height 1.25s cubic-bezier(.22,.72,.26,1) ${index*70}ms`;
+      el.style.height = `${el.getAttribute('data-h')}%`;
+    });
+  }));
 }
 function initBarAnimations(){
   const bars = document.querySelectorAll('.vbar-fill[data-h], .waitlist-bar-fill[data-h]');
