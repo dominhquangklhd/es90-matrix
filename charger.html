@@ -188,6 +188,28 @@ function showEmptyState(){
   document.getElementById('within10').innerHTML='—<small>개</small>';
   document.getElementById('within20').innerHTML='—<small>개</small>';
 }
+function previewLocation(level){
+  current=[];selected=-1;currentMapLabel='';
+  ensureMap();
+  mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
+  if(homeMarker){homeMarker.remove();homeMarker=null}
+  if(radiusCircle){radiusCircle.remove();radiusCircle=null}
+  if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}
+  [5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.remove('active'));
+  document.getElementById('nearest').innerHTML='—<small>km</small>';
+  document.getElementById('nearestName').textContent='고객 위치 선택 후 확인';
+  document.getElementById('within5').innerHTML='—<small>개</small>';
+  document.getElementById('within10').innerHTML='—<small>개</small>';
+  document.getElementById('within20').innerHTML='—<small>개</small>';
+  document.getElementById('list').innerHTML='';
+  document.getElementById('count').textContent='';
+  const center=getSelectedMapCenter();
+  const zoom=level==='province'?9:level==='district'?12:14;
+  const label=level==='province'?province.value:level==='district'?`${province.value} ${district.value}`:`${province.value} ${district.value} ${neighborhood.value==='전체'?'동 전체':neighborhood.value}`;
+  document.getElementById('mapRegion').textContent=`${label} 선택 위치`;
+  document.getElementById('listTitleRange').textContent='가까운 충전소 찾기를 눌러주세요';
+  map.flyTo(center,zoom,{animate:true,duration:1.35,easeLinearity:.22});
+}
 function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}homeMarker?.closeTooltip();const marker=mapMarkers[i];if(marker){if(!fromMap)map.panTo(marker.getLatLng());activeStationTooltip=L.tooltip({direction:'top',offset:[0,-24],permanent:false,interactive:false}).setLatLng(marker.getLatLng()).setContent(`${i+1}. ${esc(current[i].name)}`).addTo(map)}}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
@@ -215,8 +237,9 @@ function resetChargerToDefaults(){
   showEmptyState();
   window.scrollTo({top:0,behavior:'auto'});
 }
-province.onchange=fillDistricts;
-district.onchange=fillNeighborhoods;
+province.onchange=()=>{fillDistricts();previewLocation('province')};
+district.onchange=()=>{fillNeighborhoods();previewLocation('district')};
+neighborhood.onchange=()=>previewLocation('neighborhood');
 loadAdministrativeAreas().catch(()=>{}).finally(()=>{
   chargerPageReady=true;
   resetChargerToDefaults();
