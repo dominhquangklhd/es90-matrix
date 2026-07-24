@@ -1201,7 +1201,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 /* iPad landscape home-screen mode: keep Steps 1 and 2 spacious and rhythmically aligned */
 @media screen and (min-width:1024px) and (orientation:landscape) and (max-height:1100px){
   #panel1 .trim-split-wrap{align-items:stretch;}
-  #panel1 .trim-split-col{height:398px;padding:14px!important;}
+  #panel1 .trim-split-col{height:440px;padding:14px!important;}
   #panel1 .trim-group-label{margin-bottom:8px;}
   #panel1 .trim-col-cards{flex:1;margin-top:5px;gap:9px;}
   #panel1 .trim-col-cards .trim-card{height:auto;min-height:0;flex:1;}
@@ -1211,9 +1211,30 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
   #panel1 .trim-card-placeholder{height:90px;min-height:90px;flex-basis:90px;}
   #panel1 .trim-split-col.is-ultra .trim-col-cards{gap:7px;}
   #panel1 .trim-split-col.is-ultra .trim-col-cards .trim-card{flex:1 1 0;height:0;padding:0!important;}
-  #panel1 .trim-split-col.is-ultra .trim-card-inner{padding:7px 10px!important;gap:8px;}
-  #panel1 .trim-split-col.is-ultra .trim-card-thumb{flex-basis:58px;width:58px;height:38px;}
-  #panel1 .trim-split-col.is-ultra .trim-price-big{width:96px;height:38px;}
+  #panel1 .trim-split-col.is-ultra .trim-card-inner{padding:9px 11px!important;gap:9px;}
+  #panel1 .trim-split-col.is-ultra .trim-card-thumb{flex-basis:64px;width:64px;height:42px;}
+  #panel1 .trim-split-col.is-ultra .trim-price-big{width:100px;height:42px;}
+  #panel1 .trim-split-col.is-ultra .trim-price-main{font-size:16.5px;}
+  #panel1 .trim-split-col.is-five-row .trim-col-cards{min-height:0;gap:7px;}
+  #panel1 .trim-split-col.is-five-row .trim-col-cards .trim-card{
+    flex:1 1 0;
+    height:0;
+    min-height:0;
+    padding:0!important;
+  }
+  #panel1 .trim-split-col.is-five-row .trim-card-inner{padding:9px 11px!important;gap:9px;}
+  #panel1 .trim-split-col.is-five-row .trim-card-heading{margin-bottom:3px!important;}
+  #panel1 .trim-split-col.is-five-row .trim-card-thumb{flex-basis:64px;width:64px;height:42px;}
+  #panel1 .trim-split-col.is-five-row .trim-card-right{min-width:100px;}
+  #panel1 .trim-split-col.is-five-row .trim-price-big{width:100px;height:42px;}
+  #panel1 .trim-split-col.is-five-row .trim-price-main{font-size:16.5px;}
+  #panel1 .trim-split-col.is-five-row .trim-card-placeholder{
+    flex:1 1 0;
+    height:0;
+    min-height:0;
+    padding:0;
+    box-sizing:border-box;
+  }
   #panel1 .waitlist-card{height:360px;min-height:360px;margin-top:16px;padding:20px 22px 54px!important;}
   #panel1 .subsidy-guide{right:22px;width:calc(38% - 14px);}
   #panel1 .waitlist-card:before{right:16px;top:11px;padding:3px 7px;}
@@ -17473,14 +17494,6 @@ syncDeploymentUpdatedAt();
 setInterval(syncDeploymentUpdatedAt,60000);
 const TRIM_GROUPS = [
   {
-    label: 'PLUS 트림(2종)',
-    sub: '합리적 선택을 중요시 여기는&nbsp;<span class="trim-sub-emphasis">실속있는</span>&nbsp;고객님께',
-    trims: [
-      {trim:'Single Motor Plus'},
-      {trim:'Twin Motor Plus'}
-    ]
-  },
-  {
     label: 'ULTRA 트림(5종)',
     sub: '프리미엄 경험을 중요시 여기는&nbsp;<span class="trim-sub-emphasis">품격있는</span>&nbsp;고객님께',
     compact: true,
@@ -17490,6 +17503,14 @@ const TRIM_GROUPS = [
       {trim:'Twin Motor Ultra', airSuspension:false, variant:'NO AIR SUS'},
       {trim:'Twin Motor Ultra', airSuspension:true, variant:'AIR SUS'},
       {trim:'Twin Motor Performance Ultra'}
+    ]
+  },
+  {
+    label: 'PLUS 트림(2종)',
+    sub: '합리적 선택을 중요시 여기는&nbsp;<span class="trim-sub-emphasis">실속있는</span>&nbsp;고객님께',
+    trims: [
+      {trim:'Single Motor Plus'},
+      {trim:'Twin Motor Plus'}
     ]
   }
 ];
@@ -17562,7 +17583,7 @@ function renderStep1(){
   const wrap = panel.querySelector('#trimGroupWrap');
   TRIM_GROUPS.forEach(grp=>{
     const col = document.createElement('div');
-    col.className = `trim-split-col${grp.compact?' is-ultra':''}`;
+    col.className = `trim-split-col is-five-row${grp.compact?' is-ultra':''}`;
     const groupTrimNames = [...new Set(grp.trims.map(item=>item.trim))];
     const groupCount = RESERVATION_DATA.byTrim
       .filter(item=>groupTrimNames.includes(item.trim))
@@ -17605,6 +17626,9 @@ function renderStep1(){
       });
       cards.appendChild(card);
     });
+    for(let i=grp.trims.length;i<5;i++){
+      cards.insertAdjacentHTML('beforeend','<div class="trim-card-placeholder" aria-hidden="true"></div>');
+    }
     wrap.appendChild(col);
   });
   initBarAnimations();
