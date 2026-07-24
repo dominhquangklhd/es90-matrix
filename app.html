@@ -17685,17 +17685,17 @@ async function syncDeploymentUpdatedAt(){
       PENDING_DEPLOYED_VERSION = deployedVersion;
       LAST_DEPLOYED_VERSION = deployedVersion;
     }
-    const deployedAt = formatDeploymentUpdatedAt(versionInfo.updatedAt);
-    if(!deployedAt) return;
-    D.meta.updated = deployedAt;
-    RESERVATION_UPDATED_AT = deployedAt;
-    document.querySelectorAll('.waitlist-update-time').forEach(el=>{ el.textContent = `${deployedAt} 기준`; });
+    const matrixUpdatedAt = formatDeploymentUpdatedAt(versionInfo.matrixUpdatedAt);
+    if(!matrixUpdatedAt) return;
+    D.meta.updated = matrixUpdatedAt;
+    RESERVATION_UPDATED_AT = matrixUpdatedAt;
+    document.querySelectorAll('.waitlist-update-time').forEach(el=>{ el.textContent = `${matrixUpdatedAt} 기준`; });
     document.querySelectorAll('.waitlist-update-stamp').forEach(el=>{
       el.title = '배포 업데이트 시각';
-      el.setAttribute('aria-label', `배포 업데이트 ${deployedAt}`);
+      el.setAttribute('aria-label', `매트릭스 업데이트 ${matrixUpdatedAt}`);
     });
     const matrixDate = document.getElementById('matrixUpdatedDate');
-    if(matrixDate) matrixDate.textContent = deployedAt.split(' ')[0];
+    if(matrixDate) matrixDate.textContent = matrixUpdatedAt.split(' ')[0];
   }catch(_){
     // 로컬 파일이나 오프라인 환경에서는 HTML에 포함된 마지막 배포 시각을 유지한다.
   }

@@ -139,6 +139,14 @@ def update_app(total: int, trims: list[dict]) -> bool:
         "byTrim": trims,
     }
 
+    data_changed = (
+        total != previous_total
+        or previous_day_total != int(state["previousDayTotal"])
+        or trims != state["byTrim"]
+    )
+    if not data_changed:
+        return False
+
     app = APP_PATH.read_text(encoding="utf-8")
     block_pattern = re.compile(
         r"const RESERVATION_DATA = \{\s*"
@@ -162,16 +170,14 @@ def update_app(total: int, trims: list[dict]) -> bool:
     if substitutions != 1:
         raise RuntimeError("app.html의 RESERVATION_DATA 영역을 찾지 못했습니다.")
 
-    state_changed = new_state != state
     app_changed = updated_app != app
-    if state_changed:
-        STATE_PATH.write_text(
-            json.dumps(new_state, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
+    STATE_PATH.write_text(
+        json.dumps(new_state, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     if app_changed:
         APP_PATH.write_text(updated_app, encoding="utf-8")
-    return app_changed or state_changed
+    return True
 
 
 def main() -> int:

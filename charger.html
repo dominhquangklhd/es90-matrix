@@ -293,7 +293,7 @@ async function syncDeploymentUpdatedAt(){
     const response=await fetch(`./version.json?updated=${Date.now()}`,{cache:'no-store'});
     if(!response.ok)return;
     const info=await response.json();
-    const date=new Date(info.updatedAt);
+    const date=new Date(info.matrixUpdatedAt);
     if(Number.isNaN(date.getTime()))return;
     const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(part=>part.type!=='literal').map(part=>[part.type,part.value]));
     document.getElementById('matrixUpdatedDate').textContent=`${parts.year}-${parts.month}-${parts.day}`;
