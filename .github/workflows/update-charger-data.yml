@@ -1,0 +1,63 @@
+name: 350kW 이상 충전소 자동 업데이트
+
+on:
+  schedule:
+    # 매일 한국시간 오전 6시 20분
+    - cron: "20 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: charger-data-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: 저장소 불러오기
+        uses: actions/checkout@v4
+
+      - name: Python 준비
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 공공데이터포털 충전소 정보 확인
+        env:
+          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+        run: python scripts/update_charger_data.py
+
+      - name: 변경된 충전소 데이터 배포
+        run: |
+          if git diff --quiet -- charger-data-350kw.json; then
+            echo "350kW 이상 충전소 데이터 변경이 없습니다."
+            exit 0
+          fi
+
+          python - <<'PY'
+          import json
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          now = datetime.now(ZoneInfo("Asia/Seoul")).isoformat(timespec="seconds")
+          path = Path("version.json")
+          data = json.loads(path.read_text(encoding="utf-8"))
+          parts = data["version"].split(".")
+          parts[-1] = str(int(parts[-1]) + 1)
+          data["version"] = ".".join(parts)
+          data["updatedAt"] = now
+          data["matrixUpdatedAt"] = now
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+
+          git config user.name "ES90 Charger Auto Update"
+          git config user.email "actions@users.noreply.github.com"
+          git add charger-data-350kw.json version.json
+          git commit -m "Auto update 350kW charger data"
+          git push
