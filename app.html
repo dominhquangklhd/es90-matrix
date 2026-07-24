@@ -1285,6 +1285,10 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
     padding:0;
     box-sizing:border-box;
   }
+  #panel1 .trim-split-col:not(.is-ultra) .trim-col-cards .trim-card{
+    flex:0 0 calc((100% - 28px)/5);
+    height:auto;
+  }
   #panel1 .waitlist-card{height:320px;min-height:320px;margin-top:16px;padding:18px 22px 50px!important;}
   #panel1 .subsidy-guide{right:22px;width:360px;}
   #panel1 .waitlist-card:before{right:16px;top:11px;padding:3px 7px;}
@@ -17724,9 +17728,6 @@ function renderStep1(){
       });
       cards.appendChild(card);
     });
-    for(let i=grp.trims.length;i<5;i++){
-      cards.insertAdjacentHTML('beforeend','<div class="trim-card-placeholder" aria-hidden="true"></div>');
-    }
     wrap.appendChild(col);
   });
   initBarAnimations();
