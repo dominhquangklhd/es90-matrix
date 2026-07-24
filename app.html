@@ -154,7 +154,7 @@ button{font-family:inherit;}
 .btn-secondary:hover{background:var(--line-soft);}
 
 /* ===== Result header ===== */
-.result-hero{background:linear-gradient(135deg,var(--navy-deep),var(--navy) 60%,var(--navy-soft));border-radius:18px;padding:22px 24px;margin-bottom:16px;position:relative;overflow:hidden;}
+.result-hero{background:linear-gradient(135deg,var(--navy-deep),var(--navy) 60%,var(--navy-soft));border-radius:0;padding:22px 24px;margin-bottom:16px;position:relative;overflow:hidden;}
 .result-hero::after{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.08),transparent 70%);}
 .result-title{color:#fff;font-size:19px;font-weight:600;position:relative;}
 .result-sub{color:rgba(255,255,255,0.6);font-size:12.5px;margin-top:4px;position:relative;}
@@ -1136,9 +1136,9 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .btn-secondary{background:#fff!important;border:1px solid var(--line)!important;color:var(--navy)!important;}
 
 /* Results dashboard */
-.result-hero{position:sticky;top:140px;left:0;right:0;z-index:45;isolation:isolate;overflow:hidden;width:100%;max-width:100%;box-sizing:border-box;padding:18px 22px!important;border:0!important;border-radius:18px!important;background:linear-gradient(130deg,#071b2c 0%,#153d5b 66%,#245976 100%)!important;box-shadow:0 14px 34px rgba(7,27,44,.18)!important;color:#fff;-webkit-transform:none;transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;}
+.result-hero{position:sticky;top:140px;left:0;right:0;z-index:45;isolation:isolate;overflow:hidden;width:100%;max-width:100%;box-sizing:border-box;padding:18px 22px!important;border:0!important;border-radius:0!important;background:linear-gradient(130deg,#071b2c 0%,#153d5b 66%,#245976 100%)!important;box-shadow:0 14px 34px rgba(7,27,44,.18)!important;color:#fff;-webkit-transform:none;transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;}
 .result-hero:after{content:"";position:absolute;width:320px;height:320px;right:-125px;top:-170px;border:1px solid rgba(255,255,255,.13);border-radius:50%;box-shadow:0 0 0 42px rgba(255,255,255,.025),0 0 0 84px rgba(255,255,255,.018);pointer-events:none;}
-.result-hero{border-radius:12px!important;}
+.result-hero{border-radius:0!important;}
 .result-hero-slot{display:contents;}
 /* iPad Safari: use a viewport-fixed layer instead of jitter-prone sticky positioning. */
 @supports (-webkit-touch-callout:none){
