@@ -1025,14 +1025,14 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .waitlist-card{position:relative;overflow:hidden;padding:24px!important;}
 .subsidy-guide{position:absolute;right:24px;top:19px;width:calc(38% - 24px);overflow:hidden;border-top:1px solid #dbe3e8;border-right:0;border-bottom:1px solid #dbe3e8;border-left:0;border-radius:0;background:rgba(251,252,253,.90);box-shadow:none;opacity:.94;}
 .subsidy-guide table{width:100%;border-collapse:collapse;table-layout:fixed;}
-.subsidy-guide th,.subsidy-guide td{padding:4.5px 7px;border-right:1px solid #e6ecef;border-bottom:1px solid #e6ecef;text-align:center;white-space:nowrap;line-height:1.15;}
+.subsidy-guide th,.subsidy-guide td{padding:3px 5px;border-right:1px solid #e6ecef;border-bottom:1px solid #e6ecef;text-align:center;white-space:nowrap;line-height:1.1;}
 .subsidy-guide th:last-child,.subsidy-guide td:last-child{border-right:0;}
-.subsidy-guide th:first-child{width:35%;}
+.subsidy-guide th:first-child{width:39%;}
 .subsidy-guide tr:last-child td{border-bottom:0;}
-.subsidy-guide th{background:#f3f6f8;color:#596f7e;font-size:8.4px;font-weight:700;}
-.subsidy-guide td{color:#657986;font-size:8.1px;font-weight:500;}
-.subsidy-guide td:first-child{padding-left:9px;text-align:left;color:#445f70;font-weight:650;}
-.subsidy-guide td:not(:first-child){padding-left:7px;text-align:center;}
+.subsidy-guide th{background:#f3f6f8;color:#596f7e;font-size:7.7px;font-weight:700;}
+.subsidy-guide td{color:#657986;font-size:7.4px;font-weight:500;}
+.subsidy-guide td:first-child{padding-left:7px;text-align:left;color:#445f70;font-weight:650;}
+.subsidy-guide td:not(:first-child){padding-left:5px;text-align:center;}
 .subsidy-guide strong{color:#506a79;font-weight:700;}
 @media(max-width:900px){.subsidy-guide{position:static;width:100%;margin:0 0 14px;}}
 .waitlist-total-num{color:var(--orange-deep)!important;}
@@ -1247,7 +1247,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
     box-sizing:border-box;
   }
   #panel1 .waitlist-card{height:320px;min-height:320px;margin-top:16px;padding:18px 22px 50px!important;}
-  #panel1 .subsidy-guide{right:22px;width:calc(38% - 14px);}
+  #panel1 .subsidy-guide{right:22px;width:360px;}
   #panel1 .waitlist-card:before{right:16px;top:11px;padding:3px 7px;}
   #panel1 .waitlist-card .card-title{font-size:13px;line-height:1.2;}
   #panel1 .waitlist-heading-row{margin-bottom:6px;gap:9px;}
@@ -17549,10 +17549,10 @@ function renderStep1(){
       </div>
       <div class="subsidy-guide" aria-label="전기차 보조금 차량 가격별 지급 기준">
         <table>
-          <thead><tr><th>차량 기본가격 (26년 기준)</th><th>국비 보조금</th><th>지자체 보조금</th><th>총 보조금 적용</th></tr></thead>
+          <thead><tr><th>차량 기본가격</th><th>국비</th><th>지자체</th><th>총 적용</th></tr></thead>
           <tbody>
-            <tr><td>5,300만 원 미만</td><td>산정액의 <strong>100%</strong></td><td>산정액의 <strong>100%</strong></td><td>산정액의 <strong>100%</strong></td></tr>
-            <tr><td>5,300만 원 이상~8,500만 원 미만</td><td>산정액의 <strong>50%</strong></td><td>산정액의 <strong>50%</strong></td><td>산정액의 <strong>50%</strong></td></tr>
+            <tr><td>5,300만 원 미만</td><td><strong>100%</strong></td><td><strong>100%</strong></td><td><strong>100%</strong></td></tr>
+            <tr><td>5,300만~8,500만 원</td><td><strong>50%</strong></td><td><strong>50%</strong></td><td><strong>50%</strong></td></tr>
             <tr><td>8,500만 원 이상</td><td>미지급</td><td>미지급</td><td>미지급</td></tr>
           </tbody>
         </table>
