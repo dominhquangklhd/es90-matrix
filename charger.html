@@ -134,7 +134,7 @@ async function loadAdministrativeAreas(){
 }
 const locationPrompt='고객 위치를 선택해주세요';
 function promptOption(){return `<option value="" selected disabled>${locationPrompt}</option>`}
-const koreanSort=(a,b)=>a.localeCompare(b,'ko-KR');
+const koreanSort=(a,b)=>{const left=String(a).normalize('NFC'),right=String(b).normalize('NFC');return left<right?-1:left>right?1:0};
 function fillProvinces(){province.innerHTML=promptOption()+Object.keys(regions).sort(koreanSort).map(x=>`<option value="${x}">${x}</option>`).join('');district.innerHTML=promptOption();neighborhood.innerHTML=promptOption()}
 function fillDistricts(){const items=[...(regions[province.value]||[])].sort(koreanSort);district.innerHTML=promptOption()+items.map(x=>`<option value="${x}">${x}</option>`).join('');neighborhood.innerHTML=promptOption()}
 function fillNeighborhoods(){const items=neighborhoods[`${province.value}|${district.value}`]||[];const sorted=['전체',...items.filter(x=>x!=='전체').sort(koreanSort)];neighborhood.innerHTML=promptOption()+sorted.map(x=>`<option value="${x}">${x==='전체'?'동 전체':x}</option>`).join('')}
