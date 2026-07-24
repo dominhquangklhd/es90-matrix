@@ -477,7 +477,7 @@ button{font-family:inherit;}
 .waitlist-bar-price.isTop{color:var(--orange-deep);background:rgba(214,82,10,.08);border-color:rgba(214,82,10,.3);}
 .waitlist-price-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:7px;}
 .waitlist-price-row .waitlist-bar-price{margin-bottom:0;}
-.waitlist-meta{width:100%;height:54px;display:grid;grid-template-rows:24px 24px;row-gap:6px;align-items:center;justify-items:start;margin-bottom:9px;}
+.waitlist-meta{width:100%;height:24px;display:flex;align-items:center;justify-content:flex-start;margin-bottom:7px;}
 .waitlist-meta-slot{min-width:0;min-height:18px;display:flex;align-items:center;justify-content:center;}
 .waitlist-meta-slot.is-placeholder{visibility:hidden;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price{margin:0;}
@@ -490,12 +490,13 @@ button{font-family:inherit;}
 .waitlist-status-icon{width:28px;height:24px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;border:1px solid #afc1ce;border-radius:7px;background:#eef4f7;color:#264f69;font-style:normal;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.08);}
 .waitlist-status-icon svg{width:14px;height:14px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .waitlist-status-icon.is-best{border-color:#df9a69;background:#fff2e8;color:#bf5a20;box-shadow:0 1px 3px rgba(191,90,32,.13);}
+.waitlist-status-icon.is-best{font-size:13px;font-weight:800;}
 .waitlist-status-icon.is-subsidy{border-color:#8eb4cf;background:#edf6fc;color:#316f99;box-shadow:0 1px 3px rgba(49,111,153,.12);}
 .waitlist-status-icon.is-eco{border-color:#91b89d;background:#eef7f0;color:#477e57;box-shadow:0 1px 3px rgba(71,126,87,.12);}
 .waitlist-status-icon.is-subsidy b{font-size:8px;line-height:1;letter-spacing:-.35px;}
 .waitlist-status-icon.is-placeholder{visibility:hidden;}
-.waitlist-icon-legend{position:relative;top:28px;z-index:1;display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:16px;margin:10px 2px 0;color:var(--ink-faint);font-size:9px;}
-.waitlist-icon-legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.waitlist-icon-legend{position:relative;top:28px;z-index:1;display:grid;grid-template-columns:repeat(3,max-content);justify-content:end;align-items:center;column-gap:16px;margin:10px 2px 0;color:var(--ink-faint);font-size:9px;}
+.waitlist-icon-legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
 .waitlist-icon-legend .waitlist-status-icon{width:28px;height:24px;border-radius:7px;flex:0 0 auto;}
 .waitlist-card .waitlist-footnote{position:relative;top:-11px;}
 @media(max-width:640px){.waitlist-icon-legend{top:0}.waitlist-card .waitlist-footnote{top:0}}
@@ -1211,7 +1212,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 /* iPad landscape home-screen mode: keep Steps 1 and 2 spacious and rhythmically aligned */
 @media screen and (min-width:1024px) and (orientation:landscape) and (max-height:1100px){
   #panel1 .trim-split-wrap{align-items:stretch;}
-  #panel1 .trim-split-col{height:440px;padding:14px!important;}
+  #panel1 .trim-split-col{height:480px;padding:14px!important;}
   #panel1 .trim-group-label{margin-bottom:8px;}
   #panel1 .trim-col-cards{flex:1;margin-top:5px;gap:9px;}
   #panel1 .trim-col-cards .trim-card{height:auto;min-height:0;flex:1;}
@@ -1245,19 +1246,19 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
     padding:0;
     box-sizing:border-box;
   }
-  #panel1 .waitlist-card{height:360px;min-height:360px;margin-top:16px;padding:20px 22px 54px!important;}
+  #panel1 .waitlist-card{height:320px;min-height:320px;margin-top:16px;padding:18px 22px 50px!important;}
   #panel1 .subsidy-guide{right:22px;width:calc(38% - 14px);}
   #panel1 .waitlist-card:before{right:16px;top:11px;padding:3px 7px;}
   #panel1 .waitlist-card .card-title{font-size:13px;line-height:1.2;}
-  #panel1 .waitlist-heading-row{margin-bottom:9px;gap:9px;}
+  #panel1 .waitlist-heading-row{margin-bottom:6px;gap:9px;}
   #panel1 .waitlist-card .note-text{margin:0!important;font-size:10.5px;line-height:1.35;}
-  #panel1 .waitlist-total-row{margin-bottom:18px;gap:8px;}
+  #panel1 .waitlist-total-row{margin-bottom:12px;gap:8px;}
   #panel1 .waitlist-total-num{font-size:32px;}
   #panel1 .waitlist-total-unit{font-size:14px;}
   #panel1 .waitlist-total-label{font-size:10.5px;}
-  #panel1 .waitlist-bars{gap:7px;padding-top:6px;}
+  #panel1 .waitlist-bars{gap:7px;padding-top:4px;}
   #panel1 .waitlist-bar-col{padding-top:0;}
-  #panel1 .waitlist-bar-track{height:94px;}
+  #panel1 .waitlist-bar-track{height:88px;}
   #panel1 .waitlist-bar-price{font-size:9px;padding:1.5px 7px;margin-bottom:3px;}
   #panel1 .waitlist-best-label{font-size:9px;padding:1.5px 7px;}
   #panel1 .waitlist-price-row{gap:3px;margin-bottom:4px;}
@@ -1293,6 +1294,8 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
     align-items:center;
     min-height:24px;
     margin:0;
+    grid-template-columns:repeat(3,max-content);
+    column-gap:14px;
   }
   #panel1 .waitlist-bars + .spec-excluded-note{margin-top:28px!important;}
   #panel2 .group-grid{gap:16px;margin-bottom:18px;}
@@ -17570,8 +17573,8 @@ function renderStep1(){
           return `
           <div class="waitlist-bar-col" onclick="selectTrimFromWaitlist('${t.trim}',${t.airSuspension===true})">
             <div class="waitlist-meta">
-              <div class="waitlist-best-row${isTop?'':' is-placeholder'}"><span class="waitlist-best-label">★ 실시간 BEST</span></div>
               <div class="waitlist-status-icons">
+                ${isTop?'<span class="waitlist-status-icon is-best" title="실시간 BEST" aria-label="실시간 BEST">★</span>':''}
                 ${hasSubsidy?'<span class="waitlist-status-icon is-subsidy" title="보조금 50% 적용" aria-label="보조금 50% 적용"><b>50%</b></span>':''}
                 <span class="waitlist-status-icon is-eco" title="친환경차 세제혜택" aria-label="친환경차 세제혜택"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></span>
               </div>
@@ -17586,6 +17589,7 @@ function renderStep1(){
         }).join('')}
       </div>
       <div class="waitlist-icon-legend" aria-label="그래프 아이콘 안내">
+        <span><i class="waitlist-status-icon is-best">★</i>실시간 BEST</span>
         <span><i class="waitlist-status-icon is-subsidy"><b>50%</b></i>보조금 50% 적용</span>
         <span><i class="waitlist-status-icon is-eco"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></i>친환경차 세제혜택</span>
       </div>
