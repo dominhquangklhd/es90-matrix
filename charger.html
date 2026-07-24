@@ -218,7 +218,7 @@ homeMarker=new Tmapv2.Marker({position:tmapPoint(center),iconHTML:'<div class="h
 }
 function updateRadiusCards(){[5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.toggle('active',activeRadius===km))}
 function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);updateRadiusCards();render();renderMap(currentMapLabel,true);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
-function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}selected=0;buildData();updateRadiusCards();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=`${label} 주변`;renderMap(label);notice(`${label} 기준 실제 350kW 충전소 결과입니다.`)}
+function findChargers(){if(!province.value||!district.value||!neighborhood.value){notice(locationPrompt);return}activeRadius=20;selected=0;buildData();updateRadiusCards();render();updateSummary();const dong=neighborhood.value==='전체'?'':` ${neighborhood.value}`;const label=`${province.value} ${district.value}${dong}`;currentMapLabel=label;document.getElementById('mapRegion').textContent=`${label} 주변`;renderMap(label);notice(`${label} 기준 실제 350kW 충전소 결과입니다.`)}
 function showEmptyState(){
   current=[];selected=-1;currentMapLabel='';
   ensureMap();
