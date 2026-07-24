@@ -171,21 +171,22 @@ button{font-family:inherit;}
 .hero-trim-select{flex:0 1 220px;width:220px;min-width:0;max-width:58%;height:42px;padding:0 30px 0 11px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:rgba(255,255,255,.10) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ffffff' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;color:#fff;font-size:10px;font-weight:700;line-height:1;appearance:none;-webkit-appearance:none;cursor:pointer;outline:none;text-overflow:ellipsis;white-space:nowrap;}
 .hero-trim-select:hover,.hero-trim-select:focus{border-color:rgba(255,255,255,.52);background-color:rgba(255,255,255,.16);}
 .hero-trim-select option{background:#fff;color:var(--navy-deep);}
-.hero-es-trim-select-wrap{position:relative;flex:0 1 220px;width:220px;min-width:0;max-width:58%;}
+.hero-es-trim-select-wrap,.hero-comp-trim-select-wrap{position:relative;flex:0 1 220px;width:220px;min-width:0;max-width:58%;}
 .hero-es-trim-select-wrap .hero-trim-select{width:100%;max-width:none;height:38px;color:transparent;}
 .hero-es-trim-selected{position:absolute;left:11px;right:30px;top:50%;transform:translateY(-50%);pointer-events:none;color:#fff;font-size:10px;font-weight:700;line-height:1.15;overflow:hidden;}
 .hero-es-trim-selected-main,.hero-es-trim-selected-sub{display:inline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .hero-es-trim-selected-sub{margin-left:5px;font-size:8.5px;font-weight:600;color:rgba(255,255,255,.72);letter-spacing:.12px;}
-.hero-es-trim-trigger{position:relative;width:100%;height:42px;padding:5px 30px 5px 11px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:rgba(255,255,255,.10);color:#fff;text-align:left;cursor:pointer;}
-.hero-es-trim-trigger:after{content:"";position:absolute;right:10px;top:50%;width:7px;height:7px;border-right:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:translateY(-68%) rotate(45deg);}
-.hero-es-trim-trigger .hero-es-trim-selected{position:static;display:block;transform:none;}
-.hero-es-trim-menu{display:none;position:absolute;z-index:80;top:calc(100% + 3px);left:0;width:100%;min-width:220px;border:1px solid rgba(255,255,255,.20);border-radius:7px;background:linear-gradient(145deg,rgba(38,78,105,.98),rgba(20,56,81,.98));box-shadow:0 12px 26px rgba(3,20,34,.30);overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
-.hero-es-trim-select-wrap.is-open .hero-es-trim-menu{display:block;}
-.hero-es-trim-menu.is-floating{display:block;position:fixed;z-index:1000;max-height:calc(100vh - var(--menu-top,0px) - 12px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.hero-es-trim-trigger,.hero-comp-trim-trigger{position:relative;width:100%;height:42px;padding:5px 30px 5px 11px;border:1px solid rgba(255,255,255,.20);border-radius:7px;background:rgba(255,255,255,.075);color:#fff;text-align:left;cursor:pointer;transition:background .18s,border-color .18s;}
+.hero-es-trim-trigger:hover,.hero-es-trim-trigger:focus,.hero-comp-trim-trigger:hover,.hero-comp-trim-trigger:focus{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.32);outline:none;}
+.hero-es-trim-trigger:after,.hero-comp-trim-trigger:after{content:"";position:absolute;right:10px;top:50%;width:7px;height:7px;border-right:1.5px solid rgba(255,255,255,.82);border-bottom:1.5px solid rgba(255,255,255,.82);transform:translateY(-68%) rotate(45deg);}
+.hero-es-trim-trigger .hero-es-trim-selected,.hero-comp-trim-trigger .hero-es-trim-selected{position:static;display:block;transform:none;}
+.hero-es-trim-menu,.hero-comp-trim-menu{display:none;position:absolute;z-index:80;top:calc(100% + 3px);left:0;width:100%;min-width:220px;border:1px solid rgba(255,255,255,.16);border-radius:7px;background:linear-gradient(145deg,rgba(63,91,110,.98),rgba(42,70,90,.98));box-shadow:0 10px 22px rgba(3,20,34,.24);overflow:hidden;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.hero-es-trim-select-wrap.is-open .hero-es-trim-menu,.hero-comp-trim-select-wrap.is-open .hero-comp-trim-menu{display:block;}
+.hero-es-trim-menu.is-floating,.hero-comp-trim-menu.is-floating{display:block;position:fixed;z-index:1000;max-height:calc(100vh - var(--menu-top,0px) - 12px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
 .hero-es-trim-option{display:flex;align-items:center;width:100%;min-height:40px;padding:7px 11px;border:0;border-bottom:1px solid rgba(255,255,255,.09);background:transparent;color:#fff;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
 .hero-es-trim-option:last-child{border-bottom:0;}
 .hero-es-trim-option:hover,.hero-es-trim-option:focus{background:rgba(255,255,255,.11);color:#fff;outline:none;}
-.hero-es-trim-option.is-selected{background:rgba(239,107,55,.88);color:#fff;outline:none;}
+.hero-es-trim-option.is-selected{background:rgba(151,177,193,.25);color:#fff;box-shadow:inset 3px 0 rgba(215,228,236,.72);outline:none;}
 .hero-es-trim-option-main,.hero-es-trim-option-sub{display:inline;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .hero-es-trim-option-main{font-size:10.5px;font-weight:600;line-height:1.25;}
 .hero-es-trim-option-sub{margin-left:6px;font-size:9px;font-weight:500;line-height:1.2;color:inherit;opacity:.78;}
@@ -16778,6 +16779,7 @@ function toggleEs90ResultTrimMenu(event){
     closeEs90ResultTrimMenu();
     return;
   }
+  closeCompResultTrimMenu();
   const rect = trigger.getBoundingClientRect();
   menu.classList.add('is-floating');
   menu.style.left = `${Math.round(rect.left)}px`;
@@ -16803,6 +16805,55 @@ function selectEs90ResultTrim(event, trim, suspensionMode){
   STATE.es90Trim = trim;
   if(suspensionMode==='air') SELECTED_ES_AIR_SUSPENSION_TRIMS.add(trim);
   else SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(trim);
+  renderStep4();
+}
+
+function closeCompResultTrimMenu(){
+  if(window._compMenuOutsideHandler){
+    document.removeEventListener('pointerdown',window._compMenuOutsideHandler);
+    window._compMenuOutsideHandler=null;
+  }
+  const wrap=document.querySelector('.hero-comp-trim-select-wrap');
+  const menu=document.querySelector('.hero-comp-trim-menu');
+  if(!wrap||!menu)return;
+  menu.classList.remove('is-floating');
+  menu.removeAttribute('style');
+  wrap.classList.remove('is-open');
+  if(menu.parentElement!==wrap)wrap.appendChild(menu);
+}
+
+function toggleCompResultTrimMenu(event){
+  if(event){event.preventDefault();event.stopPropagation();}
+  const wrap=document.querySelector('.hero-comp-trim-select-wrap');
+  const trigger=wrap?.querySelector('.hero-comp-trim-trigger');
+  const menu=document.querySelector('.hero-comp-trim-menu');
+  if(!wrap||!trigger||!menu)return;
+  if(menu.classList.contains('is-floating')){closeCompResultTrimMenu();return;}
+  closeEs90ResultTrimMenu();
+  const rect=trigger.getBoundingClientRect();
+  menu.classList.add('is-floating');
+  menu.style.left=`${Math.round(rect.left)}px`;
+  menu.style.top=`${Math.round(rect.bottom+3)}px`;
+  menu.style.width=`${Math.max(220,Math.round(rect.width))}px`;
+  menu.style.setProperty('--menu-top',`${Math.round(rect.bottom+3)}px`);
+  document.body.appendChild(menu);
+  wrap.classList.add('is-open');
+  window._compMenuOutsideHandler=(outsideEvent)=>{
+    if(menu.contains(outsideEvent.target)||trigger.contains(outsideEvent.target))return;
+    closeCompResultTrimMenu();
+  };
+  requestAnimationFrame(()=>document.addEventListener('pointerdown',window._compMenuOutsideHandler));
+}
+
+function selectCompResultTrim(event, encodedTrim){
+  if(event){event.preventDefault();event.stopPropagation();}
+  const trim=decodeURIComponent(encodedTrim);
+  if(window._compMenuOutsideHandler){
+    document.removeEventListener('pointerdown',window._compMenuOutsideHandler);
+    window._compMenuOutsideHandler=null;
+  }
+  document.querySelector('.hero-comp-trim-menu.is-floating')?.remove();
+  STATE.compTrim=trim;
   renderStep4();
 }
 
@@ -18076,9 +18127,14 @@ if(score.priceDiff !== null){
         <div class="hero-price-item">
           <div class="hpi-top">
             <div class="hpi-label">${(BRAND_ONLY[brandKey]?BRAND_ONLY[brandKey]+' ':'')+compName}</div>
-            ${compTrimChoices.length>1?`<select id="heroCompTrimSelect" class="hero-trim-select" aria-label="경쟁차 트림 변경">
-              ${compTrimChoices.map(t=>`<option value="${t}"${t===compTrim?' selected':''}>${compTrimDisplay(t)}</option>`).join('')}
-            </select>`:''}
+            ${compTrimChoices.length>1?`<div class="hero-comp-trim-select-wrap">
+              <button type="button" class="hero-comp-trim-trigger" aria-label="경쟁차 트림 변경" aria-haspopup="listbox" onclick="toggleCompResultTrimMenu(event)">
+                <span class="hero-es-trim-selected"><span class="hero-es-trim-selected-main">${compTrimDisplay(compTrim)}</span></span>
+              </button>
+              <div class="hero-comp-trim-menu" role="listbox" aria-label="경쟁차 트림 목록">
+                ${compTrimChoices.map(t=>`<button type="button" class="hero-es-trim-option${t===compTrim?' is-selected':''}" role="option" aria-selected="${t===compTrim}" onclick="selectCompResultTrim(event,'${encodeURIComponent(t)}')"><span class="hero-es-trim-option-main">${compTrimDisplay(t)}</span></button>`).join('')}
+              </div>
+            </div>`:''}
           </div>
           <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.total):'가격 미확인'}</div>
         </div>
@@ -18254,13 +18310,6 @@ if(score.priceDiff !== null){
   initBarAnimations();
   initIpadPinnedResultHero();
 
-  const heroCompTrimSelect = document.getElementById('heroCompTrimSelect');
-  if(heroCompTrimSelect){
-    heroCompTrimSelect.addEventListener('change', ()=>{
-      STATE.compTrim = heroCompTrimSelect.value;
-      renderStep4();
-    });
-  }
 }
 
 function initIpadPinnedResultHero(){
