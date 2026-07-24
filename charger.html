@@ -145,7 +145,7 @@ function renderMap(label){
   const center=getSelectedMapCenter();
   if(!map){
     map=L.map('leafletMap',{zoomControl:true,touchZoom:true,scrollWheelZoom:true,doubleClickZoom:true,dragging:true,tap:true}).setView(center,13);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:19,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
+    L.tileLayer('https://xdworld.vworld.kr/2d/Base/service/{z}/{x}/{y}.png',{minZoom:6,maxZoom:19,attribution:'지도: 국토교통부 브이월드'}).addTo(map);
   }
   mapMarkers.forEach(marker=>marker.remove());
   mapMarkers=[];
