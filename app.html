@@ -477,14 +477,14 @@ button{font-family:inherit;}
 .waitlist-bar-price.isTop{color:var(--orange-deep);background:rgba(214,82,10,.08);border-color:rgba(214,82,10,.3);}
 .waitlist-price-row{display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:7px;}
 .waitlist-price-row .waitlist-bar-price{margin-bottom:0;}
-.waitlist-meta{width:100%;height:54px;display:grid;grid-template-rows:24px 24px;row-gap:6px;align-items:center;justify-items:center;margin-bottom:9px;}
+.waitlist-meta{width:100%;height:54px;display:grid;grid-template-rows:24px 24px;row-gap:6px;align-items:center;justify-items:start;margin-bottom:9px;}
 .waitlist-meta-slot{min-width:0;min-height:18px;display:flex;align-items:center;justify-content:center;}
 .waitlist-meta-slot.is-placeholder{visibility:hidden;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price{margin:0;}
 .waitlist-meta .waitlist-best-badge,.waitlist-meta .waitlist-bar-price,.waitlist-meta .subsidy-benefit-badge,.waitlist-meta .tax-benefit-badge{width:78px;box-sizing:border-box;justify-content:center;text-align:center;}
-.waitlist-status-icons{height:24px;display:flex;align-items:center;justify-content:center;gap:4px;}
+.waitlist-status-icons{width:100%;height:24px;display:flex;align-items:center;justify-content:flex-start;gap:4px;}
 .waitlist-status-icons .waitlist-bar-price{height:24px;display:inline-flex;align-items:center;justify-content:center;margin:0!important;border-radius:7px;}
-.waitlist-best-row{width:110px;height:24px;display:flex;align-items:center;justify-content:flex-start;}
+.waitlist-best-row{width:100%;height:24px;display:flex;align-items:center;justify-content:flex-start;}
 .waitlist-best-row.is-placeholder{visibility:hidden;}
 .waitlist-best-label{width:78px;height:24px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;color:var(--orange-deep);background:rgba(214,82,10,.08);border:1px solid rgba(214,82,10,.3);border-radius:7px;padding:2.5px 9px;font-size:10px;font-weight:700;line-height:normal;white-space:nowrap;letter-spacing:0;}
 .waitlist-status-icon{width:28px;height:24px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;border:1px solid #afc1ce;border-radius:7px;background:#eef4f7;color:#264f69;font-style:normal;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.08);}
@@ -503,7 +503,17 @@ button{font-family:inherit;}
 .tax-benefit-badge{color:#2f6748;background:#edf7f0;border:1px solid #b9d8c4;}
 .subsidy-benefit-badge{color:#376282;background:#edf5fb;border:1px solid #bdd2e2;}
 .waitlist-best-badge{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(135deg,var(--orange) 0%,var(--orange-deep) 100%);color:#fff;font-size:9.5px;font-weight:800;padding:3px 10px;border-radius:20px;margin-bottom:6px;box-shadow:0 2px 5px rgba(214,82,10,.35);letter-spacing:0.15px;}
-.waitlist-bar-track{width:100%;height:130px;background:#eef1f4;border-radius:5px 5px 0 0;display:flex;align-items:flex-end;overflow:hidden;}
+.waitlist-bar-track{position:relative;width:100%;height:130px;background:#eef1f4;border-radius:5px 5px 0 0;display:flex;align-items:flex-end;overflow:hidden;}
+.waitlist-bar-track>.waitlist-bar-price{
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:9px;
+  transform:translateX(-50%);
+  margin:0;
+  background:rgba(255,255,255,.82);
+  backdrop-filter:blur(2px);
+}
 .waitlist-card{margin-top:22px;}
 .waitlist-bar-fill{width:100%;background:linear-gradient(180deg,var(--orange) 0%,var(--orange-deep) 100%);border-radius:5px 5px 0 0;transition:height 1s ease;}
 .waitlist-bar-fill.navy{background:linear-gradient(180deg,#2c5580 0%,var(--navy) 100%);}
@@ -1260,7 +1270,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
   #panel1 .waitlist-bar-variant{font-size:7.2px;}
   #panel1 .waitlist-status-icons{gap:2px;}
   #panel1 .waitlist-status-icon{width:24px;}
-  #panel1 .waitlist-best-row{width:100%;justify-content:center;}
+  #panel1 .waitlist-best-row{width:100%;justify-content:flex-start;}
   #panel1 .waitlist-card .waitlist-footnote{
     position:absolute;
     left:22px;
@@ -17562,12 +17572,14 @@ function renderStep1(){
             <div class="waitlist-meta">
               <div class="waitlist-best-row${isTop?'':' is-placeholder'}"><span class="waitlist-best-label">★ 실시간 BEST</span></div>
               <div class="waitlist-status-icons">
-                <div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div>
                 ${hasSubsidy?'<span class="waitlist-status-icon is-subsidy" title="보조금 50% 적용" aria-label="보조금 50% 적용"><b>50%</b></span>':''}
                 <span class="waitlist-status-icon is-eco" title="친환경차 세제혜택" aria-label="친환경차 세제혜택"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg></span>
               </div>
             </div>
-            <div class="waitlist-bar-track"><div class="waitlist-bar-fill${isTop?'':' navy'}" data-h="${h}" style="height:0%;"></div></div>
+            <div class="waitlist-bar-track">
+              <div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div>
+              <div class="waitlist-bar-fill${isTop?'':' navy'}" data-h="${h}" style="height:0%;"></div>
+            </div>
             <div class="waitlist-bar-count">${t.count}<span class="waitlist-bar-pct">(${pct}%)</span></div>
             <div class="waitlist-bar-label">${es90TrimDisplay(t.trim)}${t.variant?`<span class="waitlist-bar-variant">${t.variant}</span>`:''}</div>
           </div>`;
