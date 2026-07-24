@@ -17853,7 +17853,7 @@ function buildPriceGapHtml(esTotal, compTotal, es90Trim, compName, fallbackLabel
       <div class="price-gap-trim"><span>ES90 ${es90TrimMenuDisplay(es90Trim)}</span>가 ${displayCompName} 대비</div>
       <div class="price-gap-main"><span class="price-gap-amount" aria-label="${absAmt}">${animatedAbsAmt}</span><span class="price-gap-pct">(${esCheaper?'▼':'▲'} ${pct}%)</span> ${gapLabel}</div>
       <div class="price-gap-sub">${es90Trim==='Single Motor Ultra'||es90Trim==='Twin Motor Ultra'
-        ? '출고가 기준 · 친환경차 세제혜택 적용 · 국가보조금 제외 · 지자체보조금, 기타 영업직원 추가 프로모션, 에어 서스펜션 제외'
+        ? `출고가 기준 · 친환경차 세제혜택 적용 · 국가보조금 제외 · 지자체보조금, 기타 영업직원 추가 프로모션 제외 · 에어 서스펜션 ${SELECTED_ES_AIR_SUSPENSION_TRIMS.has(es90Trim)?'포함':'미적용'}`
         : '출고가 기준 · 친환경차 세제혜택 적용 · 국가보조금 제외 · 지자체보조금, 기타 영업직원 추가 프로모션 제외'}</div>
     </div>`;
 }
