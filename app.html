@@ -17007,9 +17007,15 @@ function analyzeCategories(es90Trim, brandKey, compTrim){
   if(!bd) return [];
   return bd.categories.map(cat=>{
     const items = (cat.category==='Interior & Seats' ? sortInteriorSeats(cat.items) : cat.category==='Telematics' ? sortTelematics(cat.items) : sortItemsKorean(cat.items)).map(it=>{
-      const isSelectedEsAirOption = it.name.trim()==='에어 서스펜션 및 액티브 섀시'
-        && SELECTED_ES_AIR_SUSPENSION_TRIMS.has(es90Trim);
-      const ev = isSelectedEsAirOption ? true : it.es90[es90Trim];
+      const itemName = it.name.trim();
+      const isConfigurableEsUltra = ['Single Motor Ultra','Twin Motor Ultra'].includes(es90Trim);
+      const hasSelectedEsAirSuspension = SELECTED_ES_AIR_SUSPENSION_TRIMS.has(es90Trim);
+      let ev = it.es90[es90Trim];
+      if(isConfigurableEsUltra && itemName==='에어 서스펜션 및 액티브 섀시'){
+        ev = hasSelectedEsAirSuspension ? true : null;
+      } else if(isConfigurableEsUltra && itemName==='투어링 섀시'){
+        ev = hasSelectedEsAirSuspension ? null : true;
+      }
       let cv = it.competitor[compTrim];
       if(brandKey==='Hyundai' && compTrim==='Premium' && it.name.trim()==='투어링 섀시') cv = null;
       return {name: it.name, es90: ev, comp: cv, category:cat.category};
