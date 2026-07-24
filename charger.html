@@ -176,7 +176,7 @@ function renderMap(label){
   });
   homeMarker=new Tmapv2.Marker({position:tmapPoint(center),iconHTML:'<div class="home-marker map-home-icon"><span class="customer-home"></span></div>',iconSize:new Tmapv2.Size(34,38),map});
   map.setCenter(tmapPoint(center));
-  map.setZoom(activeRadius<=5?12:activeRadius<=10?13:14);
+  map.setZoom(activeRadius<=5?12:activeRadius<=10?11:10);
 }
 function updateRadiusCards(){[5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.toggle('active',activeRadius===km))}
 function setRadius(km){if(!current.length){notice(locationPrompt);return}activeRadius=km;selected=current.findIndex(s=>s.distance<=activeRadius);updateRadiusCards();render();renderMap(currentMapLabel);notice(`반경 ${km}km 안의 충전소만 표시합니다.`)}
