@@ -55,7 +55,7 @@ def read_report(user_id: str, password: str) -> tuple[int, list[dict]]:
             raise RuntimeError("로그인에 실패했습니다. 아이디·비밀번호를 확인하세요.")
 
         page.goto(REPORT_URL, wait_until="domcontentloaded", timeout=60_000)
-        page.wait_for_selector("tr", timeout=60_000)
+        page.wait_for_selector("tr", state="attached", timeout=60_000)
 
         rows = page.locator("tr").evaluate_all(
             """rows => rows.map(row =>
