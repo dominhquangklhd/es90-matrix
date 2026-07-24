@@ -174,11 +174,11 @@ function findChargers(){if(!province.value||!district.value||!neighborhood.value
 function showEmptyState(){
   current=[];selected=-1;currentMapLabel='';
   ensureMap();
-  mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
-  if(homeMarker){homeMarker.remove();homeMarker=null}
-  if(radiusCircle){radiusCircle.remove();radiusCircle=null}
-  if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}
-  map.setView([36.35,127.8],7);
+  clearTmapMarkers();
+  clearTmapOverlay(homeMarker);homeMarker=null;
+  clearTmapOverlay(radiusCircle);radiusCircle=null;
+  clearTmapOverlay(activeStationTooltip);activeStationTooltip=null;
+  map.setCenter(tmapPoint([36.35,127.8]));map.setZoom(7);
   document.getElementById('mapRegion').textContent=locationPrompt;
   document.getElementById('listTitleRange').textContent=locationPrompt;
   document.getElementById('count').textContent='';
@@ -192,10 +192,10 @@ function showEmptyState(){
 function previewLocation(level){
   current=[];selected=-1;currentMapLabel='';
   ensureMap();
-  mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
-  if(homeMarker){homeMarker.remove();homeMarker=null}
-  if(radiusCircle){radiusCircle.remove();radiusCircle=null}
-  if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}
+  clearTmapMarkers();
+  clearTmapOverlay(homeMarker);homeMarker=null;
+  clearTmapOverlay(radiusCircle);radiusCircle=null;
+  clearTmapOverlay(activeStationTooltip);activeStationTooltip=null;
   [5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.remove('active'));
   document.getElementById('nearest').innerHTML='—<small>km</small>';
   document.getElementById('nearestName').textContent='고객 위치 선택 후 확인';
@@ -209,9 +209,20 @@ function previewLocation(level){
   const label=level==='province'?province.value:level==='district'?`${province.value} ${district.value}`:`${province.value} ${district.value} ${neighborhood.value==='전체'?'동 전체':neighborhood.value}`;
   document.getElementById('mapRegion').textContent=`${label} 선택 위치`;
   document.getElementById('listTitleRange').textContent='가까운 충전소 찾기를 눌러주세요';
-  map.flyTo(center,zoom,{animate:true,duration:1.35,easeLinearity:.22});
+  map.setCenter(tmapPoint(center));map.setZoom(zoom);
 }
-function select(i,fromMap=false){selected=i;mapMarkers.forEach((marker,index)=>marker.setIcon(chargerIcon(index,index===i)));render();if(activeStationTooltip){map.removeLayer(activeStationTooltip);activeStationTooltip=null}homeMarker?.closeTooltip();const marker=mapMarkers[i];if(marker){if(!fromMap)map.panTo(marker.getLatLng());activeStationTooltip=L.tooltip({direction:'top',offset:[0,-24],permanent:false,interactive:false}).setLatLng(marker.getLatLng()).setContent(`${i+1}. ${esc(current[i].name)}`).addTo(map)}}
+function select(i,fromMap=false){
+  selected=i;
+  mapMarkers.forEach((marker,index)=>marker?.setIconHTML(chargerIconHtml(index,index===i)));
+  render();
+  clearTmapOverlay(activeStationTooltip);activeStationTooltip=null;
+  const marker=mapMarkers[i];
+  if(marker){
+    const position=marker.getPosition();
+    if(!fromMap)map.setCenter(position);
+    activeStationTooltip=new Tmapv2.InfoWindow({position,content:`<div style="padding:6px 9px;font:500 11px Paperlogy,sans-serif;color:#102a43;white-space:nowrap">${i+1}. ${esc(current[i].name)}</div>`,type:2,map});
+  }
+}
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
 function goBack(){location.href='./app.html?returnStep=3'}
 function logoutToLogin(){
