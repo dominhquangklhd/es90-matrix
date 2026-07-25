@@ -144,9 +144,6 @@ def update_app(total: int, trims: list[dict]) -> bool:
         or previous_day_total != int(state["previousDayTotal"])
         or trims != state["byTrim"]
     )
-    if not data_changed:
-        return False
-
     app = APP_PATH.read_text(encoding="utf-8")
     block_pattern = re.compile(
         r"const RESERVATION_DATA = \{\s*"
@@ -177,7 +174,7 @@ def update_app(total: int, trims: list[dict]) -> bool:
     )
     if app_changed:
         APP_PATH.write_text(updated_app, encoding="utf-8")
-    return True
+    return data_changed or new_state != state
 
 
 def main() -> int:
