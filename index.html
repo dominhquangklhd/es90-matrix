@@ -60,7 +60,7 @@
 
       const previous = localStorage.getItem('es90-app-version');
       localStorage.setItem('es90-app-version', version);
-      appFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
+      appFrame.src = `./app.html?v=${encodeURIComponent(version)}&fresh=${Date.now()}`;
       if (previous && previous !== version) showStatus('최신 업데이트 반영 완료');
     }
 
@@ -91,7 +91,7 @@
       nextFrame.removeAttribute('id');
       nextFrame.setAttribute('aria-hidden', 'true');
       nextFrame.style.visibility = 'hidden';
-      nextFrame.src = `./app.html?v=${encodeURIComponent(version)}`;
+      nextFrame.src = `./app.html?v=${encodeURIComponent(version)}&fresh=${Date.now()}`;
       const timeoutId = window.setTimeout(() => {
         if (!pendingFrameSwap || pendingFrameSwap.nextFrame !== nextFrame) return;
         nextFrame.remove();
