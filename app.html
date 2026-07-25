@@ -541,6 +541,22 @@ button{font-family:inherit;}
   backdrop-filter:blur(2px);
 }
 .waitlist-card{margin-top:22px;}
+.waitlist-trend{position:absolute;left:330px;right:410px;top:18px;height:104px;padding:8px 12px 6px;border:1px solid #e0e7ec;border-radius:9px;background:linear-gradient(180deg,rgba(248,251,253,.96),rgba(255,255,255,.92));overflow:hidden;}
+.waitlist-trend-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:2px;}
+.waitlist-trend-title{color:#36536b;font-size:9px;font-weight:800;letter-spacing:-.1px;}
+.waitlist-trend-summary{display:flex;align-items:baseline;gap:4px;color:#7a8e9d;font-size:7.5px;white-space:nowrap;}
+.waitlist-trend-summary b{color:var(--orange-deep);font-size:11px;font-variant-numeric:tabular-nums;}
+.waitlist-trend svg{display:block;width:100%;height:72px;overflow:visible;}
+.waitlist-trend-grid{stroke:#dfe7ec;stroke-width:1;stroke-dasharray:2 3;}
+.waitlist-trend-area{fill:url(#waitlistTrendFill);}
+.waitlist-trend-line{fill:none;stroke:var(--orange);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;}
+.waitlist-trend-dot{fill:#fff;stroke:var(--orange);stroke-width:2;}
+.waitlist-trend-dot.is-latest{fill:var(--orange);}
+.waitlist-trend-value{fill:#274961;font-size:8px;font-weight:800;text-anchor:middle;font-variant-numeric:tabular-nums;}
+.waitlist-trend-date{fill:#718695;font-size:7px;font-weight:650;text-anchor:middle;}
+.waitlist-trend-delta{fill:var(--orange-deep);font-size:7px;font-weight:750;text-anchor:middle;}
+@media(max-width:1180px){.waitlist-trend{left:285px;right:395px;}}
+@media(max-width:900px){.waitlist-trend{position:relative;left:auto;right:auto;top:auto;width:100%;height:108px;margin:0 0 12px;}}
 .waitlist-bar-fill{width:100%;background:linear-gradient(180deg,var(--orange) 0%,var(--orange-deep) 100%);border-radius:5px 5px 0 0;transition:height 1s ease;}
 .waitlist-bar-fill.navy{background:linear-gradient(180deg,#2c5580 0%,var(--navy) 100%);}
 .waitlist-bar-count{margin-top:8px;font-size:13.5px;font-weight:800;color:var(--ink);}
@@ -17621,6 +17637,11 @@ window.addEventListener('wheel', event=>{
 const RESERVATION_DATA = {
   total: 981,
   previousDayTotal: 923,
+  history: [
+    {date:'2026-07-22', total:826},
+    {date:'2026-07-24', total:923},
+    {date:'2026-07-25', total:981}
+  ],
   byTrim: [
     {trim:'Twin Motor Ultra', count:466, airSuspension:true},
     {trim:'Single Motor Ultra', count:394, airSuspension:true},
@@ -17737,6 +17758,44 @@ function selectTrimFromWaitlist(trim, airSuspension=false){
   else SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(trim);
   openStep2WithDirectDefault();
 }
+function renderWaitlistTrend(){
+  const points = RESERVATION_DATA.history || [];
+  if(points.length < 2) return '';
+  const width = 520, height = 72, left = 25, right = 25, top = 14, bottom = 17;
+  const values = points.map(point=>point.total);
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = Math.max(max-min,1);
+  const x = index=>left + (width-left-right) * (index / Math.max(points.length-1,1));
+  const y = value=>top + (height-top-bottom) * (1-(value-min)/range);
+  const coords = points.map((point,index)=>({x:x(index),y:y(point.total),...point}));
+  const line = coords.map(point=>`${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ');
+  const area = `M ${coords[0].x} ${height-bottom} L ${coords.map(point=>`${point.x} ${point.y}`).join(' L ')} L ${coords.at(-1).x} ${height-bottom} Z`;
+  const launchIncrease = points.at(-1).total-points[0].total;
+  return `
+    <div class="waitlist-trend" aria-label="ES90 출시 이후 누적 예약 추이">
+      <div class="waitlist-trend-head">
+        <span class="waitlist-trend-title">런칭 이후 계약 대기 추이</span>
+        <span class="waitlist-trend-summary">7월 22일 이후 <b>+${launchIncrease.toLocaleString('ko-KR')}</b>건</span>
+      </div>
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" role="img" aria-label="${points.map(point=>`${point.date} ${point.total}건`).join(', ')}">
+        <defs><linearGradient id="waitlistTrendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f36b32" stop-opacity=".20"/><stop offset="100%" stop-color="#f36b32" stop-opacity=".02"/></linearGradient></defs>
+        <line class="waitlist-trend-grid" x1="${left}" y1="${height-bottom}" x2="${width-right}" y2="${height-bottom}"/>
+        <path class="waitlist-trend-area" d="${area}"/>
+        <polyline class="waitlist-trend-line" points="${line}"/>
+        ${coords.map((point,index)=>{
+          const previous = coords[index-1];
+          const delta = previous ? point.total-previous.total : null;
+          const dateLabel = `${Number(point.date.slice(5,7))}/${Number(point.date.slice(8,10))}`;
+          return `<g>
+            <circle class="waitlist-trend-dot${index===coords.length-1?' is-latest':''}" cx="${point.x}" cy="${point.y}" r="${index===coords.length-1?3.6:3}"/>
+            <text class="waitlist-trend-value" x="${point.x}" y="${Math.max(point.y-7,8)}">${point.total.toLocaleString('ko-KR')}</text>
+            ${delta!==null?`<text class="waitlist-trend-delta" x="${point.x}" y="${Math.min(point.y+12,height-bottom-5)}">+${delta.toLocaleString('ko-KR')}</text>`:''}
+            <text class="waitlist-trend-date" x="${point.x}" y="${height-2}">${dateLabel}</text>
+          </g>`;
+        }).join('')}
+      </svg>
+    </div>`;
+}
 function renderStep1(){
   const panel = document.getElementById('panel1');
   panel.innerHTML = `
@@ -17760,6 +17819,7 @@ function renderStep1(){
           </tbody>
         </table>
       </div>
+      ${renderWaitlistTrend()}
       <div class="waitlist-total-row">
         <div class="waitlist-total-num"><span class="waitlist-total-value" data-target="${RESERVATION_DATA.total}" aria-label="${RESERVATION_DATA.total.toLocaleString('ko-KR')}"></span><span class="waitlist-total-unit">명</span></div>
         <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">(+전일대비 ${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}% 증가)</div></div>

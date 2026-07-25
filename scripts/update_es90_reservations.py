@@ -136,8 +136,16 @@ def update_app(total: int, trims: list[dict]) -> bool:
         "observedAt": now.isoformat(timespec="seconds"),
         "total": total,
         "previousDayTotal": previous_day_total,
+        "history": state.get("history", []),
         "byTrim": trims,
     }
+    history = list(new_state["history"])
+    today = now.date().isoformat()
+    if history and history[-1].get("date") == today:
+        history[-1]["total"] = total
+    else:
+        history.append({"date": today, "total": total})
+    new_state["history"] = history
 
     data_changed = (
         total != previous_total
@@ -149,6 +157,7 @@ def update_app(total: int, trims: list[dict]) -> bool:
         r"const RESERVATION_DATA = \{\s*"
         r"total:\s*\d+,\s*"
         r"previousDayTotal:\s*\d+,\s*"
+        r"history:\s*\[.*?\],\s*"
         r"byTrim:\s*\[.*?\]\s*"
         r"\};",
         re.DOTALL,
@@ -158,6 +167,9 @@ def update_app(total: int, trims: list[dict]) -> bool:
         "const RESERVATION_DATA = {\n"
         f"  total: {total},\n"
         f"  previousDayTotal: {previous_day_total},\n"
+        "  history: "
+        + json.dumps(history, ensure_ascii=False, separators=(",", ":"))
+        + ",\n"
         "  byTrim: [\n"
         f"{items}\n"
         "  ]\n"

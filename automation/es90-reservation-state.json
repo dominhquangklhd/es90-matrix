@@ -3,6 +3,20 @@
   "observedAt": "2026-07-25T18:00:00+09:00",
   "total": 981,
   "previousDayTotal": 923,
+  "history": [
+    {
+      "date": "2026-07-22",
+      "total": 826
+    },
+    {
+      "date": "2026-07-24",
+      "total": 923
+    },
+    {
+      "date": "2026-07-25",
+      "total": 981
+    }
+  ],
   "byTrim": [
     {
       "trim": "Twin Motor Ultra",
