@@ -167,6 +167,16 @@ def update_app(total: int, trims: list[dict]) -> bool:
     if substitutions != 1:
         raise RuntimeError("app.html의 RESERVATION_DATA 영역을 찾지 못했습니다.")
 
+    display_updated_at = now.strftime("%Y-%m-%d %H:%M")
+    updated_app, timestamp_substitutions = re.subn(
+        r"let RESERVATION_UPDATED_AT = '[^']+';",
+        f"let RESERVATION_UPDATED_AT = '{display_updated_at}';",
+        updated_app,
+        count=1,
+    )
+    if timestamp_substitutions != 1:
+        raise RuntimeError("app.html의 RESERVATION_UPDATED_AT 영역을 찾지 못했습니다.")
+
     app_changed = updated_app != app
     STATE_PATH.write_text(
         json.dumps(new_state, ensure_ascii=False, indent=2) + "\n",
