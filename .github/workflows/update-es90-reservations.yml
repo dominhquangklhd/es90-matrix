@@ -57,7 +57,8 @@ jobs:
           parts[-1] = str(int(parts[-1]) + 1)
           data["version"] = ".".join(parts)
           data["updatedAt"] = datetime.now(ZoneInfo("Asia/Seoul")).isoformat(timespec="seconds")
-          data["matrixUpdatedAt"] = data["updatedAt"]
+          state = json.loads(Path("automation/es90-reservation-state.json").read_text(encoding="utf-8"))
+          data["reservationUpdatedAt"] = state["observedAt"]
           path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
 

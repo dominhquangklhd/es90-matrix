@@ -17665,7 +17665,7 @@ function isTopBrandInCurrentGroup(brand){
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
-let RESERVATION_UPDATED_AT = getDocumentUpdatedAt();
+let RESERVATION_UPDATED_AT = '2026-07-25 21:12';
 function formatDeploymentUpdatedAt(value){
   const date = new Date(value);
   if(Number.isNaN(date.getTime())) return null;
@@ -17695,11 +17695,12 @@ async function syncDeploymentUpdatedAt(){
     const matrixUpdatedAt = formatDeploymentUpdatedAt(versionInfo.matrixUpdatedAt);
     if(!matrixUpdatedAt) return;
     D.meta.updated = matrixUpdatedAt;
-    RESERVATION_UPDATED_AT = matrixUpdatedAt;
-    document.querySelectorAll('.waitlist-update-time').forEach(el=>{ el.textContent = `${matrixUpdatedAt} 기준`; });
+    const reservationUpdatedAt = formatDeploymentUpdatedAt(versionInfo.reservationUpdatedAt) || RESERVATION_UPDATED_AT;
+    RESERVATION_UPDATED_AT = reservationUpdatedAt;
+    document.querySelectorAll('.waitlist-update-time').forEach(el=>{ el.textContent = `${reservationUpdatedAt} 기준`; });
     document.querySelectorAll('.waitlist-update-stamp').forEach(el=>{
-      el.title = '배포 업데이트 시각';
-      el.setAttribute('aria-label', `매트릭스 업데이트 ${matrixUpdatedAt}`);
+      el.title = '예약정보 업데이트 시각';
+      el.setAttribute('aria-label', `예약정보 업데이트 ${reservationUpdatedAt}`);
     });
     const matrixDate = document.getElementById('matrixUpdatedDate');
     if(matrixDate) matrixDate.textContent = matrixUpdatedAt.split(' ')[0];
