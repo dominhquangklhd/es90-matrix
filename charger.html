@@ -35,6 +35,8 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
 @media(max-width:900px){.location-row{grid-template-columns:1fr 1fr}.find{height:41px}.summary{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.map{min-height:390px}.list{max-height:none}}@media(max-width:600px){main{padding:13px 11px 30px}.top-in{min-height:60px;padding:8px 12px;gap:8px}.top-actions{gap:5px}.meta-pill{padding:6px 8px;font-size:9px}.logout-btn{width:30px;padding:0;justify-content:center}.logout-btn span{display:none}.hero{padding:22px 18px}.hero:after{font-size:112px}.location{margin:-7px 0 0;padding:13px}.location-head{align-items:flex-start;flex-direction:column}.location-row{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.metric{min-height:76px;padding:12px}.metric-value{font-size:19px}.map{min-height:330px}.list-head-sub{align-items:flex-end}.charge-class-note{gap:2px 6px;font-size:7.8px}footer{flex-direction:column}}
 .use-time{display:inline-flex;align-items:center;gap:3px;color:var(--muted);font-size:9.5px;font-weight:450;white-space:nowrap}
 .use-time svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.metric-sub.with-date{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.metric-as-of{color:var(--muted);font-weight:450}
 .station.sel .station-index,.charger-marker.sel span{background:var(--orange2)!important}
 .charger-marker.sel{border-color:#d77b63!important;background:#fff4ef!important;box-shadow:0 0 0 1px rgba(255,255,255,.96),0 4px 9px rgba(207,112,104,.3)!important}
 @media screen and (min-width:901px){
@@ -64,8 +66,8 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:15px;paddi
     </div>
   </section>
   <section class="summary">
-    <div class="metric"><div class="metric-label">전국 350kW 이상 충전소</div><div class="metric-value" id="nationalTotal">—<small>개</small></div><div class="metric-sub">한국환경공단 제공</div></div>
-    <div class="metric"><div class="metric-label">고속도로 350kW 이상 충전소</div><div class="metric-value" id="highwayTotal">—<small>개</small></div><div class="metric-sub">고속도로/휴게소 기준</div></div>
+    <div class="metric"><div class="metric-label">전국 350kW 이상 충전소</div><div class="metric-value" id="nationalTotal">—<small>개</small></div><div class="metric-sub with-date"><span>한국환경공단 제공</span><span class="metric-as-of" id="nationalAsOf"></span></div></div>
+    <div class="metric"><div class="metric-label">고속도로 350kW 이상 충전소</div><div class="metric-value" id="highwayTotal">—<small>개</small></div><div class="metric-sub with-date"><span>고속도로/휴게소 기준</span><span class="metric-as-of" id="highwayAsOf"></span></div></div>
     <div class="metric primary"><div class="metric-label">가장 가까운 350kW 이상 충전소</div><div class="metric-value" id="nearest">—<small>km</small></div><div class="metric-sub" id="nearestName">고객 위치 선택 후 확인</div></div>
     <div class="metric radius-selector" id="radius5Card" role="button" tabindex="0" onclick="setRadius(5)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(5)}"><div class="metric-label">반경 5km 이내</div><div class="metric-value" id="within5">—<small>개</small></div><div class="metric-sub">눌러서 5km 반경 표시</div></div>
     <div class="metric radius-selector" id="radius10Card" role="button" tabindex="0" onclick="setRadius(10)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setRadius(10)}"><div class="metric-label">반경 10km 이내</div><div class="metric-value" id="within10">—<small>개</small></div><div class="metric-sub">눌러서 10km 반경 표시</div></div>
@@ -151,10 +153,11 @@ function useTimeHtml(s){
   return `<span class="use-time" title="${esc(raw)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>${esc(label)}</span>`;
 }
 async function loadAdministrativeAreas(){
-  const [response,centerResponse,chargerResponse]=await Promise.all([
+  const [response,centerResponse,chargerResponse,versionResponse]=await Promise.all([
     fetch('./administrative-dongs.json',{cache:'no-store'}),
     fetch('./administrative-centers.json',{cache:'no-store'}),
-    fetch('./charger-data-350kw.json',{cache:'no-store'})
+    fetch('./charger-data-350kw.json',{cache:'no-store'}),
+    fetch('./version.json',{cache:'no-store'})
   ]);
   if(!response.ok)throw new Error('행정동 데이터를 불러오지 못했습니다.');
   const data=await response.json();
@@ -164,6 +167,16 @@ async function loadAdministrativeAreas(){
   }
   if(!chargerResponse.ok)throw new Error('실제 충전소 데이터를 불러오지 못했습니다.');
   const chargerData=await chargerResponse.json();
+  const versionData=versionResponse.ok?await versionResponse.json():{};
+  const checkedAt=versionData.chargerCheckedAt||chargerData.updatedAt;
+  if(checkedAt){
+    const checkedDate=new Date(checkedAt);
+    if(!Number.isNaN(checkedDate.getTime())){
+      const asOf=`${String(checkedDate.getFullYear()).slice(-2)}.${checkedDate.getMonth()+1}.${checkedDate.getDate()}일 현재`;
+      document.getElementById('nationalAsOf').textContent=asOf;
+      document.getElementById('highwayAsOf').textContent=asOf;
+    }
+  }
   chargerStations=chargerData.stations||[];
   document.getElementById('nationalTotal').innerHTML=`${chargerStations.length}<small>개</small>`;
   const highwayPattern=/고속도로|휴게소|졸음쉼터|환승센터|하이패스/i;
