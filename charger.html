@@ -275,13 +275,16 @@ function previewLocation(level){
   const zoom=level==='province'?9:level==='district'?12:14;
   const label=level==='province'?province.value:level==='district'?`${province.value} ${district.value}`:`${province.value} ${district.value} ${neighborhood.value==='전체'?'동 전체':neighborhood.value}`;
   const requestId=++locationPreviewRequest;
+  const centerPoint=tmapPoint(center);
 
   ensureMap();
+  map.setCenter(centerPoint);
   map.setZoom(zoom);
-  map.setCenter(tmapPoint(center));
+  map.setCenter(centerPoint);
 
   requestAnimationFrame(()=>{
     if(requestId!==locationPreviewRequest)return;
+    map.setCenter(tmapPoint(center));
     current=[];selected=-1;currentMapLabel='';
     clearTmapMarkers();
     clearTmapOverlay(homeMarker);homeMarker=null;
@@ -298,6 +301,9 @@ function previewLocation(level){
     document.getElementById('mapRegion').textContent=`${label} 선택 위치`;
     document.getElementById('listTitleRange').textContent='가까운 충전소 찾기를 눌러주세요';
   });
+  setTimeout(()=>{
+    if(requestId===locationPreviewRequest)map.setCenter(tmapPoint(center));
+  },120);
 }
 function select(i,fromMap=false){
   selected=i;
