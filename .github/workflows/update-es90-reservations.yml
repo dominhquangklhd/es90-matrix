@@ -5,8 +5,9 @@ on:
     paths:
       - ".github/workflows/update-es90-reservations.yml"
   schedule:
-    # 09:00, 12:00, 15:00 and 18:00 Asia/Seoul (UTC+9).
-    - cron: "0 0,3,6,9 * * *"
+    # Retry within each 09:00, 12:00, 15:00 and 18:00 Asia/Seoul hour.
+    # GitHub warns that schedules at minute 0 can be delayed or dropped.
+    - cron: "7,17,27,37,47,57 0,3,6,9 * * *"
   workflow_dispatch:
 
 permissions:
@@ -33,18 +34,49 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check whether this update hour is already complete
+        id: slot
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          should_run = True
+          if os.environ["EVENT_NAME"] == "schedule":
+              now = datetime.now(ZoneInfo("Asia/Seoul"))
+              state = json.loads(
+                  Path("automation/es90-reservation-state.json").read_text(encoding="utf-8")
+              )
+              observed_at = datetime.fromisoformat(state["observedAt"])
+              should_run = not (
+                  observed_at.date() == now.date()
+                  and observed_at.hour == now.hour
+              )
+
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              output.write(f"should_run={'true' if should_run else 'false'}\n")
+          PY
+
       - name: Install browser
+        if: steps.slot.outputs.should_run == 'true'
         run: |
           python -m pip install --disable-pip-version-check playwright==1.54.0
           python -m playwright install --with-deps chromium
 
       - name: Read ES90 data from Daily Report
+        if: steps.slot.outputs.should_run == 'true'
         env:
           VOLVO_SALES_ID: ${{ secrets.VOLVO_SALES_ID }}
           VOLVO_SALES_PASSWORD: ${{ secrets.VOLVO_SALES_PASSWORD }}
         run: python scripts/update_es90_reservations.py
 
       - name: Publish latest check
+        if: steps.slot.outputs.should_run == 'true'
         run: |
           if git diff --quiet -- app.html automation/es90-reservation-state.json; then
             echo "No ES90 data or check-time changes."
