@@ -1111,6 +1111,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .group-selection-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 .step3-price-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 .group-selection-decimal{display:inline-block;}
+.waitlist-group-animated-number{display:inline-flex;align-items:baseline;font-variant-numeric:tabular-nums;}
 .group-card[data-group="indirect"] .group-selection-label,.group-card[data-group="indirect"] .group-selection-icon{color:#477da9;}
 .group-card[data-group="indirect"] .group-selection-value{color:#477da9;}
 .picker-section-label{display:flex;align-items:center;min-height:43px;margin:20px 0 0!important;padding:0 14px!important;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:#f7f9fa;color:var(--navy-deep)!important;font-size:12px!important;font-weight:600!important;}
@@ -17738,6 +17739,16 @@ function selectTrimFromWaitlist(trim, airSuspension=false){
   else SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(trim);
   openStep2WithDirectDefault();
 }
+function animatedWaitlistGroupDigits(value){
+  const finalText = String(value);
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return finalText;
+  let digitIndex = 0;
+  return [...finalText].map(character=>{
+    if(character==='.') return '<span class="group-selection-decimal">.</span>';
+    return `<span class="group-selection-digit" style="--digit-delay:${digitIndex++*240}ms">${character}</span>`;
+  }).join('');
+}
+
 function renderStep1(){
   const panel = document.getElementById('panel1');
   const waitlistChangePercent = (((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1);
@@ -17810,7 +17821,7 @@ function renderStep1(){
       .reduce((sum,item)=>sum+item.count,0);
     const groupPercent = RESERVATION_DATA.total > 0 ? (groupCount / RESERVATION_DATA.total * 100).toFixed(1) : '0.0';
     col.innerHTML = `
-      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share">${groupPercent}%</span></div>
+      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share"><span class="waitlist-group-animated-number">${animatedWaitlistGroupDigits(groupPercent)}</span>%</span></div>
       <div class="trim-col-cards" data-grp="${grp.label}"></div>
     `;
     const cards = col.querySelector('.trim-col-cards');
