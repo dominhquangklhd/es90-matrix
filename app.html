@@ -202,7 +202,7 @@ button{font-family:inherit;}
 .price-gap-promo strong{color:#fff;font-size:12px;}
 .price-gap-promo-result{color:#ff8a62;font-weight:800;}
 .price-gap-promo-note{display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.52);font-size:9px;}
-.price-gap-conditions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:7px;}
+.price-gap-conditions{display:flex;align-items:center;column-gap:7px;row-gap:5px;flex-wrap:wrap;margin-top:7px;}
 .price-gap-condition{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 7px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.68);font-size:9px;font-weight:650;}
 .price-gap-condition-icon{display:inline-grid;place-items:center;min-width:11px;color:rgba(255,255,255,.82);font-size:10px;font-weight:800;}
 .hpi-value-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;}
@@ -1171,7 +1171,7 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 }
 .result-title{position:relative;z-index:1;color:#fff!important;font-size:20px!important;font-weight:650!important;line-height:1.25!important;letter-spacing:-.45px!important;}
 .title-date-badge{background:rgba(255,255,255,.11)!important;border:1px solid rgba(255,255,255,.13)!important;color:rgba(255,255,255,.74)!important;}
-.result-badges{position:relative;z-index:1;gap:5px!important;margin:7px 0 9px!important;}
+.result-badges{position:relative;z-index:1;column-gap:7px!important;row-gap:5px!important;margin:7px 0 9px!important;}
 .rbadge{padding:3px 10px!important;border:1px solid rgba(205,220,232,.34)!important;background:linear-gradient(180deg,rgba(137,164,185,.30),rgba(92,126,153,.24))!important;color:rgba(255,255,255,.96)!important;font-size:9.5px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 2px 5px rgba(0,0,0,.08);}
 .rbadge.rb-gray{border-color:rgba(205,220,232,.34)!important;background:linear-gradient(180deg,rgba(137,164,185,.30),rgba(92,126,153,.24))!important;color:rgba(255,255,255,.96)!important;}
 .hero-price-row{position:relative;z-index:1;gap:11px!important;margin-top:7px!important;padding-top:8px!important;}
@@ -18076,7 +18076,7 @@ function buildPriceGapHtml(esTotal, compPrice, es90Trim, compName, fallbackLabel
       <div class="price-gap-conditions" aria-label="가격 비교 적용 조건">
         <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">◇</span>출고가 기준</span>
         <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">₩</span>국가보조금 제외</span>
-        <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">⌖</span>지자체보조금 제외</span>
+        <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">₩</span>지자체보조금 제외</span>
         <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">%</span>추가 프로모션 제외</span>
       </div>
       ${promotionHtml}
