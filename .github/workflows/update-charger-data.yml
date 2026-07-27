@@ -36,15 +36,20 @@ jobs:
           DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
         run: python scripts/update_charger_data.py
 
-      - name: Publish changed charger data
+      - name: Record check and publish changed charger data
         run: |
           if git diff --quiet -- charger-data-350kw.json; then
+            CHARGER_DATA_CHANGED=false
             echo "No charger data changes."
-            exit 0
+          else
+            CHARGER_DATA_CHANGED=true
+            echo "Charger data changed."
           fi
+          export CHARGER_DATA_CHANGED
 
           python - <<'PY'
           import json
+          import os
           from datetime import datetime
           from pathlib import Path
           from zoneinfo import ZoneInfo
@@ -56,12 +61,17 @@ jobs:
           parts[-1] = str(int(parts[-1]) + 1)
           data["version"] = ".".join(parts)
           data["updatedAt"] = now
-          data["chargerUpdatedAt"] = now
+          data["chargerCheckedAt"] = now
+          if os.environ["CHARGER_DATA_CHANGED"] == "true":
+              data["chargerUpdatedAt"] = now
           path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
 
           git config user.name "ES90 Charger Auto Update"
           git config user.email "actions@users.noreply.github.com"
-          git add charger-data-350kw.json version.json
-          git commit -m "Auto update 350kW charger data"
+          git add version.json
+          if [ "$CHARGER_DATA_CHANGED" = "true" ]; then
+            git add charger-data-350kw.json
+          fi
+          git commit -m "Daily check 350kW charger data"
           git push
