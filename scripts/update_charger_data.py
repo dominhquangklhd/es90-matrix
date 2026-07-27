@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT_PATH = ROOT / "charger-data-350kw.json"
 API_URL = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 MINIMUM_OUTPUT_KW = 350
-PAGE_SIZE = 1000
+PAGE_SIZE = 10000
 
 
 def request_page(service_key: str, page_no: int) -> dict:
