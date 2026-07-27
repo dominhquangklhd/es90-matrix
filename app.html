@@ -17761,8 +17761,7 @@ function renderStep1(){
         </table>
       </div>
       <div class="waitlist-total-row">
-        <div class="waitlist-total-num"><span class="waitlist-total-value" data-target="${RESERVATION_DATA.total}" aria-label="${RESERVATION_DATA.total.toLocaleString('ko-KR')}"></span><span class="waitlist-total-unit">명</span></div>
-        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">(+전일대비 ${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}% 증가)</div></div>
+        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">전일 대비 +${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}%</div></div>
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
@@ -17786,7 +17785,7 @@ function renderStep1(){
               <div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div>
               <div class="waitlist-bar-fill${isTop?'':' navy'}" data-h="${h}" style="height:0%;"></div>
             </div>
-            <div class="waitlist-bar-count">${t.count}<span class="waitlist-bar-pct">(${pct}%)</span></div>
+            <div class="waitlist-bar-count"><span class="waitlist-bar-pct">${pct}%</span></div>
             <div class="waitlist-bar-label">${es90TrimDisplay(t.trim)}${t.variant?`<span class="waitlist-bar-variant">${t.variant}</span>`:''}</div>
           </div>`;
         }).join('')}
