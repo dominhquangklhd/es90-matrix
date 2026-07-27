@@ -17592,7 +17592,11 @@ function showPanel(n){
   if(n===3) initIpadPinnedResultHero();
   window.scrollTo({top:0, behavior:'smooth'});
   if(window.parent !== window){
-    window.parent.postMessage({type:'es90-step-change',step:n},window.location.origin);
+    window.parent.postMessage({
+      type:'es90-step-change',
+      step:n,
+      returningFromCharger:n===1 && PRESERVE_CHARGER_RETURN
+    },window.location.origin);
   }
 }
 

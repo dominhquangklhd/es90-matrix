@@ -83,6 +83,8 @@
 
     function isSafeToAutoUpdate() {
       try {
+        const frameUrl = new URL(appFrame.contentWindow.location.href);
+        if (frameUrl.searchParams.get('returnStep') === '3') return false;
         const doc = appFrame.contentDocument;
         if (!doc) return false;
         const cover = doc.getElementById('loginCover');
@@ -168,7 +170,7 @@
         document.documentElement.classList.toggle('login-screen-open', loginOpen);
         document.body.classList.toggle('login-screen-open', loginOpen);
       }
-      if (event.data?.type === 'es90-step-change' && event.data.step === 1 && pendingVersion) {
+      if (event.data?.type === 'es90-step-change' && event.data.step === 1 && event.data.returningFromCharger !== true && pendingVersion) {
         applyVersion(pendingVersion);
       }
     });

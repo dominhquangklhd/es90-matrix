@@ -317,7 +317,21 @@ function select(i,fromMap=false){
   }
 }
 function notice(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(notice.t);notice.t=setTimeout(()=>t.classList.remove('show'),2100)}
-function goBack(){location.href='./app.html?returnStep=3'}
+const APP_SESSION_KEY='es90_cdsid_session';
+const APP_SESSION_EXTENSION=60*60*1000;
+function keepAppSessionAlive(){
+  try{
+    const session=JSON.parse(localStorage.getItem(APP_SESSION_KEY)||'null');
+    if(session)localStorage.setItem(APP_SESSION_KEY,JSON.stringify({...session,expiresAt:Date.now()+APP_SESSION_EXTENSION}));
+  }catch(_){}
+}
+['pointerdown','keydown','touchstart','scroll'].forEach(type=>window.addEventListener(type,keepAppSessionAlive,{passive:true}));
+keepAppSessionAlive();
+setInterval(keepAppSessionAlive,30000);
+function goBack(){
+  keepAppSessionAlive();
+  location.href='./app.html?returnStep=3';
+}
 function logoutToLogin(){
   if(!window.confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?')) return;
   localStorage.removeItem('es90_cdsid_session');
