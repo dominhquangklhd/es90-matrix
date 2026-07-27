@@ -36,9 +36,26 @@ def request_page(service_key: str, page_no: int) -> dict:
 
 def get_body(payload: dict) -> dict:
     body = payload.get("response", {}).get("body")
-    if not isinstance(body, dict):
-        raise RuntimeError("공공데이터포털 응답 형식을 확인할 수 없습니다.")
-    return body
+    if isinstance(body, dict):
+        return body
+
+    # The Korea Environment Corporation endpoint also returns the body fields
+    # directly at the top level. Support both formats so an upstream response
+    # wrapper change does not stop the daily update.
+    if isinstance(payload.get("items"), dict) and "totalCount" in payload:
+        result_code = str(payload.get("resultCode", "00"))
+        if result_code not in {"00", "0"}:
+            raise RuntimeError(
+                f"공공데이터포털 오류 {result_code}: "
+                f"{payload.get('resultMsg', '알 수 없는 오류')}"
+            )
+        return payload
+
+    raise RuntimeError(
+        f"공공데이터포털 응답 형식을 확인할 수 없습니다"
+        f" (resultCode={payload.get('resultCode', '없음')}, "
+        f"resultMsg={payload.get('resultMsg', '없음')})."
+    )
 
 
 def fetch_all(service_key: str) -> list[dict]:
