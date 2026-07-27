@@ -1111,7 +1111,6 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .group-selection-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 .step3-price-digit{display:inline-block;opacity:0;transform:translateY(-18px);animation:waitlistDigitDrop 1.7s cubic-bezier(.22,1,.36,1) forwards;animation-delay:var(--digit-delay,0ms);}
 .group-selection-decimal{display:inline-block;}
-.waitlist-animated-number{display:inline-flex;align-items:baseline;font-variant-numeric:tabular-nums;}
 .group-card[data-group="indirect"] .group-selection-label,.group-card[data-group="indirect"] .group-selection-icon{color:#477da9;}
 .group-card[data-group="indirect"] .group-selection-value{color:#477da9;}
 .picker-section-label{display:flex;align-items:center;min-height:43px;margin:20px 0 0!important;padding:0 14px!important;border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;background:#f7f9fa;color:var(--navy-deep)!important;font-size:12px!important;font-weight:600!important;}
@@ -16987,15 +16986,6 @@ const ES90_TRIM_DISPLAY = {
 function es90TrimDisplay(trim){ return ES90_TRIM_DISPLAY[trim] || trim; }
 function es90TrimMenuDisplay(trim){ return es90TrimDisplay(trim).replace('Extended Range','ER'); }
 function es90TrimCompact(trim){ return es90TrimDisplay(trim).replace('Single Motor Extended Range','Single Motor ER'); }
-function animatedPercentDigits(value){
-  const finalText = String(value);
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return finalText;
-  let digitIndex = 0;
-  return [...finalText].map(character=>{
-    if(character==='.') return '<span class="group-selection-decimal">.</span>';
-    return `<span class="group-selection-digit" style="--digit-delay:${digitIndex++*240}ms">${character}</span>`;
-  }).join('');
-}
 function es90TrimImage(trim){
   if(trim==='Twin Motor Performance Ultra') return 'assets/es90-trim-performance-ultra.png';
   if(trim.includes('Ultra')) return 'assets/es90-trim-ultra.png';
@@ -17773,7 +17763,7 @@ function renderStep1(){
         </table>
       </div>
       <div class="waitlist-total-row">
-        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">전일 최종 Update 대비 +<span class="waitlist-animated-number">${animatedPercentDigits(waitlistChangePercent)}</span>%</div></div>
+        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">전일 최종 Update 대비 +${waitlistChangePercent}%</div></div>
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
@@ -17797,7 +17787,7 @@ function renderStep1(){
               <div class="waitlist-bar-price${isTop?' isTop':''}">${priceLbl}</div>
               <div class="waitlist-bar-fill${isTop?'':' navy'}" data-h="${h}" style="height:0%;"></div>
             </div>
-            <div class="waitlist-bar-count"><span class="waitlist-bar-pct"><span class="waitlist-animated-number">${animatedPercentDigits(pct)}</span>%</span></div>
+            <div class="waitlist-bar-count"><span class="waitlist-bar-pct">${pct}%</span></div>
             <div class="waitlist-bar-label">${es90TrimMenuDisplay(t.trim)}${t.variant?`<span class="waitlist-bar-variant">${t.variant}</span>`:''}</div>
           </div>`;
         }).join('')}
@@ -17820,7 +17810,7 @@ function renderStep1(){
       .reduce((sum,item)=>sum+item.count,0);
     const groupPercent = RESERVATION_DATA.total > 0 ? (groupCount / RESERVATION_DATA.total * 100).toFixed(1) : '0.0';
     col.innerHTML = `
-      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share"><span class="waitlist-animated-number">${animatedPercentDigits(groupPercent)}</span>%</span></div>
+      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share">${groupPercent}%</span></div>
       <div class="trim-col-cards" data-grp="${grp.label}"></div>
     `;
     const cards = col.querySelector('.trim-col-cards');
