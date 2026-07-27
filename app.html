@@ -18083,6 +18083,22 @@ function buildPriceGapHtml(esTotal, compPrice, es90Trim, compName, fallbackLabel
     </div>`;
 }
 
+function equalizeStep3BadgeWidths(root=document){
+  requestAnimationFrame(()=>{
+    root.querySelectorAll('.result-badges,.price-gap-conditions').forEach(group=>{
+      const badges = [...group.children];
+      if(!badges.length) return;
+      badges.forEach(badge=>{ badge.style.width='auto'; });
+      const widest = Math.ceil(Math.max(...badges.map(badge=>badge.getBoundingClientRect().width)));
+      badges.forEach(badge=>{
+        badge.style.boxSizing='border-box';
+        badge.style.justifyContent='center';
+        badge.style.width=`${widest}px`;
+      });
+    });
+  });
+}
+
 // item: animates .vbar-fill bars (orange/gray) from 0 to their target height when they scroll into view
 function playWaitlistTotalAnimation(force=false){
   const waitlistTotal = document.querySelector('.waitlist-total-value[data-target]');
@@ -18407,6 +18423,7 @@ if(score.priceDiff !== null){
   renderUpgradeOptList(es90Trim);
   initBarAnimations();
   initIpadPinnedResultHero();
+  equalizeStep3BadgeWidths(panel);
 
 }
 
@@ -19579,6 +19596,7 @@ function updatePkgCalc(){
   const heroGap = document.getElementById('heroGapBox');
   if(heroGap){
     heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, getCompPrice(brandKey, compTrim), esTrim, fullCompTrimLabel(brandKey, compTrim));
+    equalizeStep3BadgeWidths(heroGap);
   }
   normalizeOptionPurchaseParenthesisSpacing();
 }
