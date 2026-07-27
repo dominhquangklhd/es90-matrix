@@ -126,22 +126,25 @@ def update_app(total: int, trims: list[dict]) -> bool:
     now = datetime.now(ZoneInfo("Asia/Seoul"))
     state = json.loads(STATE_PATH.read_text(encoding="utf-8"))
     previous_total = int(state["total"])
-    previous_day_total = int(state["previousDayTotal"])
+    previous_day_final_total = int(state["previousDayTotal"])
 
+    # Keep one fixed comparison baseline throughout the day.
+    # On the first update of a new day, the prior day's last observed total
+    # (normally the 18:07 run) becomes that day's comparison baseline.
     if state["observationDate"] != now.date().isoformat():
-        previous_day_total = previous_total
+        previous_day_final_total = previous_total
 
     new_state = {
         "observationDate": now.date().isoformat(),
         "observedAt": now.isoformat(timespec="seconds"),
         "total": total,
-        "previousDayTotal": previous_day_total,
+        "previousDayTotal": previous_day_final_total,
         "byTrim": trims,
     }
 
     data_changed = (
         total != previous_total
-        or previous_day_total != int(state["previousDayTotal"])
+        or previous_day_final_total != int(state["previousDayTotal"])
         or trims != state["byTrim"]
     )
     app = APP_PATH.read_text(encoding="utf-8")
@@ -157,7 +160,7 @@ def update_app(total: int, trims: list[dict]) -> bool:
     replacement = (
         "const RESERVATION_DATA = {\n"
         f"  total: {total},\n"
-        f"  previousDayTotal: {previous_day_total},\n"
+        f"  previousDayTotal: {previous_day_final_total},\n"
         "  byTrim: [\n"
         f"{items}\n"
         "  ]\n"
