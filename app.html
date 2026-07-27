@@ -201,7 +201,15 @@ button{font-family:inherit;}
 .price-gap-promo-source{display:inline-flex;align-items:center;height:20px;padding:0 7px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:rgba(255,255,255,.09);font-size:9px;font-weight:800;color:#fff;}
 .price-gap-promo strong{color:#fff;font-size:12px;}
 .price-gap-promo-result{color:#ff8a62;font-weight:800;}
-.hpi-promo{display:flex;align-items:center;gap:5px;margin-top:3px;font-size:9.5px;color:rgba(255,255,255,.68);}
+.price-gap-promo-note{display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.52);font-size:9px;}
+.price-gap-conditions{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:7px;}
+.price-gap-condition{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 7px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.68);font-size:9px;font-weight:650;}
+.price-gap-condition-icon{display:inline-grid;place-items:center;min-width:11px;color:rgba(255,255,255,.82);font-size:10px;font-weight:800;}
+.hpi-value-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:2px;}
+.hpi-value-row .hpi-value{margin:0;}
+.hpi-tax-badge,.hpi-promo{display:inline-flex;align-items:center;gap:5px;height:21px;padding:0 7px;border:1px solid rgba(136,202,159,.42);border-radius:999px;background:rgba(116,190,143,.13);font-size:9px;color:rgba(255,255,255,.82);}
+.hpi-tax-badge svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.hpi-promo{border-color:rgba(255,138,98,.4);background:rgba(255,138,98,.11);color:rgba(255,255,255,.76);}
 .hpi-promo strong{color:#fff;font-size:11px;}
 
 /* ===== Tabs ===== */
@@ -18054,19 +18062,23 @@ function buildPriceGapHtml(esTotal, compPrice, es90Trim, compName, fallbackLabel
     const checkedAt = promotion.checkedAt ? ` · ${promotion.checkedAt}` : '';
     promotionHtml = `
       <div class="price-gap-promo">
-        <span class="price-gap-promo-source">${promotion.source}${checkedAt}</span>
-        <span>할인가 <strong>${fmtWon(promotion.discountedPrice)}</strong> 적용 시</span>
+        <span class="price-gap-promo-source">Getcha 참고 할인가${checkedAt}</span>
+        <span><strong>${fmtWon(promotion.discountedPrice)}</strong> 기준</span>
         <span>가격차 <strong>${fmtWon(Math.abs(promoDiff))}</strong> (${promoDiff>0?'▼':'▲'} ${promoPct}%)</span>
         <span class="price-gap-promo-result">${promoLabel}</span>
+        <span class="price-gap-promo-note"><span aria-hidden="true">ⓘ</span>비공식 참고가 · 실제 계약가와 다를 수 있음</span>
       </div>`;
   }
   return `
     <div class="price-gap-banner">
       <div class="price-gap-trim"><span>ES90 ${es90TrimMenuDisplay(es90Trim)}</span>가 ${displayCompName} 대비</div>
       <div class="price-gap-main"><span class="price-gap-amount" aria-label="${absAmt}">${animatedAbsAmt}</span><span class="price-gap-pct">(${esCheaper?'▼':'▲'} ${pct}%)</span> ${gapLabel}</div>
-      <div class="price-gap-sub">${es90Trim==='Single Motor Ultra'||es90Trim==='Twin Motor Ultra'
-        ? `출고가 기준 · 친환경차 세제혜택 적용 · 국가보조금 제외 · 지자체보조금, 기타 영업직원 추가 프로모션 제외 · 에어 서스펜션 ${SELECTED_ES_AIR_SUSPENSION_TRIMS.has(es90Trim)?'포함':'미적용'}`
-        : '출고가 기준 · 친환경차 세제혜택 적용 · 국가보조금 제외 · 지자체보조금, 기타 영업직원 추가 프로모션 제외'}</div>
+      <div class="price-gap-conditions" aria-label="가격 비교 적용 조건">
+        <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">◇</span>출고가 기준</span>
+        <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">₩</span>국가보조금 제외</span>
+        <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">⌖</span>지자체보조금 제외</span>
+        <span class="price-gap-condition"><span class="price-gap-condition-icon" aria-hidden="true">%</span>추가 프로모션 제외</span>
+      </div>
       ${promotionHtml}
     </div>`;
 }
@@ -18201,7 +18213,10 @@ if(score.priceDiff !== null){
               </div>
             </div>
           </div>
-          <div class="hpi-value es90-price">${esPrice? fmtWonRange(getEffectiveES90Total(es90Trim), es90Trim):'가격 미정'}</div>
+          <div class="hpi-value-row">
+            <div class="hpi-value es90-price">${esPrice? fmtWonRange(getEffectiveES90Total(es90Trim), es90Trim):'가격 미정'}</div>
+            ${esPrice?`<span class="hpi-tax-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 4.5C12 4.8 6.5 8.1 6.5 14.2c0 3 2.1 5.3 5.1 5.3 5.8 0 8.1-6.2 7.9-15Z"/><path d="M4.5 20c2.4-4.7 6-7.7 10.8-9.5"/></svg>환친차 세제혜택 적용 후</span>`:''}
+          </div>
         </div>
         <div class="hero-price-vs">VS</div>
         <div class="hero-price-item">
@@ -18216,8 +18231,10 @@ if(score.priceDiff !== null){
               </div>
             </div>`:`<div class="hero-comp-trim-select-wrap"><div class="hero-comp-trim-static" aria-label="경쟁차 단일 트림">${compTrimDisplay(compTrim)}</div></div>`}
           </div>
-          <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.msrp ?? compPrice.total):'가격 미확인'}</div>
-          ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>${promotion.source} 할인가</span><strong>${fmtWon(promotion.discountedPrice)}</strong></div>`:''; })()}
+          <div class="hpi-value-row">
+            <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.msrp ?? compPrice.total):'가격 미확인'}</div>
+            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha 참고 할인가</span><strong>${fmtWon(promotion.discountedPrice)}</strong></div>`:''; })()}
+          </div>
         </div>
       </div>
       <div id="heroGapBox">${priceGapHtml}</div>
@@ -19561,7 +19578,7 @@ function updatePkgCalc(){
   // 상단 가격과 가격차이는 공식 기본가격으로 고정한다. 옵션 선택액은 계산 패널의 참고 내역에만 표시한다.
   const heroGap = document.getElementById('heroGapBox');
   if(heroGap){
-    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, base, esTrim, fullCompTrimLabel(brandKey, compTrim));
+    heroGap.innerHTML = buildPriceGapHtml(effectiveEsTotal, getCompPrice(brandKey, compTrim), esTrim, fullCompTrimLabel(brandKey, compTrim));
   }
   normalizeOptionPurchaseParenthesisSpacing();
 }
