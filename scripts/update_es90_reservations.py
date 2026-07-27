@@ -133,16 +133,18 @@ def update_app(total: int, trims: list[dict]) -> bool:
     )
 
     # Keep one fixed comparison baseline throughout the day.
-    # Only the prior day's 18:00 update may become the next day's baseline.
+    # At a date rollover, only the last value actually observed before the
+    # previous Korean-calendar midnight becomes the new baseline.
     if state["observationDate"] != now.date().isoformat():
         yesterday = (now.date() - timedelta(days=1)).isoformat()
         if final_update_date == yesterday:
             previous_day_final_total = final_update_total
 
-    # Persist the 18:00 result separately. It is not used until the next day.
-    if now.hour == 18:
-        final_update_date = now.date().isoformat()
-        final_update_total = total
+    # Every successful observation replaces today's closing candidate. A
+    # delayed run completed after midnight belongs to the new date and can
+    # never overwrite the prior date's final value.
+    final_update_date = now.date().isoformat()
+    final_update_total = total
 
     new_state = {
         "observationDate": now.date().isoformat(),
