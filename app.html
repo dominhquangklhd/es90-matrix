@@ -17761,7 +17761,7 @@ function renderStep1(){
         </table>
       </div>
       <div class="waitlist-total-row">
-        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">전일 대비 +${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}%</div></div>
+        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">직전 Update 대비 +${(((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1)}%</div></div>
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
