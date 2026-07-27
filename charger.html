@@ -269,27 +269,35 @@ function showEmptyState(){
   document.getElementById('within10').innerHTML='—<small>개</small>';
   document.getElementById('within20').innerHTML='—<small>개</small>';
 }
+let locationPreviewRequest=0;
 function previewLocation(level){
-  current=[];selected=-1;currentMapLabel='';
-  ensureMap();
-  clearTmapMarkers();
-  clearTmapOverlay(homeMarker);homeMarker=null;
-  clearTmapOverlay(radiusCircle);radiusCircle=null;
-  clearTmapOverlay(activeStationTooltip);activeStationTooltip=null;
-  [5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.remove('active'));
-  document.getElementById('nearest').innerHTML='—<small>km</small>';
-  document.getElementById('nearestName').textContent='고객 위치 선택 후 확인';
-  document.getElementById('within5').innerHTML='—<small>개</small>';
-  document.getElementById('within10').innerHTML='—<small>개</small>';
-  document.getElementById('within20').innerHTML='—<small>개</small>';
-  document.getElementById('list').innerHTML='';
-  document.getElementById('count').textContent='';
   const center=getSelectedMapCenter();
   const zoom=level==='province'?9:level==='district'?12:14;
   const label=level==='province'?province.value:level==='district'?`${province.value} ${district.value}`:`${province.value} ${district.value} ${neighborhood.value==='전체'?'동 전체':neighborhood.value}`;
-  document.getElementById('mapRegion').textContent=`${label} 선택 위치`;
-  document.getElementById('listTitleRange').textContent='가까운 충전소 찾기를 눌러주세요';
-  map.setCenter(tmapPoint(center));map.setZoom(zoom);
+  const requestId=++locationPreviewRequest;
+
+  ensureMap();
+  map.setZoom(zoom);
+  map.setCenter(tmapPoint(center));
+
+  requestAnimationFrame(()=>{
+    if(requestId!==locationPreviewRequest)return;
+    current=[];selected=-1;currentMapLabel='';
+    clearTmapMarkers();
+    clearTmapOverlay(homeMarker);homeMarker=null;
+    clearTmapOverlay(radiusCircle);radiusCircle=null;
+    clearTmapOverlay(activeStationTooltip);activeStationTooltip=null;
+    [5,10,20].forEach(km=>document.getElementById(`radius${km}Card`).classList.remove('active'));
+    document.getElementById('nearest').innerHTML='—<small>km</small>';
+    document.getElementById('nearestName').textContent='고객 위치 선택 후 확인';
+    document.getElementById('within5').innerHTML='—<small>개</small>';
+    document.getElementById('within10').innerHTML='—<small>개</small>';
+    document.getElementById('within20').innerHTML='—<small>개</small>';
+    document.getElementById('list').innerHTML='';
+    document.getElementById('count').textContent='';
+    document.getElementById('mapRegion').textContent=`${label} 선택 위치`;
+    document.getElementById('listTitleRange').textContent='가까운 충전소 찾기를 눌러주세요';
+  });
 }
 function select(i,fromMap=false){
   selected=i;
