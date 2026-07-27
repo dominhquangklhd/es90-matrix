@@ -1,8 +1,12 @@
-name: 350kW 이상 충전소 자동 업데이트
+name: Update 350kW charger data
 
 on:
+  push:
+    paths:
+      - ".github/workflows/update-charger-data.yml"
+      - "scripts/update_charger_data.py"
   schedule:
-    # 매일 한국시간 오전 6시 20분
+    # Every day at 06:20 Asia/Seoul (21:20 UTC).
     - cron: "20 21 * * *"
   workflow_dispatch:
 
@@ -19,23 +23,23 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - name: 저장소 불러오기
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Python 준비
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: 공공데이터포털 충전소 정보 확인
+      - name: Fetch charger data from the Public Data Portal
         env:
           DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
         run: python scripts/update_charger_data.py
 
-      - name: 변경된 충전소 데이터 배포
+      - name: Publish changed charger data
         run: |
           if git diff --quiet -- charger-data-350kw.json; then
-            echo "350kW 이상 충전소 데이터 변경이 없습니다."
+            echo "No charger data changes."
             exit 0
           fi
 
@@ -52,7 +56,7 @@ jobs:
           parts[-1] = str(int(parts[-1]) + 1)
           data["version"] = ".".join(parts)
           data["updatedAt"] = now
-          data["matrixUpdatedAt"] = now
+          data["chargerUpdatedAt"] = now
           path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
           PY
 

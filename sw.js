@@ -1,4 +1,4 @@
-const CACHE_NAME = 'es90-sales-app-v196';
+const CACHE_NAME = 'es90-sales-app-v197';
 const APP_SHELL = ['./', './index.html', './app.html', './charger.html', './administrative-dongs.json', './administrative-centers.json', './manifest.webmanifest', './icons/es90-icon.svg', './assets/charger-marker-350kw-v1.png', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png', './assets/es90-trim-plus.png', './assets/es90-trim-ultra.png', './assets/es90-trim-performance-ultra.png'];
 
 self.addEventListener('install', event => {
@@ -20,7 +20,7 @@ self.addEventListener('fetch', event => {
   if (url.origin !== self.location.origin) return;
 
   // 앱 화면과 탐색 요청은 항상 온라인 최신본을 우선 사용하고, 오프라인일 때만 저장본을 사용한다.
-  if (event.request.mode === 'navigate' || url.pathname.endsWith('/app.html') || url.pathname.endsWith('/charger.html') || url.pathname.endsWith('/version.json')) {
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('/app.html') || url.pathname.endsWith('/charger.html') || url.pathname.endsWith('/charger-data-350kw.json') || url.pathname.endsWith('/version.json')) {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
         .then(response => {
