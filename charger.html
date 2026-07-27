@@ -336,8 +336,8 @@ function resetChargerToDefaults(){
   showEmptyState();
   window.scrollTo({top:0,behavior:'auto'});
 }
-province.onchange=()=>{fillDistricts();previewLocation('province')};
-district.onchange=()=>{fillNeighborhoods();previewLocation('district')};
+province.onchange=()=>{previewLocation('province');requestAnimationFrame(fillDistricts)};
+district.onchange=()=>{previewLocation('district');requestAnimationFrame(fillNeighborhoods)};
 neighborhood.onchange=()=>previewLocation('neighborhood');
 loadAdministrativeAreas().catch(()=>{}).finally(()=>{
   chargerPageReady=true;
