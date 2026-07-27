@@ -2,7 +2,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -127,18 +127,30 @@ def update_app(total: int, trims: list[dict]) -> bool:
     state = json.loads(STATE_PATH.read_text(encoding="utf-8"))
     previous_total = int(state["total"])
     previous_day_final_total = int(state["previousDayTotal"])
+    final_update_date = state.get("finalUpdateDate")
+    final_update_total = int(
+        state.get("finalUpdateTotal", previous_day_final_total)
+    )
 
     # Keep one fixed comparison baseline throughout the day.
-    # On the first update of a new day, the prior day's last observed total
-    # (normally the 18:07 run) becomes that day's comparison baseline.
+    # Only the prior day's 18:00 update may become the next day's baseline.
     if state["observationDate"] != now.date().isoformat():
-        previous_day_final_total = previous_total
+        yesterday = (now.date() - timedelta(days=1)).isoformat()
+        if final_update_date == yesterday:
+            previous_day_final_total = final_update_total
+
+    # Persist the 18:00 result separately. It is not used until the next day.
+    if now.hour == 18:
+        final_update_date = now.date().isoformat()
+        final_update_total = total
 
     new_state = {
         "observationDate": now.date().isoformat(),
         "observedAt": now.isoformat(timespec="seconds"),
         "total": total,
         "previousDayTotal": previous_day_final_total,
+        "finalUpdateDate": final_update_date,
+        "finalUpdateTotal": final_update_total,
         "byTrim": trims,
     }
 
