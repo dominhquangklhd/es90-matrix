@@ -5,9 +5,8 @@ on:
     paths:
       - ".github/workflows/update-es90-reservations.yml"
   schedule:
-    # Avoid GitHub Actions' top-of-hour congestion.
-    # 09:07, 12:07, 15:07 and 18:07 Asia/Seoul (UTC+9).
-    - cron: "7 0,3,6,9 * * *"
+    # 09:00, 12:00, 15:00 and 18:00 Asia/Seoul (UTC+9).
+    - cron: "0 0,3,6,9 * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,6 +24,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+
+      - name: Sync latest main branch
+        run: git pull --ff-only origin main
 
       - name: Set up Python
         uses: actions/setup-python@v5
