@@ -136,6 +136,23 @@ def read_sections(page: Page) -> list[dict]:
     )
 
 
+def wait_for_brand_tables(page: Page, brand: str) -> None:
+    expected_models = [
+        item[1] for item in MATCHES if item[0] == brand
+    ]
+    page.wait_for_function(
+        """expectedModels => expectedModels.every(expectedModel => {
+          const heading = Array.from(document.querySelectorAll('h3')).find(item =>
+            (item.innerText || '').trim().startsWith(expectedModel)
+          );
+          const tableWrap = heading?.closest('a')?.nextElementSibling;
+          return tableWrap && tableWrap.querySelectorAll('tr').length > 1;
+        })""",
+        arg=expected_models,
+        timeout=30_000,
+    )
+
+
 def read_getcha_prices() -> dict[tuple[str, str], dict]:
     collected: dict[tuple[str, str], dict] = {}
     brands = list(dict.fromkeys(item[0] for item in MATCHES))
@@ -150,6 +167,7 @@ def read_getcha_prices() -> dict[tuple[str, str], dict]:
 
         for brand in brands:
             select_brand(page, brand)
+            wait_for_brand_tables(page, brand)
             sections = read_sections(page)
             for (
                 mapping_brand,
