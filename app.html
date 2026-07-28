@@ -18340,7 +18340,7 @@ if(score.priceDiff !== null){
           </div>
           <div class="hpi-value-row">
             <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.msrp ?? compPrice.total):'가격 미확인'}</div>
-            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha \uCC38\uACE0 \uD560\uC778\uAC00</span><strong>${promotion.hasDiscount?fmtWon(promotion.discountedPrice):'\uD560\uC778 \uC815\uBCF4 \uC5C6\uC74C'}</strong></div>`:''; })()}
+            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha \uCC38\uACE0 \uD560\uC778\uAC00${promotion.checkedAt?` \u00B7 ${promotion.checkedAt} \uD655\uC778`:''}</span><strong>${promotion.hasDiscount?fmtWon(promotion.discountedPrice):'\uD560\uC778 \uC815\uBCF4 \uC5C6\uC74C'}</strong></div>`:''; })()}
           </div>
         </div>
       </div>
