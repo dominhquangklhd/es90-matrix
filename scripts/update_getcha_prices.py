@@ -137,20 +137,34 @@ def read_sections(page: Page) -> list[dict]:
 
 
 def wait_for_brand_tables(page: Page, brand: str) -> None:
-    expected_models = [
+    expected_models = list(dict.fromkeys(
         item[1] for item in MATCHES if item[0] == brand
-    ]
-    page.wait_for_function(
-        """expectedModels => expectedModels.every(expectedModel => {
-          const heading = Array.from(document.querySelectorAll('h3')).find(item =>
-            (item.innerText || '').trim().startsWith(expectedModel)
-          );
-          const tableWrap = heading?.closest('a')?.nextElementSibling;
-          return tableWrap && tableWrap.querySelectorAll('tr').length > 1;
-        })""",
-        arg=expected_models,
-        timeout=30_000,
-    )
+    ))
+    for expected_model in expected_models:
+        heading = page.locator("h3").filter(
+            has_text=re.compile(rf"^\s*{re.escape(expected_model)}")
+        )
+        if heading.count() < 1:
+            raise RuntimeError(
+                f"Getcha model heading did not load: {brand} / {expected_model}"
+            )
+        heading.first.scroll_into_view_if_needed()
+        try:
+            page.wait_for_function(
+                """expectedModel => {
+                  const heading = Array.from(document.querySelectorAll('h3')).find(item =>
+                    (item.innerText || '').trim().startsWith(expectedModel)
+                  );
+                  const tableWrap = heading?.closest('a')?.nextElementSibling;
+                  return tableWrap && tableWrap.querySelectorAll('tr').length > 1;
+                }""",
+                arg=expected_model,
+                timeout=30_000,
+            )
+        except PlaywrightTimeoutError as error:
+            raise RuntimeError(
+                f"Getcha price table did not load: {brand} / {expected_model}"
+            ) from error
 
 
 def read_getcha_prices() -> dict[tuple[str, str], dict]:
