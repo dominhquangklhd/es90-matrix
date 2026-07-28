@@ -98,9 +98,15 @@ def select_brand(page: Page, brand: str) -> None:
     button = page.get_by_role("button").filter(has_text=pattern)
     if button.count() != 1:
         raise RuntimeError(f"Getcha brand button is not unique: {brand}")
-    button.click()
-    page.get_by_role("heading", name=brand, exact=True).wait_for(
-        state="visible", timeout=30_000
+    button.scroll_into_view_if_needed()
+    button.evaluate("(element) => element.click()")
+    page.wait_for_function(
+        """expectedBrand => {
+          const heading = document.querySelector('main h1');
+          return heading && heading.innerText.trim() === expectedBrand;
+        }""",
+        brand,
+        timeout=30_000,
     )
 
 
