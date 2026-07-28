@@ -162,8 +162,23 @@ def wait_for_brand_tables(page: Page, brand: str) -> None:
                 timeout=30_000,
             )
         except PlaywrightTimeoutError as error:
+            context = heading.first.evaluate(
+                """item => {
+                  const link = item.closest('a');
+                  const parent = link?.parentElement;
+                  return {
+                    heading: (item.innerText || '').trim(),
+                    linkTag: link?.tagName || '',
+                    nextTag: link?.nextElementSibling?.tagName || '',
+                    parentText: (parent?.innerText || '').trim().replace(/\\s+/g, ' ').slice(0, 1200),
+                    tableCount: parent?.querySelectorAll('table').length || 0,
+                    rowCount: parent?.querySelectorAll('tr').length || 0
+                  };
+                }"""
+            )
             raise RuntimeError(
-                f"Getcha price table did not load: {brand} / {expected_model}"
+                f"Getcha price table did not load: {brand} / {expected_model}; "
+                f"context={json.dumps(context, ensure_ascii=False)}"
             ) from error
 
 
