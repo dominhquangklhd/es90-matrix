@@ -160,9 +160,13 @@ def read_getcha_prices() -> dict[tuple[str, str], dict]:
                     row for row in parsed_rows if normalize(row["trim"]) == getcha_trim
                 ]
                 if len(exact_rows) != 1:
+                    available = ", ".join(
+                        repr(row["trim"]) for row in parsed_rows
+                    )
                     raise RuntimeError(
                         f"Exact Getcha trim match failed: "
-                        f"{getcha_model} / {getcha_trim} ({len(exact_rows)} matches)"
+                        f"{getcha_model} / {getcha_trim} ({len(exact_rows)} matches); "
+                        f"available rows: {available}"
                     )
                 collected[(app_model, app_trim)] = exact_rows[0]
         browser.close()
