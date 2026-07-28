@@ -1,20 +1,16 @@
 name: Update Getcha competitor prices
 
 on:
-  push:
-    paths:
-      - ".github/workflows/update-getcha-prices.yml"
-      - "scripts/update_getcha_prices.py"
   schedule:
-    # Every Monday at 09:17 Asia/Seoul. Minute 17 avoids GitHub's hourly peak.
-    - cron: "17 0 * * 1"
+    # Every Monday at 08:17 Asia/Seoul, before reservation heartbeats begin.
+    - cron: "17 23 * * 0"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: es90-data-write
+  group: getcha-competitor-price-update
   cancel-in-progress: false
 
 jobs:

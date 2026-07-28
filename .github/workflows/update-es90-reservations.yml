@@ -1,9 +1,6 @@
 name: Update ES90 reservations
 
 on:
-  push:
-    paths:
-      - ".github/workflows/update-es90-reservations.yml"
   schedule:
     # Heartbeat every 20 minutes from 09:13 through 23:53 Asia/Seoul.
     # Each heartbeat backfills the latest missing 09:00, 12:00, 15:00 or
@@ -15,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: es90-data-write
+  group: es90-reservation-update
   cancel-in-progress: false
 
 jobs:

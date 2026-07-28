@@ -1,10 +1,6 @@
 name: Update 350kW charger data
 
 on:
-  push:
-    paths:
-      - ".github/workflows/update-charger-data.yml"
-      - "scripts/update_charger_data.py"
   schedule:
     # Every day at 06:20 Asia/Seoul (21:20 UTC).
     - cron: "20 21 * * *"
@@ -14,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: es90-data-write
+  group: charger-data-update
   cancel-in-progress: false
 
 jobs:
