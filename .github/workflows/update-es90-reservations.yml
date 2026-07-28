@@ -8,6 +8,11 @@ on:
         required: false
         type: number
         default: 0
+      check_required_slot:
+        description: Skip collection when the requested slot is already complete.
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
 
 permissions:
@@ -39,6 +44,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           TARGET_HOUR: ${{ inputs.target_hour || 0 }}
+          CHECK_REQUIRED_SLOT: ${{ inputs.check_required_slot || false }}
         run: |
           python - <<'PY'
           import json
@@ -49,7 +55,7 @@ jobs:
 
           should_run = True
           target_slot = "manual"
-          if os.environ["EVENT_NAME"] == "workflow_call":
+          if os.environ.get("CHECK_REQUIRED_SLOT", "false").lower() == "true":
               now = datetime.now(ZoneInfo("Asia/Seoul"))
               state = json.loads(
                   Path("automation/es90-reservation-state.json").read_text(encoding="utf-8")
