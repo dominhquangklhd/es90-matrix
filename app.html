@@ -18136,12 +18136,14 @@ function getCompetitorPromotion(compPrice){
   if(!compPrice) return null;
   const listPrice = Number(compPrice.msrp ?? compPrice.total);
   const promo = Number(compPrice.promo || 0);
-  const discountedPrice = Number(compPrice.discountedPrice || (promo > 0 ? listPrice - promo : 0));
-  if(!Number.isFinite(listPrice) || !Number.isFinite(discountedPrice) || promo <= 0 || discountedPrice <= 0 || discountedPrice >= listPrice) return null;
+  const isVerifiedGetchaPrice = compPrice.promotionSource === 'Getcha';
+  const discountedPrice = Number(compPrice.discountedPrice ?? (promo > 0 ? listPrice - promo : listPrice));
+  if(!isVerifiedGetchaPrice || !Number.isFinite(listPrice) || !Number.isFinite(discountedPrice) || promo < 0 || discountedPrice <= 0 || discountedPrice > listPrice) return null;
   return {
     listPrice,
     promo,
     discountedPrice,
+    hasDiscount: promo > 0 && discountedPrice < listPrice,
     source: compPrice.promotionSource || 'Getcha',
     checkedAt: compPrice.promotionCheckedAt || ''
   };
@@ -18166,7 +18168,7 @@ function buildPriceGapHtml(esTotal, compPrice, es90Trim, compName, fallbackLabel
   const gapLabel = esCheaper ? '가격 경쟁력 확보' : '가치 경쟁력 확보';
   const promotion = getCompetitorPromotion(compPrice);
   let promotionHtml = '';
-  if(promotion){
+  if(promotion?.hasDiscount){
     const promoDiff = promotion.discountedPrice - esTotal;
     const promoPct = Math.abs(Math.round((promoDiff / promotion.discountedPrice) * 100));
     const promoLabel = promoDiff > 0 ? '가격 경쟁력 확보' : '가치 경쟁력 확보';
@@ -18360,7 +18362,7 @@ if(score.priceDiff !== null){
           </div>
           <div class="hpi-value-row">
             <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.msrp ?? compPrice.total):'가격 미확인'}</div>
-            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha 참고 할인가</span><strong>${fmtWon(promotion.discountedPrice)}</strong></div>`:''; })()}
+            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha \uCC38\uACE0 \uD560\uC778\uAC00</span><strong>${promotion.hasDiscount?fmtWon(promotion.discountedPrice):'\uD560\uC778 \uC815\uBCF4 \uC5C6\uC74C'}</strong></div>`:''; })()}
           </div>
         </div>
       </div>
