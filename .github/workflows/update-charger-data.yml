@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: charger-data-update
+  group: es90-data-write
   cancel-in-progress: false
 
 jobs:
