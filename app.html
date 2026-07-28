@@ -17665,6 +17665,13 @@ document.addEventListener('touchmove',event=>{
 },{passive:false});
 function showPanel(n){
   const previousStep = STATE.step || n;
+  if(n<=2){
+    document.body.classList.remove('ipad-selection-scroll-lock','ipad-step3-scroll-limit');
+    const scrollRoot = document.scrollingElement || document.documentElement;
+    scrollRoot.scrollTop = 0;
+    document.body.scrollTop = 0;
+    window.scrollTo(0,0);
+  }
   const swapPanel = ()=>{
     STATE.step = n;
     STATE.maxStep = Math.max(STATE.maxStep||1, n); // track furthest visited
@@ -17697,7 +17704,17 @@ function showPanel(n){
     setTimeout(()=>activePanel?.classList.remove('panel-enter-forward','panel-enter-back'),780);
   }
   if(n===3) initIpadPinnedResultHero();
-  window.scrollTo({top:0, behavior:'smooth'});
+  if(n<=2){
+    window.scrollTo({top:0,behavior:'auto'});
+    requestAnimationFrame(()=>{
+      const scrollRoot = document.scrollingElement || document.documentElement;
+      scrollRoot.scrollTop = 0;
+      document.body.scrollTop = 0;
+      window.scrollTo(0,0);
+    });
+  }else{
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
   if(window.parent !== window){
     window.parent.postMessage({
       type:'es90-step-change',
@@ -18492,7 +18509,7 @@ if(score.priceDiff !== null){
 
     <div class="footer-actions">
       <button class="btn-secondary" onclick="resetAll()">← 처음부터 다시</button>
-      <button class="btn-secondary" onclick="showPanel(1); setTimeout(()=>{ const el=document.getElementById('waitlistCard'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 60);">☷ ES90 대기고객 선택</button>
+      <button class="btn-secondary" onclick="showPanel(1)">☷ ES90 대기고객 선택</button>
       <button class="btn-secondary" onclick="openStep2WithDirectDefault()">⇄ 다른 경쟁모델과 비교</button>
       <button class="btn-secondary" onclick="open350kwChargerNetwork()">⚡ 350kW 이상 초고속 충전</button>
       <button class="btn-secondary" onclick="openAdminEmail()">✉ 데이터 수정 시 연락</button>
