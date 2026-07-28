@@ -211,6 +211,8 @@ button{font-family:inherit;}
 .hpi-tax-badge svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 .hpi-promo{border-color:rgba(255,138,98,.4);background:rgba(255,138,98,.11);color:rgba(255,255,255,.76);}
 .hpi-promo strong{color:#fff;font-size:11px;}
+.hpi-resale-notice{display:inline-flex;align-items:center;gap:4px;height:21px;padding:0 7px;border:1px solid rgba(255,91,91,.62);border-radius:999px;background:rgba(207,42,42,.14);color:#ff9a9a;font-size:9px;font-weight:800;cursor:help;white-space:nowrap;}
+.hpi-resale-notice-icon{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;background:#e44949;color:#fff;font-size:9px;font-weight:900;line-height:1;}
 
 /* ===== Tabs ===== */
 .tab-row{display:flex;gap:6px;margin:18px 0 12px;padding-bottom:2px;}
@@ -18340,7 +18342,7 @@ if(score.priceDiff !== null){
           </div>
           <div class="hpi-value-row">
             <div class="hpi-value" id="heroCompPriceVal">${compPrice? fmtWon(compPrice.msrp ?? compPrice.total):'가격 미확인'}</div>
-            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha \uCC38\uACE0 \uD560\uC778\uAC00${promotion.checkedAt?` \u00B7 ${promotion.checkedAt} \uD655\uC778`:''}</span><strong>${promotion.hasDiscount?fmtWon(promotion.discountedPrice):'\uD560\uC778 \uC815\uBCF4 \uC5C6\uC74C'}</strong></div>`:''; })()}
+            ${(()=>{ const promotion=getCompetitorPromotion(compPrice); return promotion?`<div class="hpi-promo"><span>Getcha \uCC38\uACE0 \uD560\uC778\uAC00${promotion.checkedAt?` \u00B7 ${promotion.checkedAt} \uD655\uC778`:''}</span><strong>${promotion.hasDiscount?fmtWon(promotion.discountedPrice):'\uD560\uC778 \uC815\uBCF4 \uC5C6\uC74C'}</strong></div>${promotion.hasDiscount?`<span class="hpi-resale-notice" title="\uD070 \uC2E0\uCC28 \uD560\uC778\uC740 \uD5A5\uD6C4 \uC911\uACE0\uCC28 \uC794\uC874\uAC00\uCE58 \uD310\uB2E8\uC5D0 \uC601\uD5A5\uC744 \uC904 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uC2E4\uC81C \uAC10\uAC00\uC728\uC740 \uC2DC\uC7A5 \uC0C1\uD669\uACFC \uCC28\uB7C9 \uC0C1\uD0DC\uC5D0 \uB530\uB77C \uB2E4\uB985\uB2C8\uB2E4." aria-label="\uC911\uACE0\uCC28 \uC794\uC874\uAC00\uCE58 \uCC38\uACE0: \uD070 \uC2E0\uCC28 \uD560\uC778\uC740 \uD5A5\uD6C4 \uC911\uACE0\uCC28 \uC794\uC874\uAC00\uCE58 \uD310\uB2E8\uC5D0 \uC601\uD5A5\uC744 \uC904 \uC218 \uC788\uC2B5\uB2C8\uB2E4."><span class="hpi-resale-notice-icon" aria-hidden="true">!</span><span>\uC794\uC874\uAC00\uCE58 \uCC38\uACE0</span></span>`:''}`:''; })()}
           </div>
         </div>
       </div>
