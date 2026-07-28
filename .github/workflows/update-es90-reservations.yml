@@ -2,10 +2,12 @@ name: Update ES90 reservations
 
 on:
   schedule:
-    # Heartbeat every 20 minutes from 09:13 through 23:53 Asia/Seoul.
+    # Two independent 20-minute heartbeat registrations, interleaved to
+    # check every 10 minutes from 09:07 through 23:57 Asia/Seoul.
     # Each heartbeat backfills the latest missing 09:00, 12:00, 15:00 or
     # 18:00 slot. Off-hour minutes avoid GitHub's top-of-hour congestion.
-    - cron: "13,33,53 0-14 * * *"
+    - cron: "7,27,47 0-14 * * *"
+    - cron: "17,37,57 0-14 * * *"
   workflow_dispatch:
 
 permissions:
