@@ -105,7 +105,7 @@ def select_brand(page: Page, brand: str) -> None:
           const heading = document.querySelector('main h1');
           return heading && heading.innerText.trim() === expectedBrand;
         }""",
-        brand,
+        arg=brand,
         timeout=30_000,
     )
 
