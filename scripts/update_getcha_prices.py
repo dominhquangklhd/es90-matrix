@@ -189,8 +189,9 @@ def wait_for_brand_tables(page: Page, brand: str) -> None:
             ) from error
 
 
-def read_getcha_prices() -> dict[tuple[str, str], dict]:
+def read_getcha_prices() -> tuple[dict[tuple[str, str], dict], list[str]]:
     collected: dict[tuple[str, str], dict] = {}
+    unmatched: list[str] = []
     brands = list(dict.fromkeys(item[0] for item in MATCHES))
 
     with sync_playwright() as playwright:
@@ -202,32 +203,48 @@ def read_getcha_prices() -> dict[tuple[str, str], dict]:
         )
 
         for brand in brands:
-            select_brand(page, brand)
-            wait_for_brand_tables(page, brand)
-            sections = read_sections(page)
+            brand_matches = [
+                item for item in MATCHES if item[0] == brand
+            ]
+            try:
+                select_brand(page, brand)
+                wait_for_brand_tables(page, brand)
+                sections = read_sections(page)
+            except Exception as error:
+                for _, _, _, app_model, app_trim in brand_matches:
+                    unmatched.append(
+                        f"{app_model} / {app_trim}: brand read failed ({error})"
+                    )
+                continue
+
             for (
                 mapping_brand,
                 getcha_model,
                 getcha_trim,
                 app_model,
                 app_trim,
-            ) in MATCHES:
-                if mapping_brand != brand:
-                    continue
-                section = newest_section(sections, getcha_model)
-                collected[(app_model, app_trim)] = parse_exact_price(
-                    section["text"], getcha_trim
-                )
+            ) in brand_matches:
+                try:
+                    section = newest_section(sections, getcha_model)
+                    collected[(app_model, app_trim)] = parse_exact_price(
+                        section["text"], getcha_trim
+                    )
+                except Exception as error:
+                    unmatched.append(
+                        f"{app_model} / {app_trim}: exact match failed ({error})"
+                    )
         browser.close()
 
-    if len(collected) != len(MATCHES):
+    if not collected:
         raise RuntimeError(
-            f"Only {len(collected)} of {len(MATCHES)} Getcha trims were matched"
+            "No Getcha trims were matched; all previous prices and dates preserved"
         )
-    return collected
+    return collected, unmatched
 
 
-def update_app(prices: dict[tuple[str, str], dict]) -> tuple[list[str], str]:
+def update_app(
+    prices: dict[tuple[str, str], dict], unmatched: list[str]
+) -> tuple[list[str], str]:
     app = APP_PATH.read_text(encoding="utf-8")
     match = re.search(
         r"window\.ES90_DATA\s*=\s*(\{[\s\S]*?\});</script>", app
@@ -272,6 +289,8 @@ def update_app(prices: dict[tuple[str, str], dict]) -> tuple[list[str], str]:
     state = {
         "checkedAt": datetime.now(SEOUL).isoformat(timespec="seconds"),
         "matchedTrimCount": len(prices),
+        "unmatchedTrimCount": len(unmatched),
+        "unmatchedTrims": unmatched,
         "priceChangedTrimCount": len(changed_prices),
         "priceChangedTrims": changed_prices,
     }
@@ -284,14 +303,17 @@ def update_app(prices: dict[tuple[str, str], dict]) -> tuple[list[str], str]:
 
 def main() -> int:
     try:
-        prices = read_getcha_prices()
-        changed_prices, checked_at = update_app(prices)
+        prices, unmatched = read_getcha_prices()
+        changed_prices, checked_at = update_app(prices, unmatched)
         print(
             f"Getcha weekly check complete: {len(prices)} exact trims, "
+            f"{len(unmatched)} preserved unmatched trims, "
             f"{len(changed_prices)} price changes, checked {checked_at}"
         )
         for trim in changed_prices:
             print(f"- changed: {trim}")
+        for trim in unmatched:
+            print(f"- preserved: {trim}")
         return 0
     except Exception as error:
         print(f"Getcha weekly check failed: {error}", file=sys.stderr)

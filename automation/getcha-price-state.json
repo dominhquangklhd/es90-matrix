@@ -1,6 +1,8 @@
 {
   "checkedAt": "2026-07-28T09:34:54+09:00",
   "matchedTrimCount": 21,
+  "unmatchedTrimCount": 0,
+  "unmatchedTrims": [],
   "priceChangedTrimCount": 0,
   "priceChangedTrims": []
 }
