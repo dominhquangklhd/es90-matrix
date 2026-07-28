@@ -61,32 +61,45 @@ def newest_section(sections: list[dict], model_label: str) -> dict:
     return max(candidates, key=model_year)
 
 
-def parse_price_row(row: str, header: str) -> dict:
-    price_matches = list(re.finditer(r"([\d,]+)\s*만원", row))
-    if not price_matches:
-        raise RuntimeError(f"Price missing in Getcha row: {row}")
+def parse_exact_price(section_text: str, exact_trim: str) -> dict:
+    pattern = re.compile(
+        rf"(?:제조사판매\s+)?{re.escape(exact_trim)}"
+        rf"\s*(?:\(\d{{4}}\.\d{{2}}\))?\s+"
+        rf"(?P<msrp>[\d,]+)\s*만원\s+"
+        rf"(?:"
+        rf"(?P<discounted>[\d,]+)\s*만원\s+"
+        rf"(?P<promo>[\d,]+)\s*만원\s+\d+(?:\.\d+)?%"
+        rf"|"
+        rf"(?P<benefit>[\d,]+)\s*만원\s+\d+(?:\.\d+)?%"
+        rf"|-\s+-"
+        rf")"
+    )
+    matches = list(pattern.finditer(section_text))
+    if len(matches) != 1:
+        raise RuntimeError(
+            f"Exact Getcha trim price match failed: {exact_trim} "
+            f"({len(matches)} matches); section={section_text[:1600]!r}"
+        )
 
-    trim = normalize(row[: price_matches[0].start()])
-    trim = re.sub(r"\s*\(\d{4}\.\d{2}\)\s*$", "", trim)
-    trim = re.sub(r"^제조사판매\s+", "", trim)
-    values = [int(match.group(1).replace(",", "")) * 10_000 for match in price_matches]
-
-    if len(values) == 3:
-        msrp, discounted_price, promo = values
-    elif len(values) == 2 and "딜러 최대 제공 혜택" in header:
-        msrp, promo = values
+    match = matches[0]
+    msrp = int(match.group("msrp").replace(",", "")) * 10_000
+    if match.group("discounted"):
+        discounted_price = (
+            int(match.group("discounted").replace(",", "")) * 10_000
+        )
+        promo = int(match.group("promo").replace(",", "")) * 10_000
+    elif match.group("benefit"):
+        promo = int(match.group("benefit").replace(",", "")) * 10_000
         discounted_price = msrp - promo
-    elif len(values) == 1:
-        msrp = values[0]
+    else:
         promo = 0
         discounted_price = msrp
-    else:
-        raise RuntimeError(f"Unexpected Getcha price columns: {row}")
 
     if discounted_price <= 0 or discounted_price > msrp or promo < 0:
-        raise RuntimeError(f"Invalid Getcha prices: {row}")
+        raise RuntimeError(
+            f"Invalid Getcha prices: {exact_trim} / {section_text[:600]}"
+        )
     return {
-        "trim": trim,
         "msrp": msrp,
         "promo": promo,
         "discountedPrice": discounted_price,
@@ -122,15 +135,9 @@ def read_sections(page: Page) -> list[dict]:
     return page.locator("h3").evaluate_all(
         """headings => headings.map(heading => {
           const tableWrap = heading.closest('a')?.nextElementSibling;
-          const rows = tableWrap
-            ? Array.from(tableWrap.querySelectorAll('tr')).map(row =>
-                (row.innerText || '').trim().replace(/\\s+/g, ' ')
-              )
-            : [];
           return {
             title: (heading.innerText || '').trim().replace(/\\s+/g, ' '),
-            header: rows[0] || '',
-            rows: rows.slice(1)
+            text: (tableWrap?.innerText || '').trim().replace(/\\s+/g, ' ')
           };
         })"""
     )
@@ -156,7 +163,7 @@ def wait_for_brand_tables(page: Page, brand: str) -> None:
                     (item.innerText || '').trim().startsWith(expectedModel)
                   );
                   const tableWrap = heading?.closest('a')?.nextElementSibling;
-                  return tableWrap && tableWrap.querySelectorAll('tr').length > 1;
+                  return tableWrap && /[\\d,]+\\s*만원/.test(tableWrap.innerText || '');
                 }""",
                 arg=expected_model,
                 timeout=30_000,
@@ -208,22 +215,9 @@ def read_getcha_prices() -> dict[tuple[str, str], dict]:
                 if mapping_brand != brand:
                     continue
                 section = newest_section(sections, getcha_model)
-                parsed_rows = [
-                    parse_price_row(row, section["header"]) for row in section["rows"]
-                ]
-                exact_rows = [
-                    row for row in parsed_rows if normalize(row["trim"]) == getcha_trim
-                ]
-                if len(exact_rows) != 1:
-                    available = ", ".join(
-                        repr(row["trim"]) for row in parsed_rows
-                    )
-                    raise RuntimeError(
-                        f"Exact Getcha trim match failed: "
-                        f"{getcha_model} / {getcha_trim} ({len(exact_rows)} matches); "
-                        f"available rows: {available}"
-                    )
-                collected[(app_model, app_trim)] = exact_rows[0]
+                collected[(app_model, app_trim)] = parse_exact_price(
+                    section["text"], getcha_trim
+                )
         browser.close()
 
     if len(collected) != len(MATCHES):
