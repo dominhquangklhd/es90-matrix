@@ -1,0 +1,17 @@
+name: ES90 reservation watchdog
+
+on:
+  schedule:
+    # Independent hourly fallback from 09:41 through 23:41 Asia/Seoul.
+    - cron: "41 0-14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    uses: ./.github/workflows/update-es90-reservations.yml
+    with:
+      target_hour: 0
+    secrets: inherit

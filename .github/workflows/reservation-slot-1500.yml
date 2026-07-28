@@ -1,0 +1,17 @@
+name: ES90 reservations 15:00 slot
+
+on:
+  schedule:
+    # 15:07-17:47 Asia/Seoul, every 20 minutes.
+    - cron: "7,27,47 6-8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    uses: ./.github/workflows/update-es90-reservations.yml
+    with:
+      target_hour: 15
+    secrets: inherit

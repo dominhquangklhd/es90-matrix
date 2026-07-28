@@ -1,13 +1,13 @@
 name: Update ES90 reservations
 
 on:
-  schedule:
-    # Two independent 20-minute heartbeat registrations, interleaved to
-    # check every 10 minutes from 09:07 through 23:57 Asia/Seoul.
-    # Each heartbeat backfills the latest missing 09:00, 12:00, 15:00 or
-    # 18:00 slot. Off-hour minutes avoid GitHub's top-of-hour congestion.
-    - cron: "7,27,47 0-14 * * *"
-    - cron: "17,37,57 0-14 * * *"
+  workflow_call:
+    inputs:
+      target_hour:
+        description: Target reservation slot in Asia/Seoul; 0 selects the latest slot.
+        required: false
+        type: number
+        default: 0
   workflow_dispatch:
 
 permissions:
@@ -38,6 +38,7 @@ jobs:
         id: slot
         env:
           EVENT_NAME: ${{ github.event_name }}
+          TARGET_HOUR: ${{ inputs.target_hour || 0 }}
         run: |
           python - <<'PY'
           import json
@@ -48,19 +49,27 @@ jobs:
 
           should_run = True
           target_slot = "manual"
-          if os.environ["EVENT_NAME"] == "schedule":
+          if os.environ["EVENT_NAME"] == "workflow_call":
               now = datetime.now(ZoneInfo("Asia/Seoul"))
               state = json.loads(
                   Path("automation/es90-reservation-state.json").read_text(encoding="utf-8")
               )
               observed_at = datetime.fromisoformat(state["observedAt"])
               target_hours = (9, 12, 15, 18)
-              eligible_targets = [
-                  now.replace(hour=hour, minute=0, second=0, microsecond=0)
-                  for hour in target_hours
-                  if now.hour >= hour
-              ]
-              latest_target = max(eligible_targets, default=None)
+              requested_hour = int(os.environ.get("TARGET_HOUR", "0"))
+              if requested_hour in target_hours:
+                  latest_target = now.replace(
+                      hour=requested_hour, minute=0, second=0, microsecond=0
+                  )
+                  if now < latest_target:
+                      latest_target = None
+              else:
+                  eligible_targets = [
+                      now.replace(hour=hour, minute=0, second=0, microsecond=0)
+                      for hour in target_hours
+                      if now.hour >= hour
+                  ]
+                  latest_target = max(eligible_targets, default=None)
               should_run = (
                   latest_target is not None
                   and observed_at < latest_target
