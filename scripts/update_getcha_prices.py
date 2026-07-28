@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from playwright.sync_api import Page, sync_playwright
+from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError, sync_playwright
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,19 +95,27 @@ def parse_price_row(row: str, header: str) -> dict:
 
 def select_brand(page: Page, brand: str) -> None:
     pattern = re.compile(rf"^\s*{re.escape(brand)}\s*\d+종\s*$")
-    button = page.get_by_role("button").filter(has_text=pattern)
-    if button.count() != 1:
-        raise RuntimeError(f"Getcha brand button is not unique: {brand}")
-    button.scroll_into_view_if_needed()
-    button.evaluate("(element) => element.click()")
-    page.wait_for_function(
-        """expectedBrand => {
-          const heading = document.querySelector('main h1');
-          return heading && heading.innerText.trim() === expectedBrand;
-        }""",
-        arg=brand,
-        timeout=30_000,
-    )
+    for attempt in range(1, 4):
+        button = page.get_by_role("button").filter(has_text=pattern)
+        if button.count() != 1:
+            raise RuntimeError(f"Getcha brand button is not unique: {brand}")
+        button.scroll_into_view_if_needed()
+        button.evaluate("(element) => element.click()")
+        try:
+            page.wait_for_function(
+                """expectedBrand => {
+                  const heading = document.querySelector('main h1');
+                  return heading && heading.innerText.trim() === expectedBrand;
+                }""",
+                arg=brand,
+                timeout=10_000,
+            )
+            return
+        except PlaywrightTimeoutError:
+            if attempt == 3:
+                raise RuntimeError(
+                    f"Getcha brand page did not open after 3 attempts: {brand}"
+                )
 
 
 def read_sections(page: Page) -> list[dict]:
