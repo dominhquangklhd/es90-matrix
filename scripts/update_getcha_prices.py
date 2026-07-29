@@ -245,6 +245,13 @@ def read_getcha_prices() -> tuple[dict[tuple[str, str], dict], list[str]]:
 def update_app(
     prices: dict[tuple[str, str], dict], unmatched: list[str]
 ) -> tuple[list[str], str]:
+    if unmatched or len(prices) != len(MATCHES):
+        details = "; ".join(unmatched[:5])
+        raise RuntimeError(
+            f"Incomplete Getcha daily check: matched={len(prices)}/"
+            f"{len(MATCHES)}, unmatched={len(unmatched)}; {details}"
+        )
+
     app = APP_PATH.read_text(encoding="utf-8")
     match = re.search(
         r"window\.ES90_DATA\s*=\s*(\{[\s\S]*?\});</script>", app
@@ -288,6 +295,7 @@ def update_app(
 
     state = {
         "checkedAt": datetime.now(SEOUL).isoformat(timespec="seconds"),
+        "expectedTrimCount": len(MATCHES),
         "matchedTrimCount": len(prices),
         "unmatchedTrimCount": len(unmatched),
         "unmatchedTrims": unmatched,
@@ -306,7 +314,7 @@ def main() -> int:
         prices, unmatched = read_getcha_prices()
         changed_prices, checked_at = update_app(prices, unmatched)
         print(
-            f"Getcha weekly check complete: {len(prices)} exact trims, "
+            f"Getcha daily check complete: {len(prices)} exact trims, "
             f"{len(unmatched)} preserved unmatched trims, "
             f"{len(changed_prices)} price changes, checked {checked_at}"
         )
@@ -316,7 +324,7 @@ def main() -> int:
             print(f"- preserved: {trim}")
         return 0
     except Exception as error:
-        print(f"Getcha weekly check failed: {error}", file=sys.stderr)
+        print(f"Getcha daily check failed: {error}", file=sys.stderr)
         return 1
 
 

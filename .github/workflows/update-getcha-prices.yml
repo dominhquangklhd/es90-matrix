@@ -2,8 +2,9 @@ name: Update Getcha competitor prices
 
 on:
   schedule:
-    # Every Monday at 08:17 Asia/Seoul, before reservation heartbeats begin.
-    - cron: "17 23 * * 0"
+    # Retry hourly from 07:17 through 11:17 Asia/Seoul.
+    # Once today's complete price check succeeds, later retries are skipped.
+    - cron: "17 22-23,0-2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -30,15 +31,51 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check whether today's competitor prices were already verified
+        id: daily
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          should_run = True
+          checked_at = None
+          if os.environ.get("EVENT_NAME") == "schedule":
+              data = json.loads(Path("version.json").read_text(encoding="utf-8"))
+              checked_at = data.get("competitorPriceCheckedAt")
+              if checked_at:
+                  checked_date = datetime.fromisoformat(checked_at).astimezone(
+                      ZoneInfo("Asia/Seoul")
+                  ).date()
+                  should_run = checked_date < datetime.now(
+                      ZoneInfo("Asia/Seoul")
+                  ).date()
+
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              output.write(f"should_run={'true' if should_run else 'false'}\n")
+          print(
+              f"Competitor price daily check: previous={checked_at or 'none'}, "
+              f"should_run={should_run}"
+          )
+          PY
+
       - name: Install browser
+        if: steps.daily.outputs.should_run == 'true'
         run: |
           python -m pip install --disable-pip-version-check playwright==1.54.0
           python -m playwright install --with-deps chromium
 
       - name: Check exact Getcha trims and prices
+        if: steps.daily.outputs.should_run == 'true'
         run: python scripts/update_getcha_prices.py
 
-      - name: Publish weekly check
+      - name: Publish daily check
+        if: steps.daily.outputs.should_run == 'true'
         run: |
           if git diff --quiet -- app.html automation/getcha-price-state.json; then
             echo "No Getcha date or price changes."
@@ -53,12 +90,16 @@ jobs:
 
           path = Path("version.json")
           data = json.loads(path.read_text(encoding="utf-8"))
+          state = json.loads(
+              Path("automation/getcha-price-state.json").read_text(encoding="utf-8")
+          )
           parts = data["version"].split(".")
           parts[-1] = str(int(parts[-1]) + 1)
           data["version"] = ".".join(parts)
           data["updatedAt"] = datetime.now(
               ZoneInfo("Asia/Seoul")
           ).isoformat(timespec="seconds")
+          data["competitorPriceCheckedAt"] = state["checkedAt"]
           path.write_text(
               json.dumps(data, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8",
@@ -69,4 +110,15 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add app.html automation/getcha-price-state.json version.json
           git commit -m "Auto update Getcha competitor prices"
-          git push
+
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push raced with another update; rebasing (attempt ${attempt}/5)."
+            git pull --rebase -X theirs origin main
+            sleep $((attempt * 2))
+          done
+
+          echo "Unable to publish competitor prices after 5 attempts." >&2
+          exit 1
