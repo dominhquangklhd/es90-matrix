@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Update only the requested version metadata on the latest main branch."""
+"""Update routine data-check metadata on the latest main branch.
+
+This script intentionally has no option for ``matrixUpdatedAt``.
+That field means "matrix system update" and is reserved for substantial
+structural or functional changes defined in SYSTEM_UPDATE_POLICY.md.
+Routine reservation, charger, TMAP, and competitor-price updates must never
+change it.
+"""
 
 from __future__ import annotations
 
