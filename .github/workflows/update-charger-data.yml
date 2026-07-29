@@ -2,8 +2,9 @@ name: Update 350kW charger data
 
 on:
   schedule:
-    # Every day at 06:20 Asia/Seoul (21:20 UTC).
-    - cron: "20 21 * * *"
+    # Retry hourly from 06:20 through 11:20 Asia/Seoul.
+    # Once today's check succeeds, later scheduled retries are skipped.
+    - cron: "20 21-23,0-2 * * *"
   workflow_dispatch:
 
 permissions:
@@ -30,12 +31,47 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Check whether today's charger data was already verified
+        id: daily
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          should_run = True
+          checked_at = None
+          if os.environ.get("EVENT_NAME") == "schedule":
+              data = json.loads(Path("version.json").read_text(encoding="utf-8"))
+              checked_at = data.get("chargerCheckedAt")
+              if checked_at:
+                  checked_date = datetime.fromisoformat(checked_at).astimezone(
+                      ZoneInfo("Asia/Seoul")
+                  ).date()
+                  should_run = checked_date < datetime.now(
+                      ZoneInfo("Asia/Seoul")
+                  ).date()
+
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              output.write(f"should_run={'true' if should_run else 'false'}\n")
+          print(
+              f"Charger daily check: previous={checked_at or 'none'}, "
+              f"should_run={should_run}"
+          )
+          PY
+
       - name: Fetch charger data from the Public Data Portal
+        if: steps.daily.outputs.should_run == 'true'
         env:
           DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
         run: python scripts/update_charger_data.py
 
       - name: Record check and publish changed charger data
+        if: steps.daily.outputs.should_run == 'true'
         run: |
           if git diff --quiet -- charger-data-350kw.json; then
             CHARGER_DATA_CHANGED=false
