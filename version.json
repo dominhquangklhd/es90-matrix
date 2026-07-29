@@ -1,7 +1,7 @@
 {
-    "version":  "2026.07.26.646",
-    "updatedAt":  "2026-07-29T10:02:45+09:00",
-    "matrixUpdatedAt":  "2026-07-28T17:30:10+09:00",
-    "reservationUpdatedAt":  "2026-07-28T22:22:37+09:00",
-    "chargerCheckedAt":  "2026-07-28T15:45:28+09:00"
+  "version": "2026.07.26.647",
+  "updatedAt": "2026-07-29T10:08:06+09:00",
+  "matrixUpdatedAt": "2026-07-28T17:30:10+09:00",
+  "reservationUpdatedAt": "2026-07-29T10:08:06+09:00",
+  "chargerCheckedAt": "2026-07-28T15:45:28+09:00"
 }
