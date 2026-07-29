@@ -1268,9 +1268,6 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
   .hero-price-vs{margin:auto;}
   .brand-pick-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
 }
-@media screen and (min-width:768px) and (max-width:1366px){
-  .trim-group-share .group-selection-digit{animation:none;opacity:1;transform:none;filter:none;}
-}
 @media screen and (min-width:768px) and (orientation:landscape){
   .topbar-inner{transform:translateY(7px);}
   .brand-mark{transform:translateY(3px);}
@@ -17696,6 +17693,7 @@ function showPanel(n){
   }
   syncIpadStep1ScrollLock(n);
   if(n===1) setTimeout(()=>{
+    playWaitlistGroupShareAnimations(true);
     playWaitlistTotalAnimation(true);
     playWaitlistBarAnimations(true);
   },120);
@@ -17880,6 +17878,14 @@ function animatedWaitlistGroupDigits(value){
   }).join('');
 }
 
+function playWaitlistGroupShareAnimations(force=false){
+  document.querySelectorAll('.waitlist-group-animated-number[data-target]').forEach(node=>{
+    if(!force && node.dataset.animated==='true') return;
+    node.dataset.animated = 'true';
+    node.innerHTML = animatedWaitlistGroupDigits(node.dataset.target || '0.0');
+  });
+}
+
 function renderStep1(){
   const panel = document.getElementById('panel1');
   const waitlistChangeValue = Number((((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1));
@@ -17953,7 +17959,7 @@ function renderStep1(){
       .reduce((sum,item)=>sum+item.count,0);
     const groupPercent = RESERVATION_DATA.total > 0 ? (groupCount / RESERVATION_DATA.total * 100).toFixed(1) : '0.0';
     col.innerHTML = `
-      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share"><span class="waitlist-group-animated-number">${animatedWaitlistGroupDigits(groupPercent)}</span>%</span></div>
+      <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share"><span class="waitlist-group-animated-number" data-target="${groupPercent}">${groupPercent}</span>%</span></div>
       <div class="trim-col-cards" data-grp="${grp.label}"></div>
     `;
     const cards = col.querySelector('.trim-col-cards');
@@ -19763,7 +19769,10 @@ function closeLoginCover(){
   if(cover) cover.hidden = true;
   document.body.classList.remove('cover-open');
   syncIpadStep1ScrollLock(STATE.step);
-  if(STATE.step===1) setTimeout(()=>playWaitlistTotalAnimation(true),80);
+  if(STATE.step===1) setTimeout(()=>{
+    playWaitlistGroupShareAnimations(true);
+    playWaitlistTotalAnimation(true);
+  },80);
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:false},window.location.origin);
 }
 
