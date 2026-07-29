@@ -2,9 +2,9 @@ name: Update ES90 reservations
 
 on:
   schedule:
-    # Direct heartbeat every 10 minutes from 09:07 through 23:57 Asia/Seoul.
-    # This is independent of the four slot wrappers and their hourly watchdog.
-    - cron: "7-57/10 0-14 * * *"
+    # Direct heartbeat every 10 minutes from 08:07 through 18:57 Asia/Seoul.
+    # One successful observation completes each hourly slot; later retries skip it.
+    - cron: "7-57/10 23,0-9 * * *"
   workflow_call:
     inputs:
       target_hour:
@@ -65,7 +65,7 @@ jobs:
                   Path("automation/es90-reservation-state.json").read_text(encoding="utf-8")
               )
               observed_at = datetime.fromisoformat(state["observedAt"])
-              target_hours = (9, 12, 15, 18)
+              target_hours = tuple(range(8, 19))
               requested_hour = int(os.environ.get("TARGET_HOUR", "0"))
               if requested_hour in target_hours:
                   latest_target = now.replace(
