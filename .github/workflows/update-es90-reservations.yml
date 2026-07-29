@@ -1,6 +1,10 @@
 name: Update ES90 reservations
 
 on:
+  schedule:
+    # Direct heartbeat every 10 minutes from 09:07 through 23:57 Asia/Seoul.
+    # This is independent of the four slot wrappers and their hourly watchdog.
+    - cron: "7-57/10 0-14 * * *"
   workflow_call:
     inputs:
       target_hour:
@@ -44,7 +48,7 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           TARGET_HOUR: ${{ inputs.target_hour || 0 }}
-          CHECK_REQUIRED_SLOT: ${{ inputs.check_required_slot || false }}
+          CHECK_REQUIRED_SLOT: ${{ github.event_name == 'schedule' || inputs.check_required_slot || false }}
         run: |
           python - <<'PY'
           import json
