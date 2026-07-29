@@ -17886,9 +17886,51 @@ function playWaitlistGroupShareAnimations(force=false){
   });
 }
 
+function validateReservationData(){
+  const total = Number(RESERVATION_DATA.total);
+  const previousDayTotal = Number(RESERVATION_DATA.previousDayTotal);
+  if(!Number.isInteger(total) || total<0) throw new Error(`예약 전체 수량이 올바르지 않습니다: ${RESERVATION_DATA.total}`);
+  if(!Number.isInteger(previousDayTotal) || previousDayTotal<=0) throw new Error(`전일 예약 수량이 올바르지 않습니다: ${RESERVATION_DATA.previousDayTotal}`);
+
+  const trimTotal = RESERVATION_DATA.byTrim.reduce((sum,item)=>{
+    const count = Number(item.count);
+    if(!Number.isInteger(count) || count<0) throw new Error(`트림 수량이 올바르지 않습니다: ${item.trim} ${item.count}`);
+    return sum + count;
+  },0);
+  if(trimTotal!==total) throw new Error(`트림 합계(${trimTotal})와 전체 합계(${total})가 다릅니다.`);
+
+  const assignedTrimNames = new Set();
+  const groupCounts = new Map();
+  TRIM_GROUPS.forEach(group=>{
+    const groupTrimNames = [...new Set(group.trims.map(item=>item.trim))];
+    groupTrimNames.forEach(trimName=>{
+      if(assignedTrimNames.has(trimName)) throw new Error(`트림이 여러 그룹에 중복되었습니다: ${trimName}`);
+      assignedTrimNames.add(trimName);
+    });
+    const groupCount = RESERVATION_DATA.byTrim
+      .filter(item=>groupTrimNames.includes(item.trim))
+      .reduce((sum,item)=>sum+Number(item.count),0);
+    groupCounts.set(group.label,groupCount);
+  });
+  const unclassifiedTrims = RESERVATION_DATA.byTrim
+    .filter(item=>!assignedTrimNames.has(item.trim))
+    .map(item=>item.trim);
+  const groupTotal = [...groupCounts.values()].reduce((sum,count)=>sum+count,0);
+  if(unclassifiedTrims.length || groupTotal!==total){
+    throw new Error(`PLUS·ULTRA 그룹 합계(${groupTotal})와 전체 합계(${total})가 다릅니다.`);
+  }
+  return {total,previousDayTotal,groupCounts};
+}
+
+function reservationPercent(count,total){
+  return total>0 ? (Number(count)/total*100).toFixed(1) : '0.0';
+}
+
 function renderStep1(){
   const panel = document.getElementById('panel1');
-  const waitlistChangeValue = Number((((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1));
+  const reservationIntegrity = validateReservationData();
+  const reservationTotal = reservationIntegrity.total;
+  const waitlistChangeValue = Number((((reservationTotal-reservationIntegrity.previousDayTotal)/reservationIntegrity.previousDayTotal)*100).toFixed(1));
   const waitlistChangePercent = `${waitlistChangeValue>0?'+':''}${waitlistChangeValue.toFixed(1)}`;
   panel.innerHTML = `
     <div class="trim-split-wrap" id="trimGroupWrap"></div>
@@ -17916,7 +17958,7 @@ function renderStep1(){
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
-          const pct = (t.count/RESERVATION_DATA.total*100).toFixed(1);
+          const pct = reservationPercent(t.count,reservationTotal);
           const h = Math.max(Number(pct),4);
           const isTop = i===0;
           const price = getES90Price(t.trim);
@@ -17953,11 +17995,8 @@ function renderStep1(){
   TRIM_GROUPS.forEach(grp=>{
     const col = document.createElement('div');
     col.className = `trim-split-col is-five-row${grp.compact?' is-ultra':''}`;
-    const groupTrimNames = [...new Set(grp.trims.map(item=>item.trim))];
-    const groupCount = RESERVATION_DATA.byTrim
-      .filter(item=>groupTrimNames.includes(item.trim))
-      .reduce((sum,item)=>sum+item.count,0);
-    const groupPercent = RESERVATION_DATA.total > 0 ? (groupCount / RESERVATION_DATA.total * 100).toFixed(1) : '0.0';
+    const groupCount = reservationIntegrity.groupCounts.get(grp.label);
+    const groupPercent = reservationPercent(groupCount,reservationTotal);
     col.innerHTML = `
       <div class="trim-group-label">${grp.label} <span class="trim-group-sub">— ${grp.sub}</span><span class="trim-group-share"><span class="waitlist-group-animated-number" data-target="${groupPercent}">${groupPercent}</span>%</span></div>
       <div class="trim-col-cards" data-grp="${grp.label}"></div>

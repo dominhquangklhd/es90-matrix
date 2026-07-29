@@ -26,6 +26,48 @@ TRIM_MAP = {
 }
 
 
+def validate_reservation_integrity(
+    total: int, trims: list[dict]
+) -> tuple[int, int]:
+    trim_total = sum(int(item["count"]) for item in trims)
+    if trim_total != total:
+        raise RuntimeError(
+            f"트림 합계({trim_total})와 전체 합계({total})가 다릅니다."
+        )
+
+    expected_identities = {
+        (display_trim, air_suspension)
+        for display_trim, air_suspension in TRIM_MAP.values()
+    }
+    observed_identities = {
+        (item["trim"], item.get("airSuspension")) for item in trims
+    }
+    if observed_identities != expected_identities:
+        missing = sorted(expected_identities - observed_identities)
+        unexpected = sorted(observed_identities - expected_identities)
+        raise RuntimeError(
+            "트림 분류가 예상과 다릅니다: "
+            f"누락={missing or '없음'}, 추가={unexpected or '없음'}"
+        )
+
+    plus_total = sum(
+        int(item["count"])
+        for item in trims
+        if item["trim"].endswith("Plus")
+    )
+    ultra_total = sum(
+        int(item["count"])
+        for item in trims
+        if item["trim"].endswith("Ultra")
+    )
+    if plus_total + ultra_total != total:
+        raise RuntimeError(
+            "PLUS·ULTRA 그룹 합계가 전체와 다릅니다: "
+            f"PLUS={plus_total}, ULTRA={ultra_total}, 전체={total}"
+        )
+    return plus_total, ultra_total
+
+
 def required_env(name: str) -> str:
     value = os.environ.get(name, "").strip()
     if not value:
@@ -107,6 +149,7 @@ def read_report(user_id: str, password: str) -> tuple[int, list[dict]]:
             f"트림 합계({calculated_total})와 보고서 합계({report_total})가 다릅니다."
         )
 
+    validate_reservation_integrity(report_total, extracted)
     extracted.sort(key=lambda item: item["count"], reverse=True)
     return report_total, extracted
 
@@ -123,6 +166,7 @@ def js_item(item: dict) -> str:
 
 
 def update_app(total: int, trims: list[dict]) -> bool:
+    validate_reservation_integrity(total, trims)
     now = datetime.now(ZoneInfo("Asia/Seoul"))
     state = json.loads(STATE_PATH.read_text(encoding="utf-8"))
     previous_total = int(state["total"])
@@ -209,10 +253,16 @@ def main() -> int:
         user_id = required_env("VOLVO_SALES_ID")
         password = required_env("VOLVO_SALES_PASSWORD")
         total, trims = read_report(user_id, password)
+        plus_total, ultra_total = validate_reservation_integrity(total, trims)
         changed = update_app(total, trims)
         print(
             f"ES90 예약 데이터 확인 완료: {total}명"
             + (" (변경됨)" if changed else " (변경 없음)")
+            + (
+                f", ULTRA {ultra_total}명 "
+                f"({ultra_total / total * 100:.1f}%), "
+                f"PLUS {plus_total}명 ({plus_total / total * 100:.1f}%)"
+            )
         )
         return 0
     except Exception as error:
