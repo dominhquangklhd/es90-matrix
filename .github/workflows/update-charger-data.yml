@@ -117,4 +117,13 @@ jobs:
             git add charger-data-350kw.json
           fi
           git commit -m "Daily check 350kW charger data"
-          git push
+          for attempt in 1 2 3 4 5; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push attempt ${attempt} failed; rebasing on the latest main branch."
+            git pull --rebase -X theirs origin main
+            sleep $((attempt * 2))
+          done
+          echo "Failed to publish charger data after 5 attempts." >&2
+          exit 1
