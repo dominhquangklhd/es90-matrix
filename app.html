@@ -17882,7 +17882,8 @@ function animatedWaitlistGroupDigits(value){
 
 function renderStep1(){
   const panel = document.getElementById('panel1');
-  const waitlistChangePercent = (((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1);
+  const waitlistChangeValue = Number((((RESERVATION_DATA.total-RESERVATION_DATA.previousDayTotal)/RESERVATION_DATA.previousDayTotal)*100).toFixed(1));
+  const waitlistChangePercent = `${waitlistChangeValue>0?'+':''}${waitlistChangeValue.toFixed(1)}`;
   panel.innerHTML = `
     <div class="trim-split-wrap" id="trimGroupWrap"></div>
 
@@ -17905,7 +17906,7 @@ function renderStep1(){
         </table>
       </div>
       <div class="waitlist-total-row">
-        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">전일 최종마감 대비 +${waitlistChangePercent}%</div></div>
+        <div class="waitlist-total-copy"><div class="waitlist-total-label">누적 예약고객</div><div class="waitlist-daily-change">전일 최종마감 대비 ${waitlistChangePercent}%</div></div>
       </div>
       <div class="waitlist-bars">
         ${RESERVATION_DATA.byTrim.map((t,i)=>{
