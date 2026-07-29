@@ -82,43 +82,43 @@ jobs:
             exit 0
           fi
 
-          python - <<'PY'
-          import json
-          from datetime import datetime
-          from pathlib import Path
-          from zoneinfo import ZoneInfo
-
-          path = Path("version.json")
-          data = json.loads(path.read_text(encoding="utf-8"))
-          state = json.loads(
-              Path("automation/getcha-price-state.json").read_text(encoding="utf-8")
-          )
-          parts = data["version"].split(".")
-          parts[-1] = str(int(parts[-1]) + 1)
-          data["version"] = ".".join(parts)
-          data["updatedAt"] = datetime.now(
-              ZoneInfo("Asia/Seoul")
-          ).isoformat(timespec="seconds")
-          data["competitorPriceCheckedAt"] = state["checkedAt"]
-          path.write_text(
-              json.dumps(data, ensure_ascii=False, indent=2) + "\n",
-              encoding="utf-8",
-          )
-          PY
+          COMPETITOR_PRICE_CHECKED_AT="$(
+            python -c "import json; print(json.load(open('automation/getcha-price-state.json', encoding='utf-8'))['checkedAt'])"
+          )"
 
           git config user.name "ES90 Auto Update"
           git config user.email "actions@users.noreply.github.com"
-          git add app.html automation/getcha-price-state.json version.json
+          git add app.html automation/getcha-price-state.json
           git commit -m "Auto update Getcha competitor prices"
 
+          data_published=false
           for attempt in 1 2 3 4 5; do
             if git push; then
-              exit 0
+              data_published=true
+              break
             fi
             echo "Push raced with another update; rebasing (attempt ${attempt}/5)."
             git pull --rebase -X theirs origin main
             sleep $((attempt * 2))
           done
+          if [ "$data_published" != "true" ]; then
+            echo "Unable to publish competitor prices after 5 attempts." >&2
+            exit 1
+          fi
 
-          echo "Unable to publish competitor prices after 5 attempts." >&2
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/update_version_metadata.py \
+              --competitor-price-checked-at "$COMPETITOR_PRICE_CHECKED_AT"
+            git add version.json
+            git commit -m "Record competitor price check time"
+            if git push; then
+              exit 0
+            fi
+            echo "Version metadata raced with another update (attempt ${attempt}/5)."
+            sleep $((attempt * 2))
+          done
+
+          echo "Unable to publish competitor price check time after 5 attempts." >&2
           exit 1
