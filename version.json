@@ -1,10 +1,10 @@
 {
-    "version":  "2026.07.26.671",
-    "updatedAt":  "2026-07-30T08:28:45+09:00",
-    "matrixUpdatedAt":  "2026-07-28T17:30:10+09:00",
-    "reservationUpdatedAt":  "2026-07-30T08:16:05+09:00",
-    "chargerCheckedAt":  "2026-07-30T08:23:39+09:00",
-    "chargerUpdatedAt":  "2026-07-30T08:23:39+09:00",
-    "competitorPriceCheckedAt":  "2026-07-30T08:21:04+09:00",
-    "tmapCheckedAt":  "2026-07-30T08:23:39+09:00"
+  "version": "2026.07.26.672",
+  "updatedAt": "2026-07-30T09:14:03+09:00",
+  "matrixUpdatedAt": "2026-07-28T17:30:10+09:00",
+  "reservationUpdatedAt": "2026-07-30T09:14:01+09:00",
+  "chargerCheckedAt": "2026-07-30T08:23:39+09:00",
+  "chargerUpdatedAt": "2026-07-30T08:23:39+09:00",
+  "competitorPriceCheckedAt": "2026-07-30T08:21:04+09:00",
+  "tmapCheckedAt": "2026-07-30T08:23:39+09:00"
 }
