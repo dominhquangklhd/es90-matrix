@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "es90-matrix-watchdog",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-03",
+  "workers_dev": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "triggers": {
+    "crons": [
+      "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"
+    ]
+  },
+  "vars": {
+    "GITHUB_OWNER": "volvo-es90-matrix",
+    "GITHUB_REPO": "es90-matrix",
+    "GITHUB_REF": "main",
+    "REPOSITORY_VERSION_URL": "https://raw.githubusercontent.com/volvo-es90-matrix/es90-matrix/main/version.json",
+    "PAGES_VERSION_URL": "https://volvo-es90-matrix.github.io/es90-matrix/version.json",
+    "RETRY_COOLDOWN_MINUTES": "15",
+    "RESERVATION_STALE_RUN_MINUTES": "20",
+    "CHARGER_STALE_RUN_MINUTES": "35",
+    "COMPETITOR_STALE_RUN_MINUTES": "20"
+  },
+  "secrets": {
+    "required": [
+      "GITHUB_WORKFLOW_TOKEN",
+      "WATCHDOG_SHARED_SECRET"
+    ]
+  }
+}
