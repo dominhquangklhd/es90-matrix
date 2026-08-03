@@ -2,5 +2,6 @@ __pycache__/
 *.py[cod]
 cloudflare-watchdog/node_modules/
 cloudflare-watchdog/.wrangler/
+cloudflare-watchdog/.wrangler-dry-run/
 cloudflare-watchdog/.dev.vars*
 cloudflare-watchdog/.env*
