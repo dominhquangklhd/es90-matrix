@@ -103,12 +103,28 @@ def fetch_all(service_key: str) -> list[dict]:
     )
     for page_no in range(2, total_pages + 1):
         body = get_body(request_page(service_key, page_no))
+        page_total_count = int(body.get("totalCount", total_count) or 0)
+        if page_total_count != total_count:
+            raise RuntimeError(
+                "공공데이터포털 전체 건수가 수집 중 변경되었습니다: "
+                f"첫 페이지={total_count}, {page_no}페이지={page_total_count}. "
+                "일부 누락을 막기 위해 다음 실행에서 처음부터 다시 수집합니다."
+            )
         items.extend(body.get("items", {}).get("item", []) or [])
         if page_no % 5 == 0 or page_no == total_pages:
             print(
                 f"Fetched charger page {page_no}/{total_pages}.",
                 flush=True,
             )
+    if len(items) != total_count:
+        raise RuntimeError(
+            "공공데이터포털 전량 수집 검증 실패: "
+            f"예상={total_count}, 실제={len(items)}. 기존 파일을 보호합니다."
+        )
+    print(
+        f"Verified complete charger download: {len(items)}/{total_count} records.",
+        flush=True,
+    )
     return items
 
 

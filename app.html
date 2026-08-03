@@ -20365,7 +20365,13 @@ function initLoginCover(){
   let lockTimer = null;
   let loginTransitioning = false;
   let lastActivityWrite = 0;
-  syncEs90VisitStats().catch(()=>{});
+  const refreshLoginVisitStats = ()=>{
+    if(document.visibilityState === 'hidden' || cover?.hidden) return;
+    syncEs90VisitStats().catch(()=>{});
+  };
+  refreshLoginVisitStats();
+  window.setInterval(refreshLoginVisitStats, 60 * 1000);
+  document.addEventListener('visibilitychange', refreshLoginVisitStats);
 
   input?.addEventListener('input', ()=>{
     const start = input.selectionStart;
