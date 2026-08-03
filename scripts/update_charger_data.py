@@ -2,6 +2,8 @@
 import json
 import os
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from collections import defaultdict
@@ -15,6 +17,9 @@ OUTPUT_PATH = ROOT / "charger-data-350kw.json"
 API_URL = "https://apis.data.go.kr/B552584/EvCharger/getChargerInfo"
 MINIMUM_OUTPUT_KW = 350
 PAGE_SIZE = 10000
+REQUEST_TIMEOUT_SECONDS = 45
+MAX_REQUEST_ATTEMPTS = 4
+RETRYABLE_HTTP_STATUS = {429, 500, 502, 503, 504}
 
 
 def request_page(service_key: str, page_no: int) -> dict:
@@ -30,8 +35,36 @@ def request_page(service_key: str, page_no: int) -> dict:
         f"{API_URL}?{query}",
         headers={"User-Agent": "ES90-Charger-Data-Updater/1.0"},
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
-        return json.loads(response.read().decode("utf-8"))
+    last_error: Exception | None = None
+    for attempt in range(1, MAX_REQUEST_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(
+                request,
+                timeout=REQUEST_TIMEOUT_SECONDS,
+            ) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            if error.code not in RETRYABLE_HTTP_STATUS:
+                raise
+            last_error = error
+        except (urllib.error.URLError, TimeoutError) as error:
+            last_error = error
+
+        if attempt < MAX_REQUEST_ATTEMPTS:
+            delay_seconds = attempt * 10
+            print(
+                f"Public Data Portal page {page_no} failed "
+                f"({attempt}/{MAX_REQUEST_ATTEMPTS}): {last_error}. "
+                f"Retrying in {delay_seconds}s.",
+                file=sys.stderr,
+                flush=True,
+            )
+            time.sleep(delay_seconds)
+
+    raise RuntimeError(
+        f"Public Data Portal page {page_no} failed after "
+        f"{MAX_REQUEST_ATTEMPTS} attempts."
+    ) from last_error
 
 
 def get_body(payload: dict) -> dict:
@@ -63,9 +96,19 @@ def fetch_all(service_key: str) -> list[dict]:
     items = list(first_body.get("items", {}).get("item", []) or [])
     total_count = int(first_body.get("totalCount", len(items)) or 0)
     total_pages = max(1, (total_count + PAGE_SIZE - 1) // PAGE_SIZE)
+    print(
+        f"Public Data Portal reported {total_count} chargers "
+        f"across {total_pages} pages.",
+        flush=True,
+    )
     for page_no in range(2, total_pages + 1):
         body = get_body(request_page(service_key, page_no))
         items.extend(body.get("items", {}).get("item", []) or [])
+        if page_no % 5 == 0 or page_no == total_pages:
+            print(
+                f"Fetched charger page {page_no}/{total_pages}.",
+                flush=True,
+            )
     return items
 
 
