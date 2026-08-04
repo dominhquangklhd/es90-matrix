@@ -8,6 +8,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>ES90 Bowers &amp; Wilkins + Dolby Atmos 자료</title>
+  <script>
+    if(window.top !== window.self){
+      try{
+        window.top.location.replace(window.location.href);
+      }catch(_){/* same-origin ES90 shell에서만 실행되므로 정상 경로에서는 발생하지 않음 */}
+    }
+  </script>
   <style>
     :root{--navy:#163046;--navy-deep:#0d2538;--paper:#080d11}
     *{box-sizing:border-box}
