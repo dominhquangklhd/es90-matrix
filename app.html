@@ -16864,6 +16864,7 @@ const STATE = {
 };
 const CHARGER_RETURN_STATE_KEY = 'es90_charger_return_state';
 const CHARGER_LAST_STEP3_STATE_KEY = 'es90_charger_last_step3_state';
+const PDF_RETURN_STATE_KEY = 'es90_pdf_return_state';
 let PRESERVE_CHARGER_RETURN = new URLSearchParams(window.location.search).get('returnStep') === '3';
 
 const ES_AIR_SUSPENSION_OPTION_PRICES = {
@@ -17560,22 +17561,53 @@ function open350kwChargerNetwork(){
   window.location.href = './charger.html';
 }
 
+function prepareBnwPdfViewer(event){
+  if(event) event.stopPropagation();
+  const returnState = JSON.stringify({
+    es90Trim: STATE.es90Trim,
+    group: STATE.group,
+    brandKey: STATE.brandKey,
+    compTrim: STATE.compTrim,
+    activeTab: 'Telematics'
+  });
+  sessionStorage.setItem(PDF_RETURN_STATE_KEY, returnState);
+  localStorage.setItem(PDF_RETURN_STATE_KEY, returnState);
+}
+
 function restoreChargerReturnStep(){
   const params = new URLSearchParams(window.location.search);
   if(params.get('returnStep') !== '3') return false;
   try{
-    const saved = JSON.parse(sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || localStorage.getItem(CHARGER_LAST_STEP3_STATE_KEY) || 'null');
+    const returningFromPdf = params.get('returnSource') === 'pdf';
+    const savedRaw = returningFromPdf
+      ? sessionStorage.getItem(PDF_RETURN_STATE_KEY) || localStorage.getItem(PDF_RETURN_STATE_KEY)
+      : sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || localStorage.getItem(CHARGER_LAST_STEP3_STATE_KEY);
+    const saved = JSON.parse(savedRaw || 'null');
     if(!saved?.es90Trim || !saved?.group || !saved?.brandKey || !saved?.compTrim) return false;
     STATE.es90Trim = saved.es90Trim;
     STATE.group = saved.group;
     STATE.brandKey = saved.brandKey;
     STATE.compTrim = saved.compTrim;
+    STATE.activeTab = returningFromPdf ? 'Telematics' : (saved.activeTab || null);
     STATE.maxStep = 3;
     renderStep2();
     renderStep4();
     showPanel(3);
     PRESERVE_CHARGER_RETURN = true;
-    sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
+    if(returningFromPdf){
+      sessionStorage.removeItem(PDF_RETURN_STATE_KEY);
+      localStorage.removeItem(PDF_RETURN_STATE_KEY);
+      setTimeout(()=>{
+        if(STATE.activeTab !== 'Telematics') selectOptionCategory('Telematics');
+        const detailCard = document.getElementById('detailOptionsCard');
+        if(detailCard){
+          const top = detailCard.getBoundingClientRect().top + window.scrollY - 12;
+          window.scrollTo({top:Math.max(0,top),behavior:'auto'});
+        }
+      },350);
+    }else{
+      sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
+    }
     return true;
   }catch(_){
     return false;
