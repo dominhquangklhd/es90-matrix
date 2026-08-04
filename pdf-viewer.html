@@ -17,6 +17,22 @@
         window.top.location.replace(window.location.href);
       }catch(_){/* same-origin ES90 shell에서만 실행되므로 정상 경로에서는 발생하지 않음 */}
     }
+
+    const PDF_ACCESS = (()=>{
+      const SESSION_KEY = 'es90_cdsid_session';
+      const LAST_ID_KEY = 'es90_last_cdsid';
+      try{
+        const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        const cdsid = String(localStorage.getItem(LAST_ID_KEY) || '').trim().toUpperCase().slice(0,32);
+        const expiresAt = Number(session?.expiresAt || 0);
+        return {allowed:Boolean(cdsid && expiresAt > Date.now()),cdsid,expiresAt};
+      }catch(_){
+        return {allowed:false,cdsid:'',expiresAt:0};
+      }
+    })();
+    if(!PDF_ACCESS.allowed){
+      location.replace('/es90-matrix/index.html?pdfAccess=login');
+    }
   </script>
   <style>
     :root{--navy:#163046;--navy-deep:#0d2538;--paper:#080d11}
@@ -35,8 +51,10 @@
     .pdf-stage::-webkit-scrollbar{display:none}
     .pdf-pages{width:100%;margin:0;padding:0;background:var(--paper)}
     .pdf-page{position:relative;display:grid;width:100%;height:100vh;height:100dvh;min-height:100vh;min-height:100dvh;margin:0;padding:0;place-items:center;overflow:hidden;background:var(--paper);scroll-snap-align:start;scroll-snap-stop:always}
-    .pdf-page img{display:block;width:100%;height:100%;max-width:none;margin:0;object-fit:contain;object-position:center;pointer-events:none;-webkit-user-drag:none;user-drag:none}
-    .pdf-page figcaption{position:absolute;right:calc(env(safe-area-inset-right) + 10px);bottom:calc(env(safe-area-inset-bottom) + 9px);padding:3px 7px;border-radius:999px;background:rgba(10,28,42,.72);color:#fff;font-size:9px;font-weight:700;line-height:1}
+    .pdf-page img{position:relative;z-index:1;display:block;width:100%;height:100%;max-width:none;margin:0;object-fit:contain;object-position:center;pointer-events:none;-webkit-user-drag:none;user-drag:none}
+    .pdf-watermark-layer{position:absolute;z-index:3;inset:-18%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));align-items:center;justify-items:center;overflow:hidden;transform:rotate(-22deg) scale(1.06);transform-origin:center;pointer-events:none;contain:layout paint;-webkit-user-select:none;user-select:none}
+    .pdf-watermark{display:block;width:max-content;max-width:none;padding:4px 8px;color:rgba(255,255,255,.25);font-size:clamp(10px,1.05vw,16px);font-weight:800;line-height:1;letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.88),0 0 1px rgba(0,0,0,.9);-webkit-text-stroke:.2px rgba(0,0,0,.38)}
+    .pdf-page figcaption{position:absolute;z-index:5;right:calc(env(safe-area-inset-right) + 10px);bottom:calc(env(safe-area-inset-bottom) + 9px);padding:3px 7px;border-radius:999px;background:rgba(10,28,42,.72);color:#fff;font-size:9px;font-weight:700;line-height:1}
     .pdf-loading{position:fixed;z-index:10;inset:0;display:grid;place-items:center;background:#080d11;color:#9fb0bc;font-size:13px;font-weight:700;pointer-events:none;transition:opacity .2s ease,visibility .2s ease}
     .pdf-loading.is-hidden{visibility:hidden;opacity:0}
     @supports (-webkit-touch-callout:none){
@@ -47,6 +65,10 @@
         .pdf-page{height:calc(100dvh + 32px);min-height:calc(100dvh + 32px)}
         .pdf-page figcaption{bottom:calc(41px + env(safe-area-inset-bottom,0px))}
       }
+    }
+    @media (orientation:portrait){
+      .pdf-watermark-layer{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr));inset:-14%;transform:rotate(-26deg) scale(1.08)}
+      .pdf-watermark{font-size:clamp(9px,1.7vw,14px)}
     }
     @media(prefers-reduced-motion:reduce){.pdf-stage{scroll-behavior:auto}}
   </style>
@@ -77,6 +99,48 @@
     </section>
   </main>
   <script>
+    const PDF_WATERMARK_OPENED_AT = new Date();
+    const PDF_WATERMARK_TIMESTAMP = new Intl.DateTimeFormat('ko-KR',{
+      timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    }).format(PDF_WATERMARK_OPENED_AT).replace(/\. /g,'-').replace(/\./g,'').replace(' ',' ');
+    const PDF_WATERMARK_TEXT = `CDSID ${PDF_ACCESS.cdsid} · 조회 ${PDF_WATERMARK_TIMESTAMP} KST · 내부 전용`;
+
+    function createPdfWatermarkLayer(){
+      const layer = document.createElement('div');
+      layer.className = 'pdf-watermark-layer';
+      layer.setAttribute('aria-hidden','true');
+      layer.dataset.watermark = PDF_WATERMARK_TEXT;
+      for(let index=0;index<12;index+=1){
+        const mark = document.createElement('span');
+        mark.className = 'pdf-watermark';
+        mark.textContent = PDF_WATERMARK_TEXT;
+        layer.appendChild(mark);
+      }
+      return layer;
+    }
+
+    function ensurePdfWatermarks(){
+      document.querySelectorAll('.pdf-page').forEach(page=>{
+        const current = page.querySelector(':scope > .pdf-watermark-layer');
+        if(current?.dataset.watermark === PDF_WATERMARK_TEXT && current.childElementCount === 12) return;
+        current?.remove();
+        page.appendChild(createPdfWatermarkLayer());
+      });
+    }
+
+    ensurePdfWatermarks();
+    let watermarkRepairQueued = false;
+    const watermarkObserver = new MutationObserver(()=>{
+      if(watermarkRepairQueued) return;
+      watermarkRepairQueued = true;
+      requestAnimationFrame(()=>{
+        watermarkRepairQueued = false;
+        ensurePdfWatermarks();
+      });
+    });
+    watermarkObserver.observe(document.querySelector('.pdf-pages'),{childList:true,subtree:true});
+
     const blockViewerExport = event=>{
       event.preventDefault();
       event.stopPropagation();
