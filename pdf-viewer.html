@@ -100,10 +100,14 @@
   </main>
   <script>
     const PDF_WATERMARK_OPENED_AT = new Date();
-    const PDF_WATERMARK_TIMESTAMP = new Intl.DateTimeFormat('ko-KR',{
+    const PDF_WATERMARK_DATE_PARTS = new Intl.DateTimeFormat('en-CA',{
       timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',
       hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
-    }).format(PDF_WATERMARK_OPENED_AT).replace(/\. /g,'-').replace(/\./g,'').replace(' ',' ');
+    }).formatToParts(PDF_WATERMARK_OPENED_AT).reduce((parts,part)=>{
+      if(part.type !== 'literal') parts[part.type] = part.value;
+      return parts;
+    },{});
+    const PDF_WATERMARK_TIMESTAMP = `${PDF_WATERMARK_DATE_PARTS.year}-${PDF_WATERMARK_DATE_PARTS.month}-${PDF_WATERMARK_DATE_PARTS.day} ${PDF_WATERMARK_DATE_PARTS.hour}:${PDF_WATERMARK_DATE_PARTS.minute}:${PDF_WATERMARK_DATE_PARTS.second}`;
     const PDF_WATERMARK_TEXT = `CDSID ${PDF_ACCESS.cdsid} · 조회 ${PDF_WATERMARK_TIMESTAMP} KST · 내부 전용`;
 
     function createPdfWatermarkLayer(){
