@@ -1,5 +1,5 @@
-const CACHE_NAME = 'es90-sales-app-v214';
-const APP_SHELL = ['./', './index.html', './app.html', './pdf-viewer.html', './charger.html', './administrative-dongs.json', './administrative-centers.json', './manifest.webmanifest', './icons/es90-icon.svg', './assets/charger-marker-350kw-v1.png', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png', './assets/es90-trim-plus.png', './assets/es90-trim-ultra.png', './assets/es90-trim-performance-ultra.png', './assets/dolby-atmos.png', './assets/es90-bnw-dolby-atmos-thumb.png'];
+const CACHE_NAME = 'es90-sales-app-v215';
+const APP_SHELL = ['./', './index.html', './app.html', './charger.html', './administrative-dongs.json', './administrative-centers.json', './manifest.webmanifest', './icons/es90-icon.svg', './assets/charger-marker-350kw-v1.png', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png', './assets/es90-trim-plus.png', './assets/es90-trim-ultra.png', './assets/es90-trim-performance-ultra.png', './assets/dolby-atmos.png', './assets/es90-bnw-dolby-atmos-thumb.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
@@ -19,24 +19,32 @@ self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
+  const protectedPdfPage = /\/assets\/docs\/es90-bnw-dolby-pages\/page-\d+\.webp$/i.test(url.pathname);
+  if (protectedPdfPage) {
+    event.respondWith(fetch(event.request, {cache:'no-store'}));
+    return;
+  }
+
   // 앱 화면과 탐색 요청은 항상 온라인 최신본을 우선 사용하고, 오프라인일 때만 저장본을 사용한다.
   if (event.request.mode === 'navigate' || url.pathname.endsWith('/app.html') || url.pathname.endsWith('/pdf-viewer.html') || url.pathname.endsWith('/charger.html') || url.pathname.endsWith('/charger-data-350kw.json') || url.pathname.endsWith('/version.json')) {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
         .then(response => {
           const viewerRequest = url.pathname.endsWith('/pdf-viewer.html');
-          if (!response.ok && viewerRequest) {
-            return caches.match('./pdf-viewer.html').then(hit => hit || response);
-          }
-          if (response.ok && !url.pathname.endsWith('/version.json')) {
+          if (response.ok && !viewerRequest && !url.pathname.endsWith('/version.json')) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
           }
           return response;
         })
         .catch(() => {
-          const fallbackPage = url.pathname.endsWith('/pdf-viewer.html') ? './pdf-viewer.html' : './app.html';
-          return caches.match(event.request).then(hit => hit || caches.match(fallbackPage));
+          if (url.pathname.endsWith('/pdf-viewer.html')) {
+            return new Response('PDF 자료는 온라인 연결 상태에서만 볼 수 있습니다.', {
+              status: 503,
+              headers: {'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store'}
+            });
+          }
+          return caches.match(event.request).then(hit => hit || caches.match('./app.html'));
         })
     );
     return;
