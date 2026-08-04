@@ -19879,6 +19879,7 @@ function clearLogoutStep3ReturnContext(){
   const cleanUrl = new URL(window.location.href);
   cleanUrl.searchParams.delete('returnStep');
   cleanUrl.searchParams.delete('returnSource');
+  cleanUrl.hash = '';
   history.replaceState(null,'',`${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
 }
 
