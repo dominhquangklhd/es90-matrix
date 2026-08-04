@@ -19870,9 +19870,22 @@ function closeLoginCover(){
   if(window.parent !== window) window.parent.postMessage({type:'es90-login-cover',open:false},window.location.origin);
 }
 
+function clearLogoutStep3ReturnContext(){
+  PRESERVE_CHARGER_RETURN = false;
+  sessionStorage.removeItem(PDF_RETURN_STATE_KEY);
+  sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
+  localStorage.removeItem(PDF_RETURN_STATE_KEY);
+  localStorage.removeItem(CHARGER_LAST_STEP3_STATE_KEY);
+  const cleanUrl = new URL(window.location.href);
+  cleanUrl.searchParams.delete('returnStep');
+  cleanUrl.searchParams.delete('returnSource');
+  history.replaceState(null,'',`${cleanUrl.pathname}${cleanUrl.search}${cleanUrl.hash}`);
+}
+
 function logoutToLogin(){
   if(!window.confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?')) return;
   localStorage.removeItem('es90_cdsid_session');
+  clearLogoutStep3ReturnContext();
   resetAll();
   const cover = document.getElementById('loginCover');
   const visual = document.querySelector('.login-cover-visual');
@@ -20483,6 +20496,7 @@ function initLoginCover(){
   };
   const expireSession = ()=>{
     localStorage.removeItem(SESSION_KEY);
+    clearLogoutStep3ReturnContext();
     loginTransitioning = false;
     button.disabled = false;
     button.removeAttribute('aria-busy');
@@ -20611,6 +20625,7 @@ function initLoginCover(){
     });
   }else{
     localStorage.removeItem(SESSION_KEY);
+    clearLogoutStep3ReturnContext();
     input.value = '';
     savedPopup.hidden = true;
     const savedGuard = readLoginGuard();
