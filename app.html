@@ -17757,8 +17757,8 @@ const RESERVATION_DATA = {
     {trim:'Twin Motor Ultra', count:552, airSuspension:true},
     {trim:'Twin Motor Performance Ultra', count:92},
     {trim:'Single Motor Plus', count:45},
-    {trim:'Single Motor Ultra', count:42, airSuspension:false, variant:'No Air Sus'},
-    {trim:'Twin Motor Ultra', count:19, airSuspension:false, variant:'No Air Sus'},
+    {trim:'Single Motor Ultra', count:41, airSuspension:false, variant:'No Air Sus'},
+    {trim:'Twin Motor Ultra', count:20, airSuspension:false, variant:'No Air Sus'},
     {trim:'Twin Motor Plus', count:10}
   ]
 };
@@ -17796,7 +17796,7 @@ function isTopBrandInCurrentGroup(brand){
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
-let RESERVATION_UPDATED_AT = '2026-08-04 17:04';
+let RESERVATION_UPDATED_AT = '2026-08-04 18:04';
 function formatDeploymentUpdatedAt(value){
   const date = new Date(value);
   if(Number.isNaN(date.getTime())) return null;
