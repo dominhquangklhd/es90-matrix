@@ -45,12 +45,12 @@
   </header>
   <main class="pdf-stage">
     <div class="pdf-loading" id="pdfLoading">PDF 자료를 불러오는 중입니다.</div>
-    <iframe class="pdf-frame" id="pdfFrame" title="ES90 Bowers &amp; Wilkins + Dolby Atmos PDF" src="./assets/docs/es90-bowers-wilkins-dolby-atmos-guide.pdf#view=FitH&amp;toolbar=1" onload="document.getElementById('pdfLoading').classList.add('is-hidden')"></iframe>
+    <iframe class="pdf-frame" id="pdfFrame" title="ES90 Bowers &amp; Wilkins + Dolby Atmos PDF" src="/es90-matrix/assets/docs/es90-bowers-wilkins-dolby-atmos-guide.pdf?v=20260804-210#view=FitH&amp;toolbar=1" onload="document.getElementById('pdfLoading').classList.add('is-hidden')"></iframe>
   </main>
   <script>
     function exitPdfViewer(event){
       if(event) event.preventDefault();
-      const fallback = './app.html';
+      const fallback = '/es90-matrix/app.html';
       if(history.length <= 1){
         window.close();
         window.setTimeout(()=>location.replace(fallback),180);

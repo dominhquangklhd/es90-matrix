@@ -1,4 +1,4 @@
-const CACHE_NAME = 'es90-sales-app-v209';
+const CACHE_NAME = 'es90-sales-app-v210';
 const APP_SHELL = ['./', './index.html', './app.html', './pdf-viewer.html', './charger.html', './administrative-dongs.json', './administrative-centers.json', './manifest.webmanifest', './icons/es90-icon.svg', './assets/charger-marker-350kw-v1.png', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png', './assets/es90-trim-plus.png', './assets/es90-trim-ultra.png', './assets/es90-trim-performance-ultra.png', './assets/dolby-atmos.png', './assets/es90-bnw-dolby-atmos-thumb.png'];
 
 self.addEventListener('install', event => {
@@ -24,13 +24,20 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
         .then(response => {
+          const viewerRequest = url.pathname.endsWith('/pdf-viewer.html');
+          if (!response.ok && viewerRequest) {
+            return caches.match('./pdf-viewer.html').then(hit => hit || response);
+          }
           if (response.ok && !url.pathname.endsWith('/version.json')) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
           }
           return response;
         })
-        .catch(() => caches.match(event.request).then(hit => hit || caches.match('./app.html')))
+        .catch(() => {
+          const fallbackPage = url.pathname.endsWith('/pdf-viewer.html') ? './pdf-viewer.html' : './app.html';
+          return caches.match(event.request).then(hit => hit || caches.match(fallbackPage));
+        })
     );
     return;
   }
