@@ -401,6 +401,12 @@ button{font-family:inherit;}
 .certification-pending-badge{margin-left:6px;vertical-align:middle;cursor:default;pointer-events:none;}
 .ov-opt.es-air-option-toggle.is-selected{background:#f15a24;color:#fff;box-shadow:0 1px 4px rgba(241,90,36,.25);}
 .sound-spec-inline{white-space:nowrap;}
+.option-name-with-dolby{display:inline-flex;align-items:center;gap:6px;max-width:100%;white-space:nowrap;}
+.dolby-atmos-logo{display:inline-block;width:52px;height:22px;flex:0 0 52px;color:var(--ink);background:currentColor;-webkit-mask:url('./assets/dolby-atmos.png') center/contain no-repeat;mask:url('./assets/dolby-atmos.png') center/contain no-repeat;vertical-align:middle;}
+@media(max-width:820px){
+  .option-name-with-dolby{gap:4px;}
+  .dolby-atmos-logo{width:45px;height:19px;flex-basis:45px;}
+}
 .option-jump-highlight{animation:optionJumpHighlight 1.5s ease;}
 @keyframes optionJumpHighlight{0%,100%{box-shadow:none}20%,75%{box-shadow:0 0 0 3px rgba(245,91,31,.45)}}
 .opt-table tr.option-row-highlight td{animation:optionRowHighlight 1.8s ease;}
@@ -19179,7 +19185,13 @@ function renderOptTable(cat){
         const cvHasSpec = it.comp!==null && it.comp!==undefined && it.comp!==true && it.comp!==false && String(it.comp).trim()!=='';
 
         const nameDetail = ITEM_NAME_DETAIL[it.name.trim()];
-        const displayName = nameDetail ? nameDetail.base : it.name;
+        const displayNameText = nameDetail ? nameDetail.base : it.name;
+        const showDolbyAtmosLogo = evTrue
+          && /Ultra/.test(STATE.es90Trim)
+          && it.name.trim()==='Bowers & Wilkins 프리미엄 사운드 시스템';
+        const displayName = showDolbyAtmosLogo
+          ? `<span class="option-name-with-dolby"><span>${displayNameText}</span><span class="dolby-atmos-logo" role="img" aria-label="Dolby Atmos"></span></span>`
+          : displayNameText;
         const isSound = SOUND_ITEMS.includes(it.name.trim());
         const isDisplay = DISPLAY_ITEMS.includes(it.name.trim());
         const directCompare = isDirectCompareOption(it);
