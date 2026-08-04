@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#163046">
+  <title>ES90 Bowers &amp; Wilkins + Dolby Atmos 자료</title>
+  <style>
+    :root{--navy:#163046;--navy-deep:#0d2538;--line:#d7e0e6;--paper:#f1f4f6;--toolbar-height:58px}
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--paper);font-family:Arial,"Noto Sans KR",sans-serif;color:#fff}
+    .pdf-toolbar{position:fixed;z-index:20;top:0;right:0;left:0;height:calc(var(--toolbar-height) + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;display:grid;grid-template-columns:minmax(170px,1fr) minmax(0,1.3fr) minmax(52px,1fr);align-items:center;gap:8px;background:linear-gradient(135deg,var(--navy-deep),var(--navy));border-bottom:1px solid rgba(255,255,255,.16);box-shadow:0 2px 10px rgba(10,28,42,.22)}
+    .pdf-back,.pdf-close{border:0;color:#fff;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .pdf-back{min-width:0;display:inline-flex;align-items:center;gap:7px;justify-self:start;padding:9px 10px;border-radius:9px;background:rgba(255,255,255,.10);font-size:12px;font-weight:700;white-space:nowrap}
+    .pdf-back-arrow{font-size:18px;line-height:1}
+    .pdf-title{min-width:0;text-align:center;line-height:1.25}
+    .pdf-title strong,.pdf-title span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pdf-title strong{font-size:13px}.pdf-title span{margin-top:2px;color:rgba(255,255,255,.68);font-size:10px}
+    .pdf-close{width:44px;height:44px;display:grid;place-items:center;justify-self:end;border-radius:50%;background:#fff;color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.20)}
+    .pdf-close svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+    .pdf-back:focus-visible,.pdf-close:focus-visible{outline:3px solid #ffb491;outline-offset:2px}
+    .pdf-stage{position:fixed;inset:calc(var(--toolbar-height) + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom) 0;background:#dfe5e9}
+    .pdf-frame{display:block;width:100%;height:100%;border:0;background:#fff}
+    .pdf-loading{position:absolute;z-index:1;inset:0;display:grid;place-items:center;background:#eef2f5;color:#526b7e;font-size:13px;font-weight:700;pointer-events:none;transition:opacity .2s ease}
+    .pdf-loading.is-hidden{opacity:0}
+    @media(max-width:640px){
+      :root{--toolbar-height:56px}
+      .pdf-toolbar{grid-template-columns:minmax(54px,1fr) minmax(0,1.6fr) minmax(44px,1fr);padding-right:8px;padding-left:8px}
+      .pdf-back{width:44px;height:44px;justify-content:center;padding:0}
+      .pdf-back-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+      .pdf-title strong{font-size:12px}.pdf-title span{font-size:9px}
+      .pdf-close{width:42px;height:42px}
+    }
+  </style>
+</head>
+<body>
+  <header class="pdf-toolbar" aria-label="PDF 뷰어 상단 메뉴">
+    <a class="pdf-back" href="./app.html" onclick="return exitPdfViewer(event)" aria-label="ES90 매트릭스로 돌아가기">
+      <span class="pdf-back-arrow" aria-hidden="true">←</span><span class="pdf-back-label">ES90 매트릭스로 돌아가기</span>
+    </a>
+    <div class="pdf-title"><strong>Bowers &amp; Wilkins + Dolby Atmos</strong><span>ES90 고객 설명 자료</span></div>
+    <a class="pdf-close" href="./app.html" onclick="return exitPdfViewer(event)" aria-label="PDF를 닫고 ES90 매트릭스로 돌아가기">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </a>
+  </header>
+  <main class="pdf-stage">
+    <div class="pdf-loading" id="pdfLoading">PDF 자료를 불러오는 중입니다.</div>
+    <iframe class="pdf-frame" id="pdfFrame" title="ES90 Bowers &amp; Wilkins + Dolby Atmos PDF" src="./assets/docs/es90-bowers-wilkins-dolby-atmos-guide.pdf#view=FitH&amp;toolbar=1" onload="document.getElementById('pdfLoading').classList.add('is-hidden')"></iframe>
+  </main>
+  <script>
+    function exitPdfViewer(event){
+      if(event) event.preventDefault();
+      const fallback = './app.html';
+      if(history.length <= 1){
+        window.close();
+        window.setTimeout(()=>location.replace(fallback),180);
+        return false;
+      }
+      history.back();
+      window.setTimeout(()=>{
+        if(location.pathname.endsWith('/pdf-viewer.html')) location.replace(fallback);
+      },500);
+      return false;
+    }
+  </script>
+</body>
+</html>
