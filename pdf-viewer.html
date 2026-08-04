@@ -8,7 +8,8 @@
   <style>
     :root{--navy:#163046;--navy-deep:#0d2538;--line:#d7e0e6;--paper:#f1f4f6;--toolbar-height:58px}
     *{box-sizing:border-box}
-    html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--paper);font-family:Arial,"Noto Sans KR",sans-serif;color:#fff}
+    html,body{width:100vw;max-width:none;height:100%;min-height:100%;margin:0;overflow:hidden;background:var(--paper);font-family:Arial,"Noto Sans KR",sans-serif;color:#fff}
+    @supports (height:100dvh){html,body{height:100dvh}}
     .pdf-toolbar{position:fixed;z-index:20;top:0;right:0;left:0;height:calc(var(--toolbar-height) + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;display:grid;grid-template-columns:minmax(170px,1fr) minmax(0,1.3fr) minmax(52px,1fr);align-items:center;gap:8px;background:linear-gradient(135deg,var(--navy-deep),var(--navy));border-bottom:1px solid rgba(255,255,255,.16);box-shadow:0 2px 10px rgba(10,28,42,.22)}
     .pdf-back{border:0;color:#fff;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
     .pdf-back{min-width:0;display:inline-flex;align-items:center;gap:7px;justify-self:start;padding:9px 10px;border-radius:9px;background:rgba(255,255,255,.10);font-size:12px;font-weight:700;white-space:nowrap}
@@ -18,7 +19,7 @@
     .pdf-title strong{font-size:13px}.pdf-title span{margin-top:2px;color:rgba(255,255,255,.68);font-size:10px}
     .pdf-toolbar-spacer{display:block}
     .pdf-back:focus-visible{outline:3px solid #ffb491;outline-offset:2px}
-    .pdf-stage{position:fixed;inset:calc(var(--toolbar-height) + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom) 0;overflow-y:auto;overflow-x:hidden;background:#080d11;-webkit-overflow-scrolling:touch;scroll-snap-type:y proximity}
+    .pdf-stage{position:fixed;inset:calc(var(--toolbar-height) + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom) 0;width:100vw;max-width:none;overflow-y:auto;overflow-x:hidden;background:#080d11;-webkit-overflow-scrolling:touch;scroll-snap-type:y proximity}
     .pdf-stage{scrollbar-width:none}
     .pdf-stage::-webkit-scrollbar{display:none}
     .pdf-pages{width:100%;margin:0;padding:0;background:#080d11}
@@ -67,15 +68,7 @@
     function exitPdfViewer(event){
       if(event) event.preventDefault();
       const fallback = '/es90-matrix/app.html?returnStep=3&returnSource=pdf';
-      if(history.length <= 1){
-        window.close();
-        window.setTimeout(()=>location.replace(fallback),180);
-        return false;
-      }
-      history.back();
-      window.setTimeout(()=>{
-        if(location.pathname.endsWith('/pdf-viewer.html')) location.replace(fallback);
-      },500);
+      location.replace(fallback);
       return false;
     }
   </script>
