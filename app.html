@@ -1272,7 +1272,8 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .pkg-calc-total span:last-child{color:var(--orange-deep)!important;font-weight:800!important;}
 .footer-actions{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px!important;}
 .footer-actions .btn-secondary{width:100%;min-width:0;}
-.footer-actions .btn-live-subsidy{display:inline-flex;align-items:center;justify-content:center;gap:7px;color:var(--navy)!important;white-space:nowrap;}
+.footer-actions .btn-live-subsidy{display:inline-flex;align-items:center;justify-content:center;gap:7px;color:var(--navy)!important;padding-left:10px!important;padding-right:10px!important;}
+.footer-actions .btn-live-subsidy>span:last-child{line-height:1.15;text-align:center;white-space:normal;}
 .footer-action-money-icon{display:inline-flex;width:18px;height:18px;flex:0 0 18px;color:#c9782a;}
 .footer-action-money-icon svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 
@@ -18617,7 +18618,7 @@ if(score.priceDiff !== null){
       <button class="btn-secondary" onclick="resetAll()">← 처음부터 다시</button>
       <button class="btn-secondary" onclick="showPanel(1)">☷ ES90 대기고객 선택</button>
       <button class="btn-secondary" onclick="openStep2WithDirectDefault()">⇄ 다른 경쟁모델과 비교</button>
-      <button class="btn-secondary btn-live-subsidy" onclick="openLiveSubsidyStatus()"><span class="footer-action-money-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.8" y="5.5" width="18.4" height="13" rx="2.4"/><path d="M7 5.5a3.5 3.5 0 0 1-4.2 3.4M17 5.5a3.5 3.5 0 0 0 4.2 3.4M7 18.5a3.5 3.5 0 0 0-4.2-3.4M17 18.5a3.5 3.5 0 0 1 4.2-3.4"/><circle cx="12" cy="12" r="3.1"/><path d="M10.7 10.8h2.6M10.7 12.1h2.6M12 10.8v2.8"/></svg></span><span>실시간 보조금 현황</span></button>
+      <button class="btn-secondary btn-live-subsidy" onclick="openLiveSubsidyStatus()"><span class="footer-action-money-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.8" y="5.5" width="18.4" height="13" rx="2.4"/><path d="M7 5.5a3.5 3.5 0 0 1-4.2 3.4M17 5.5a3.5 3.5 0 0 0 4.2 3.4M7 18.5a3.5 3.5 0 0 0-4.2-3.4M17 18.5a3.5 3.5 0 0 1 4.2-3.4"/><circle cx="12" cy="12" r="3.1"/><path d="M10.7 10.8h2.6M10.7 12.1h2.6M12 10.8v2.8"/></svg></span><span>전국 실시간 보조금 현황 (공사중)</span></button>
       <button class="btn-secondary" onclick="open350kwChargerNetwork()">⚡ 350kW 이상 초고속 충전</button>
       <button class="btn-secondary" onclick="openAdminEmail()">✉ 데이터 수정 시 연락</button>
     </div>
