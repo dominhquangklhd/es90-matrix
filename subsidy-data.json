@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-06T01:57:01+09:00",
+  "checkedAt": "2026-08-06T02:12:52+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "modelStatus": {
