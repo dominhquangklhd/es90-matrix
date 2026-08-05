@@ -19902,8 +19902,10 @@ function clearLogoutStep3ReturnContext(){
   PRESERVE_CHARGER_RETURN = false;
   sessionStorage.removeItem(PDF_RETURN_STATE_KEY);
   sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
+  sessionStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);
   localStorage.removeItem(PDF_RETURN_STATE_KEY);
   localStorage.removeItem(CHARGER_LAST_STEP3_STATE_KEY);
+  localStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);
   const cleanUrl = new URL(window.location.href);
   cleanUrl.searchParams.delete('returnStep');
   cleanUrl.searchParams.delete('returnSource');
