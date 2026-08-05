@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-06T02:12:52+09:00",
+  "checkedAt": "2026-08-06T02:29:33+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "modelStatus": {
@@ -738,8 +738,8 @@
       "delivered": 47,
       "remaining": 0,
       "nationalMaxManwon": 648,
-      "localMaxManwon": 195,
-      "combinedMaxManwon": 843,
+      "localMaxManwon": 324,
+      "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 *우선: 출고등록순",
       "notice": "본공고 1"
     },
