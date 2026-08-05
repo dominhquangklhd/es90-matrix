@@ -16868,6 +16868,7 @@ const STATE = {
 };
 const CHARGER_RETURN_STATE_KEY = 'es90_charger_return_state';
 const CHARGER_LAST_STEP3_STATE_KEY = 'es90_charger_last_step3_state';
+const SUBSIDY_RETURN_STATE_KEY = 'es90_subsidy_return_state';
 const PDF_RETURN_STATE_KEY = 'es90_pdf_return_state';
 let PRESERVE_CHARGER_RETURN = new URLSearchParams(window.location.search).get('returnStep') === '3';
 
@@ -17554,13 +17555,23 @@ function openAdminEmail(){
   window.location.href = 'mailto:?subject=ES90%20경쟁력%20분석%20데이터%20수정%20요청%28%2A구체적으로%20기술%29';
 }
 function openLiveSubsidyStatus(){
-  const subsidyUrl = 'https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do';
-  const popup = window.open(subsidyUrl, '_blank', 'noopener,noreferrer');
-  if(!popup) window.location.href = subsidyUrl;
+  const returnState = JSON.stringify({
+    es90Trim: STATE.es90Trim,
+    airSuspension: SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim),
+    effectivePriceWon: getEffectiveES90Total(STATE.es90Trim),
+    group: STATE.group,
+    brandKey: STATE.brandKey,
+    compTrim: STATE.compTrim,
+    activeTab: STATE.activeTab
+  });
+  sessionStorage.setItem(SUBSIDY_RETURN_STATE_KEY, returnState);
+  localStorage.setItem(SUBSIDY_RETURN_STATE_KEY, returnState);
+  window.location.href = './subsidy.html';
 }
 function open350kwChargerNetwork(){
   const returnState = JSON.stringify({
     es90Trim: STATE.es90Trim,
+    airSuspension: SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim),
     group: STATE.group,
     brandKey: STATE.brandKey,
     compTrim: STATE.compTrim
@@ -17588,9 +17599,12 @@ function restoreChargerReturnStep(){
   if(params.get('returnStep') !== '3') return false;
   try{
     const returningFromPdf = params.get('returnSource') === 'pdf';
+    const returningFromSubsidy = params.get('returnSource') === 'subsidy';
     const savedRaw = returningFromPdf
       ? sessionStorage.getItem(PDF_RETURN_STATE_KEY) || localStorage.getItem(PDF_RETURN_STATE_KEY)
-      : sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || localStorage.getItem(CHARGER_LAST_STEP3_STATE_KEY);
+      : returningFromSubsidy
+        ? sessionStorage.getItem(SUBSIDY_RETURN_STATE_KEY) || localStorage.getItem(SUBSIDY_RETURN_STATE_KEY)
+        : sessionStorage.getItem(CHARGER_RETURN_STATE_KEY) || localStorage.getItem(CHARGER_LAST_STEP3_STATE_KEY);
     const saved = JSON.parse(savedRaw || 'null');
     const hasSavedSelection = !!(saved?.es90Trim && saved?.group && saved?.brandKey && saved?.compTrim);
     if(!hasSavedSelection && !returningFromPdf) return false;
@@ -17599,6 +17613,8 @@ function restoreChargerReturnStep(){
       STATE.group = saved.group;
       STATE.brandKey = saved.brandKey;
       STATE.compTrim = saved.compTrim;
+      if(saved.airSuspension) SELECTED_ES_AIR_SUSPENSION_TRIMS.add(saved.es90Trim);
+      else SELECTED_ES_AIR_SUSPENSION_TRIMS.delete(saved.es90Trim);
     }
     STATE.activeTab = returningFromPdf ? 'Telematics' : (saved?.activeTab || null);
     STATE.maxStep = 3;
@@ -17617,6 +17633,8 @@ function restoreChargerReturnStep(){
           window.scrollTo({top:Math.max(0,top),behavior:'auto'});
         }
       },350);
+    }else if(returningFromSubsidy){
+      sessionStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);
     }else{
       sessionStorage.removeItem(CHARGER_RETURN_STATE_KEY);
     }
@@ -18618,7 +18636,7 @@ if(score.priceDiff !== null){
       <button class="btn-secondary" onclick="resetAll()">← 처음부터 다시</button>
       <button class="btn-secondary" onclick="showPanel(1)">☷ ES90 대기고객 선택</button>
       <button class="btn-secondary" onclick="openStep2WithDirectDefault()">⇄ 다른 경쟁모델과 비교</button>
-      <button class="btn-secondary btn-live-subsidy" onclick="openLiveSubsidyStatus()"><span class="footer-action-money-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.8" y="5.5" width="18.4" height="13" rx="2.4"/><path d="M7 5.5a3.5 3.5 0 0 1-4.2 3.4M17 5.5a3.5 3.5 0 0 0 4.2 3.4M7 18.5a3.5 3.5 0 0 0-4.2-3.4M17 18.5a3.5 3.5 0 0 1 4.2-3.4"/><circle cx="12" cy="12" r="3.1"/><path d="M10.7 10.8h2.6M10.7 12.1h2.6M12 10.8v2.8"/></svg></span><span>전국 실시간 보조금 현황 (공사중)</span></button>
+      <button class="btn-secondary btn-live-subsidy" onclick="openLiveSubsidyStatus()"><span class="footer-action-money-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.8" y="5.5" width="18.4" height="13" rx="2.4"/><path d="M7 5.5a3.5 3.5 0 0 1-4.2 3.4M17 5.5a3.5 3.5 0 0 0 4.2 3.4M7 18.5a3.5 3.5 0 0 0-4.2-3.4M17 18.5a3.5 3.5 0 0 1 4.2-3.4"/><circle cx="12" cy="12" r="3.1"/><path d="M10.7 10.8h2.6M10.7 12.1h2.6M12 10.8v2.8"/></svg></span><span>전국 실시간 보조금 현황</span></button>
       <button class="btn-secondary" onclick="open350kwChargerNetwork()">⚡ 350kW 이상 초고속 충전</button>
       <button class="btn-secondary" onclick="openAdminEmail()">✉ 데이터 수정 시 연락</button>
     </div>
