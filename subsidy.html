@@ -87,7 +87,8 @@ function notice(msg){const t=document.getElementById('toast');t.textContent=msg;
 function goBack(){keepAppSessionAlive();location.href='./app.html?returnStep=3&returnSource=subsidy'}
 function logoutToLogin(){if(!confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?'))return;localStorage.removeItem(APP_SESSION_KEY);sessionStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);location.href='./app.html'}
 
-function eligibilityRate(priceWon){if(priceWon<53000000)return 1;if(priceWon<=85000000)return .5;return 0}
+function eligibilityRate(priceWon){if(priceWon<53000000)return 1;if(priceWon<85000000)return .5;return 0}
+function subsidyPriceRange(priceWon){if(priceWon<53000000)return {tone:'full',range:'5,300만원 미만',result:'국가 및 지자체 보조금 100% 지원 가능'};if(priceWon<85000000)return {tone:'half',range:'5,300만원 이상 ~ 8,500만원 미만',result:'국가 및 지자체 보조금 50% 지원 가능'};return {tone:'none',range:'8,500만원 이상',result:'국가 및 지자체 보조금 지급대상 제외'}}
 function findOfficialModel(trim){
   const models=(subsidyData.modelStatus?.officialModels||[]).map(model=>({...model,key:String(model.modelName||'').toLowerCase()}));
   if(!models.length)return null;
@@ -117,18 +118,19 @@ function renderWaterfall(record){
   const trim=TRIMS[Number(trimSelect.value)||0],rate=eligibilityRate(trim.priceWon),official=rate?findOfficialModel(trim):null;
   const national=official?Number(official.nationalManwon||0):Math.round(record.nationalMaxManwon*rate);
   const local=official?Math.round(national*record.localMaxManwon/Math.max(1,record.nationalMaxManwon)):Math.round(record.localMaxManwon*rate);
-  const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),scale=240/price,nH=Math.max(4,national*scale),lH=Math.max(4,local*scale),finalY=20+nH+lH,finalH=Math.max(4,240-nH-lH),badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님';
-  const warning=rate===0?'출고가 8,500만원 초과 트림은 구매보조금 지원 대상이 아닙니다.':official?`${official.modelName} 공식 국비를 적용했습니다. 지방비는 해당 지자체 지원비율로 계산합니다.`:(subsidyData.modelStatus?.message||'ES90 공식 보조금 확정 전 최대 예상액입니다.');
+  const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),scale=240/price,nH=Math.max(4,national*scale),lH=Math.max(4,local*scale),finalY=20+nH+lH,finalH=Math.max(4,240-nH-lH),badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님',priceRange=subsidyPriceRange(trim.priceWon);
+  const warning=official?`${official.modelName} 공식 국비를 적용했습니다. 지방비는 해당 지자체 지원비율로 계산합니다.`:(subsidyData.modelStatus?.message||'ES90 공식 보조금 확정 전 최대 예상액입니다.');
   const nationalLabel=official?'공식 국비':`국비 ${fmt(record.nationalMaxManwon)}만원 × ${Math.round(rate*100)}%`,localLabel=official?'지방비 환산 예상':`지방비 ${fmt(record.localMaxManwon)}만원 × ${Math.round(rate*100)}%`;
   document.getElementById('waterfallWrap').innerHTML=`
   <div class="selection-line"><div class="selection-name">${esc(trim.label)} · ${fmt(price)}만원</div><span class="eligibility ${rate?'':'none'}">${badge}</span></div>
-  <div class="model-warning">${esc(warning)}</div>
-  <div class="wf-box"><svg viewBox="0 0 760 310" role="img" aria-label="출고가에서 국비와 지방비를 차감한 예상 구매가 Waterfall 그래프">
+  <div class="price-range ${priceRange.tone}"><div class="price-range-main"><span class="price-range-tag">가격 구간</span><b>${esc(priceRange.range)}</b><strong>${esc(priceRange.result)}</strong></div><small>${esc(warning)}</small></div>
+  <div class="wf-box"><svg viewBox="0 0 760 310" role="img" aria-label="출고가에서 국비와 지방비를 차감한 예상 구매가 시뮬레이션 그래프">
+    <defs><linearGradient id="wfBaseGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3b6c89"/><stop offset="45%" stop-color="#214d69"/><stop offset="100%" stop-color="#0b2d46"/></linearGradient><linearGradient id="wfFinalGradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#74a987"/><stop offset="48%" stop-color="#4e8566"/><stop offset="100%" stop-color="#2d634b"/></linearGradient></defs>
     <line class="wf-axis" x1="38" y1="260" x2="724" y2="260"/>
-    <rect class="wf-base" x="70" y="20" width="120" height="240" rx="5"/><text class="wf-value light" x="130" y="42">${fmt(price)}만원</text>
-    <line class="wf-connector" x1="190" y1="20" x2="260" y2="20"/><rect class="wf-national" x="260" y="20" width="120" height="${nH}" rx="5"/><text class="wf-value" x="320" y="${Math.min(295,Math.max(16,20+nH+18))}">−${fmt(national)}만원</text>
-    <line class="wf-connector" x1="380" y1="${20+nH}" x2="450" y2="${20+nH}"/><rect class="wf-local" x="450" y="${20+nH}" width="120" height="${lH}" rx="5"/><text class="wf-value" x="510" y="${Math.min(295,Math.max(16,20+nH+lH+18))}">−${fmt(local)}만원</text>
-    <line class="wf-connector" x1="570" y1="${finalY}" x2="640" y2="${finalY}"/><rect class="wf-final" x="640" y="${finalY}" width="90" height="${finalH}" rx="5"/><text class="wf-value light" x="685" y="${Math.min(252,finalY+22)}">${fmt(final)}만원</text>
+    <rect class="wf-bar wf-base" x="70" y="20" width="120" height="240" rx="5" fill="url(#wfBaseGradient)"/><text class="wf-value light" x="130" y="42">${fmt(price)}만원</text>
+    <line class="wf-connector" x1="190" y1="20" x2="260" y2="20"/><rect class="wf-bar wf-national" x="260" y="20" width="120" height="${nH}" rx="5"/><text class="wf-value" x="320" y="${Math.min(295,Math.max(16,20+nH+18))}">−${fmt(national)}만원</text>
+    <line class="wf-connector" x1="380" y1="${20+nH}" x2="450" y2="${20+nH}"/><rect class="wf-bar wf-local" x="450" y="${20+nH}" width="120" height="${lH}" rx="5"/><text class="wf-value" x="510" y="${Math.min(295,Math.max(16,20+nH+lH+18))}">−${fmt(local)}만원</text>
+    <line class="wf-connector" x1="570" y1="${finalY}" x2="640" y2="${finalY}"/><rect class="wf-bar wf-final" x="640" y="${finalY}" width="90" height="${finalH}" rx="5" fill="url(#wfFinalGradient)"/><text class="wf-value light" x="685" y="${Math.min(252,finalY+22)}">${fmt(final)}만원</text>
     <text class="wf-label" x="130" y="288">ES90 출고가</text><text class="wf-label" x="320" y="288">국가 보조금</text><text class="wf-label" x="510" y="288">지자체 보조금</text><text class="wf-label" x="685" y="288">예상 구매가</text>
   </svg></div>
   <div class="formula"><div class="formula-card"><span>ES90 출고가</span><b>${fmt(price)}만원</b></div><div class="formula-card minus"><span>${nationalLabel}</span><b>− ${fmt(national)}만원</b></div><div class="formula-card minus"><span>${localLabel}</span><b>− ${fmt(local)}만원</b></div></div>`}
@@ -136,7 +138,7 @@ function renderWaterfall(record){
 function renderRegion(record,useRate){const available=record.remaining>0;document.getElementById('regionCard').innerHTML=`
   <div class="region-status"><div><div class="region-status-name">${esc(record.sido)} · ${esc(record.sigungu)}</div><div class="metric-sub">${esc(record.notice||'공고 확인')}</div></div><span class="status-badge ${available?'':'empty'}">${available?'출고잔여 있음':'출고잔여 0대'}</span></div>
   <div class="progress-label"><span>공식 출고 소진율</span><b>${pct(useRate)}</b></div><div class="progress"><span style="width:${Math.min(100,useRate)}%"></span></div>
-  <div class="stats"><div class="stat"><span>민간공고</span><b>${fmt(record.announced)}대</b></div><div class="stat"><span>접수</span><b>${fmt(record.received)}대</b></div><div class="stat"><span>출고</span><b>${fmt(record.delivered)}대</b></div><div class="stat"><span>출고잔여</span><b>${fmt(record.remaining)}대</b></div></div>
+  <div class="stats"><div class="stat"><span><i class="stat-code">A</i>민간공고</span><b>${fmt(record.announced)}대</b></div><div class="stat"><span><i class="stat-code">B</i>접수</span><b>${fmt(record.received)}대</b></div><div class="stat"><span><i class="stat-code">C</i>출고</span><b>${fmt(record.delivered)}대</b></div><div class="stat"><span><i class="stat-code">D</i>출고잔여 · A−C</span><b>${fmt(record.remaining)}대</b></div></div>
   <div class="method"><b>접수방법</b><br>${esc(record.applicationMethod||'공고문 확인 필요')}</div>
   <div class="source-links"><a href="${esc(subsidyData.source.paymentUrl)}" target="_blank" rel="noopener noreferrer">공식 지급현황 확인</a><a href="${esc(subsidyData.source.priceUrl)}" target="_blank" rel="noopener noreferrer">공식 차종별 보조금</a></div>
   <div class="legal-note">출고잔여 대수는 공고대수에서 출고대수를 뺀 값입니다. 접수내역·예산·지자체 심사 사유로 실제 신청 가능한 대수와 다를 수 있으므로 계약 전 지자체 공고와 담당부서 확인이 필요합니다.</div>`}

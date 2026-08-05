@@ -17555,7 +17555,18 @@ function openAdminEmail(){
   window.location.href = 'mailto:?subject=ES90%20경쟁력%20분석%20데이터%20수정%20요청%28%2A구체적으로%20기술%29';
 }
 function openLiveSubsidyStatus(){
-  showSelectionToast('공사중');
+  const returnState = JSON.stringify({
+    es90Trim: STATE.es90Trim,
+    airSuspension: SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim),
+    effectivePriceWon: getEffectiveES90Total(STATE.es90Trim),
+    group: STATE.group,
+    brandKey: STATE.brandKey,
+    compTrim: STATE.compTrim,
+    activeTab: STATE.activeTab
+  });
+  sessionStorage.setItem(SUBSIDY_RETURN_STATE_KEY, returnState);
+  localStorage.setItem(SUBSIDY_RETURN_STATE_KEY, returnState);
+  window.location.href = './subsidy.html';
 }
 function open350kwChargerNetwork(){
   const returnState = JSON.stringify({
