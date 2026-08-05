@@ -68,7 +68,17 @@ const TRIMS=[
   {trim:'Twin Motor Ultra',air:true,label:'Twin Motor Ultra · Air Sus',priceWon:90410000},
   {trim:'Twin Motor Performance Ultra',air:false,label:'Twin Performance Ultra',priceWon:95410000}
 ];
-let subsidyData={regions:[]},selectedRecord=null,returnState=null;
+const SHARED_DISTRICTS={
+  '서울특별시':['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+  '부산광역시':['강서구','금정구','기장군','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구'],
+  '대구광역시':['군위군','남구','달서구','달성군','동구','북구','서구','수성구','중구'],
+  '인천광역시':['강화군','계양구','남동구','동구','미추홀구','부평구','서구','연수구','옹진군','중구'],
+  '광주광역시':['광산구','남구','동구','북구','서구'],
+  '대전광역시':['대덕구','동구','서구','유성구','중구'],
+  '울산광역시':['남구','동구','북구','울주군','중구'],
+  '제주특별자치도':['서귀포시','제주시']
+};
+let subsidyData={regions:[]},selectedRecord=null,selectedDistrictName='',returnState=null;
 const province=document.getElementById('province'),district=document.getElementById('district'),trimSelect=document.getElementById('trimSelect');
 const fmt=n=>Number(n||0).toLocaleString('ko-KR');
 const fmtManwon=n=>`${fmt(Math.round(n/10000))}만원`;
@@ -96,14 +106,14 @@ function readReturnState(){try{returnState=JSON.parse(sessionStorage.getItem(SUB
 function fillTrims(){trimSelect.innerHTML=TRIMS.map((t,i)=>`<option value="${i}">${esc(t.label)} · ${fmtManwon(t.priceWon)}</option>`).join('');let index=TRIMS.findIndex(t=>t.trim===returnState?.es90Trim&&t.air===!!returnState?.airSuspension);if(index<0)index=2;trimSelect.value=String(index)}
 function prompt(label){return `<option value="" selected disabled>${label}</option>`}
 function fillProvinces(){const sidos=[...new Set(subsidyData.regions.map(x=>x.sido))].sort(koreanSort);province.innerHTML=prompt('시·도 선택')+sidos.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');district.innerHTML=prompt('시·군·구 선택');const saved=JSON.parse(localStorage.getItem(SUBSIDY_LAST_LOCATION_KEY)||'null');if(saved?.sido&&sidos.includes(saved.sido)){province.value=saved.sido;fillDistricts();if(saved.sigungu&&[...district.options].some(o=>o.value===saved.sigungu))district.value=saved.sigungu}}
-function fillDistricts(){const rows=subsidyData.regions.filter(x=>x.sido===province.value).sort((a,b)=>koreanSort(a.sigungu,b.sigungu));district.innerHTML=prompt('시·군·구 선택')+rows.map(x=>`<option value="${esc(x.sigungu)}">${esc(x.sigungu)}</option>`).join('')}
-province.onchange=()=>{fillDistricts();resetSelection()};district.onchange=resetSelection;trimSelect.onchange=()=>{if(selectedRecord)renderWaterfall(selectedRecord)};
+function fillDistricts(){const rows=subsidyData.regions.filter(x=>x.sido===province.value).sort((a,b)=>koreanSort(a.sigungu,b.sigungu)),names=SHARED_DISTRICTS[province.value]||rows.map(x=>x.sigungu);district.innerHTML=prompt('시·군·구 선택')+names.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('')}
+province.onchange=()=>{fillDistricts();resetSelection()};district.onchange=()=>{resetSelection();showSubsidy()};trimSelect.onchange=()=>{if(selectedRecord)renderWaterfall(selectedRecord)};
 
-function resetSelection(){selectedRecord=null;document.getElementById('selectedRemaining').textContent='-';document.getElementById('selectedUseRate').textContent='-';document.getElementById('selectedRegionLabel').textContent='소재지를 선택하세요';renderEmpty()}
+function resetSelection(){selectedRecord=null;selectedDistrictName='';document.getElementById('selectedRemaining').textContent='-';document.getElementById('selectedUseRate').textContent='-';document.getElementById('selectedRegionLabel').textContent='소재지를 선택하세요';renderEmpty()}
 function renderEmpty(){document.getElementById('waterfallWrap').innerHTML='<div class="region-empty"><div><svg viewBox="0 0 48 48"><path d="M8 36h32M12 34V18h24v16M17 18V12h14v6M19 26h10M22 22v8M32 22h2M32 27h2"/></svg>고객의 시·도와 시·군·구를 선택하면<br>ES90 예상 구매가를 계산합니다.</div></div>';document.getElementById('regionCard').innerHTML='<div class="region-empty"><div><svg viewBox="0 0 48 48"><path d="M24 42s14-10.6 14-24A14 14 0 1 0 10 18c0 13.4 14 24 14 24Z"/><circle cx="24" cy="18" r="5"/></svg>고객 소재지를 선택해<br>보조금 출고잔여를 확인하세요.</div></div>'}
 
-function showSubsidy(){if(!province.value||!district.value){notice('고객 소재지를 먼저 선택해 주세요.');return}selectedRecord=subsidyData.regions.find(x=>x.sido===province.value&&x.sigungu===district.value);if(!selectedRecord){notice('선택지역 데이터를 찾지 못했습니다.');return}localStorage.setItem(SUBSIDY_LAST_LOCATION_KEY,JSON.stringify({sido:province.value,sigungu:district.value}));renderSelected(selectedRecord)}
-function renderSelected(record){const useRate=record.announced?record.delivered/record.announced*100:0;document.getElementById('selectedRemaining').innerHTML=`${fmt(record.remaining)}<small>대</small>`;document.getElementById('selectedUseRate').textContent=pct(useRate);document.getElementById('selectedRegionLabel').textContent=record.sigungu;renderWaterfall(record);renderRegion(record,useRate)}
+function showSubsidy(){if(!province.value||!district.value){notice('고객 소재지를 먼저 선택해 주세요.');return}const rows=subsidyData.regions.filter(x=>x.sido===province.value);selectedDistrictName=district.value;selectedRecord=rows.find(x=>x.sigungu===selectedDistrictName)||(rows.length===1?rows[0]:null);if(!selectedRecord){notice('선택지역 데이터를 찾지 못했습니다.');return}localStorage.setItem(SUBSIDY_LAST_LOCATION_KEY,JSON.stringify({sido:province.value,sigungu:selectedDistrictName}));renderSelected(selectedRecord)}
+function renderSelected(record){const useRate=record.announced?record.delivered/record.announced*100:0,shared=record.sigungu!==selectedDistrictName;document.getElementById('selectedRemaining').innerHTML=`${fmt(record.remaining)}<small>대</small>`;document.getElementById('selectedUseRate').textContent=pct(useRate);document.getElementById('selectedRegionLabel').textContent=shared?`${selectedDistrictName} · ${record.sido} 공동`:record.sigungu;renderWaterfall(record);renderRegion(record,useRate)}
 
 function renderWaterfall(record){
   const trim=TRIMS[Number(trimSelect.value)||0],rate=eligibilityRate(trim.priceWon),official=rate?findOfficialModel(trim):null;
@@ -111,7 +121,7 @@ function renderWaterfall(record){
   const local=official?Math.round(national*record.localMaxManwon/Math.max(1,record.nationalMaxManwon)):Math.round(record.localMaxManwon*rate);
   const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),scale=240/price,nH=Math.max(4,national*scale),lH=Math.max(4,local*scale),finalY=20+nH+lH,finalH=Math.max(4,240-nH-lH),badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님';
   const warning=rate===0?'출고가 8,500만원 초과 트림은 구매보조금 지원 대상이 아닙니다.':official?`${official.modelName} 공식 국비를 적용했습니다. 지방비는 해당 지자체 지원비율로 계산합니다.`:(subsidyData.modelStatus?.message||'ES90 공식 보조금 확정 전 최대 예상액입니다.');
-  const nationalLabel=official?'공식 국비':`국비 ${Math.round(rate*100)}% 최대 예상`,localLabel=official?'지방비 환산 예상':`지방비 ${Math.round(rate*100)}% 최대 예상`;
+  const nationalLabel=official?'공식 국비':`국비 ${fmt(record.nationalMaxManwon)}만원 × ${Math.round(rate*100)}%`,localLabel=official?'지방비 환산 예상':`지방비 ${fmt(record.localMaxManwon)}만원 × ${Math.round(rate*100)}%`;
   document.getElementById('waterfallWrap').innerHTML=`
   <div class="selection-line"><div class="selection-name">${esc(trim.label)} · ${fmt(price)}만원</div><span class="eligibility ${rate?'':'none'}">${badge}</span></div>
   <div class="model-warning">${esc(warning)}</div>
@@ -125,13 +135,13 @@ function renderWaterfall(record){
   </svg></div>
   <div class="formula"><div class="formula-card"><span>ES90 출고가</span><b>${fmt(price)}만원</b></div><div class="formula-card minus"><span>${nationalLabel}</span><b>− ${fmt(national)}만원</b></div><div class="formula-card minus"><span>${localLabel}</span><b>− ${fmt(local)}만원</b></div></div>`}
 
-function renderRegion(record,useRate){const available=record.remaining>0;document.getElementById('regionCard').innerHTML=`
-  <div class="region-status"><div><div class="region-status-name">${esc(record.sido)} · ${esc(record.sigungu)}</div><div class="metric-sub">${esc(record.notice||'공고 확인')}</div></div><span class="status-badge ${available?'':'empty'}">${available?'출고잔여 있음':'출고잔여 0대'}</span></div>
+function renderRegion(record,useRate){const available=record.remaining>0,shared=record.sigungu!==selectedDistrictName,scopeNote=shared?`${record.sido} 전체 공동 예산·출고잔여 기준`:(record.notice||'공고 확인');document.getElementById('regionCard').innerHTML=`
+  <div class="region-status"><div><div class="region-status-name">${esc(record.sido)} · ${esc(selectedDistrictName||record.sigungu)}</div><div class="metric-sub">${esc(scopeNote)}</div></div><span class="status-badge ${available?'':'empty'}">${available?'출고잔여 있음':'출고잔여 0대'}</span></div>
   <div class="progress-label"><span>공식 출고 소진율</span><b>${pct(useRate)}</b></div><div class="progress"><span style="width:${Math.min(100,useRate)}%"></span></div>
   <div class="stats"><div class="stat"><span>민간공고</span><b>${fmt(record.announced)}대</b></div><div class="stat"><span>접수</span><b>${fmt(record.received)}대</b></div><div class="stat"><span>출고</span><b>${fmt(record.delivered)}대</b></div><div class="stat"><span>출고잔여</span><b>${fmt(record.remaining)}대</b></div></div>
   <div class="method"><b>접수방법</b><br>${esc(record.applicationMethod||'공고문 확인 필요')}</div>
   <div class="source-links"><a href="${esc(subsidyData.source.paymentUrl)}" target="_blank" rel="noopener noreferrer">공식 지급현황 확인</a><a href="${esc(subsidyData.source.priceUrl)}" target="_blank" rel="noopener noreferrer">공식 차종별 보조금</a></div>
-  <div class="legal-note">출고잔여 대수는 공고대수에서 출고대수를 뺀 값입니다. 접수내역·예산·지자체 심사 사유로 실제 신청 가능한 대수와 다를 수 있으므로 계약 전 지자체 공고와 담당부서 확인이 필요합니다.</div>`}
+  <div class="legal-note">${shared?`${esc(selectedDistrictName)}는 공식 원천에서 ${esc(record.sido)} 전체 공동 집계로 제공됩니다. `:''}출고잔여 대수는 공고대수에서 출고대수를 뺀 값입니다. 접수내역·예산·지자체 심사 사유로 실제 신청 가능한 대수와 다를 수 있으므로 계약 전 지자체 공고와 담당부서 확인이 필요합니다.</div>`}
 
 function renderNational(){const sums=subsidyData.regions.reduce((a,r)=>({announced:a.announced+r.announced,received:a.received+r.received,delivered:a.delivered+r.delivered,remaining:a.remaining+r.remaining}),{announced:0,received:0,delivered:0,remaining:0});document.getElementById('nationalAnnounced').innerHTML=`${fmt(sums.announced)}<small>대</small>`;document.getElementById('nationalReceived').innerHTML=`${fmt(sums.received)}<small>대</small>`;document.getElementById('nationalDelivered').innerHTML=`${fmt(sums.delivered)}<small>대</small>`;document.getElementById('nationalRemaining').innerHTML=`${fmt(sums.remaining)}<small>대</small>`}
 function formatSeoulDate(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return '-';return new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}).format(d)}

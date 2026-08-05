@@ -61,7 +61,7 @@ def build_snapshot(payment_html: Path, price_html: Path, model_html: Path | None
     payments = table_rows(payment_html, "지자체별 무공해차 구매보조금 지급현황")
     prices = table_rows(price_html, "전기자동차 지자체 차종별 보조금 목록")
     price_by_region = {
-        row[1]: first_int(row[3])
+        (row[0], row[1]): first_int(row[3])
         for row in prices
         if len(row) >= 4 and row[0] != "공단"
     }
@@ -70,7 +70,7 @@ def build_snapshot(payment_html: Path, price_html: Path, model_html: Path | None
     for row in payments:
         if len(row) < 9 or row[0] == "공단":
             continue
-        combined = price_by_region.get(row[1], 0)
+        combined = price_by_region.get((row[0], row[1]), 0)
         regions.append({
             "sido": SIDO_NAMES.get(row[0], row[0]),
             "sigungu": row[1],
