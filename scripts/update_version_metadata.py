@@ -4,7 +4,7 @@
 This script intentionally has no option for ``matrixUpdatedAt``.
 That field means "matrix system update" and is reserved for substantial
 structural or functional changes defined in SYSTEM_UPDATE_POLICY.md.
-Routine reservation, charger, TMAP, and competitor-price updates must never
+Routine reservation, charger, TMAP, subsidy, and competitor-price updates must never
 change it.
 """
 
@@ -38,6 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tmap-checked-at", type=iso_timestamp)
     parser.add_argument("--charger-updated-at", type=iso_timestamp)
     parser.add_argument("--competitor-price-checked-at", type=iso_timestamp)
+    parser.add_argument("--subsidy-checked-at", type=iso_timestamp)
     args = parser.parse_args()
     if not any(vars(args).values()):
         parser.error("At least one metadata timestamp is required")
@@ -58,6 +59,7 @@ def main() -> None:
         "tmapCheckedAt": args.tmap_checked_at,
         "chargerUpdatedAt": args.charger_updated_at,
         "competitorPriceCheckedAt": args.competitor_price_checked_at,
+        "subsidyCheckedAt": args.subsidy_checked_at,
     }
     for field, value in field_values.items():
         if value is not None:
