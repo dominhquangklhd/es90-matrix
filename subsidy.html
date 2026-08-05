@@ -119,7 +119,7 @@ function renderWaterfall(record){
   const national=official?Number(official.nationalManwon||0):Math.round(record.nationalMaxManwon*rate);
   const local=official?Math.round(national*record.localMaxManwon/Math.max(1,record.nationalMaxManwon)):Math.round(record.localMaxManwon*rate);
   const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),scale=240/price,nH=Math.max(4,national*scale),lH=Math.max(4,local*scale),finalY=20+nH+lH,finalH=Math.max(4,240-nH-lH),badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님',priceRange=subsidyPriceRange(trim.priceWon);
-  const warning=official?`${official.modelName} 공식 국비를 적용했습니다. 지방비는 해당 지자체 지원비율로 계산합니다.`:(subsidyData.modelStatus?.message||'ES90 공식 보조금 확정 전 최대 예상액입니다.');
+  const warning=rate===0?'선택한 트림은 차량가격 기준상 국가 및 지자체 보조금 계산에서 제외됩니다.':official?`${official.modelName} 공식 국비를 적용했습니다. 지방비는 해당 지자체 지원비율로 계산합니다.`:(subsidyData.modelStatus?.message||'ES90 공식 보조금 확정 전 최대 예상액입니다.');
   const nationalLabel=official?'공식 국비':`국비 ${fmt(record.nationalMaxManwon)}만원 × ${Math.round(rate*100)}%`,localLabel=official?'지방비 환산 예상':`지방비 ${fmt(record.localMaxManwon)}만원 × ${Math.round(rate*100)}%`;
   document.getElementById('waterfallWrap').innerHTML=`
   <div class="selection-line"><div class="selection-name">${esc(trim.label)} · ${fmt(price)}만원</div><span class="eligibility ${rate?'':'none'}">${badge}</span></div>
