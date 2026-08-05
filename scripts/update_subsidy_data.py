@@ -41,6 +41,19 @@ def first_int(text: str) -> int:
     return int(match.group(0).replace(",", "")) if match else 0
 
 
+def general_passenger_int(text: str) -> int:
+    """Return the general-passenger value from an EV portal allocation cell.
+
+    The official payment table lists one total followed by four parenthesized
+    categories in this order: priority, corporation/institution, taxi, general.
+    ES90 retail consultations must use the final (general) category, not total.
+    """
+    categories = re.findall(r"\(\s*(-?[\d,]+)\s*\)", text or "")
+    if len(categories) < 4:
+        raise ValueError(f"일반 승용 구분값을 찾지 못했습니다: {text!r}")
+    return int(categories[-1].replace(",", ""))
+
+
 def table_rows(path: Path, caption_text: str) -> list[list[str]]:
     root = html.parse(str(path))
     tables = root.xpath(
@@ -74,10 +87,10 @@ def build_snapshot(payment_html: Path, price_html: Path, model_html: Path | None
         regions.append({
             "sido": SIDO_NAMES.get(row[0], row[0]),
             "sigungu": row[1],
-            "announced": first_int(row[5]),
-            "received": first_int(row[6]),
-            "delivered": first_int(row[7]),
-            "remaining": first_int(row[8]),
+            "announced": general_passenger_int(row[5]),
+            "received": general_passenger_int(row[6]),
+            "delivered": general_passenger_int(row[7]),
+            "remaining": general_passenger_int(row[8]),
             "nationalMaxManwon": NATIONAL_MAX_MANWON,
             "localMaxManwon": max(0, combined - NATIONAL_MAX_MANWON),
             "combinedMaxManwon": combined,
@@ -114,6 +127,7 @@ def build_snapshot(payment_html: Path, price_html: Path, model_html: Path | None
         "checkedAt": now,
         "year": datetime.now(SEOUL).year,
         "vehicleType": "전기승용",
+        "allocationBasis": "일반 승용",
         "modelStatus": {
             "name": "Volvo ES90",
             "officiallyListed": officially_listed,

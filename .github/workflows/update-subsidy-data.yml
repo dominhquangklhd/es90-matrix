@@ -86,6 +86,7 @@ jobs:
           data = json.load(open("subsidy-data.json", encoding="utf-8"))
           assert len(data["regions"]) >= 150
           assert data["regions"][0]["sido"] == "서울특별시"
+          assert data["allocationBasis"] == "일반 승용"
           print(f"Validated {len(data['regions'])} official regions")
           PY
 
