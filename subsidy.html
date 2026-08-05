@@ -49,15 +49,6 @@ main{max-width:1280px;margin:auto;padding:22px 20px 42px}.hero{position:relative
       <div class="metric"><div class="metric-label">전국 출고잔여</div><div class="metric-value" id="nationalRemaining">-</div><div class="metric-sub">공고대수−출고대수</div></div>
     </div>
   </section>
-  <section class="summary-block">
-    <div class="summary-title"><span>선택지역 보조금 진행 현황</span><span class="summary-title-note"><b id="selectedRegionLabel">소재지를 선택하세요</b> · 소진율 <b id="selectedUseRate">-</b></span></div>
-    <div class="summary">
-      <div class="metric"><div class="metric-label">선택지역 민간공고</div><div class="metric-value" id="selectedAnnounced">-</div><div class="metric-sub">공식 전기승용 기준</div></div>
-      <div class="metric"><div class="metric-label">선택지역 접수</div><div class="metric-value" id="selectedReceived">-</div><div class="metric-sub">신청~접수 완료</div></div>
-      <div class="metric"><div class="metric-label">선택지역 출고</div><div class="metric-value" id="selectedDelivered">-</div><div class="metric-sub">보조금 지급 신청</div></div>
-      <div class="metric primary"><div class="metric-label">선택지역 출고잔여</div><div class="metric-value" id="selectedRemaining">-</div><div class="metric-sub">공고대수−출고대수</div></div>
-    </div>
-  </section>
   <div class="grid">
     <section class="panel"><div class="panel-head"><div class="panel-title">ES90 예상 구매가 Waterfall</div><div class="panel-note">출고가 − 국비 − 지방비</div></div><div class="waterfall-wrap" id="waterfallWrap"></div></section>
     <section class="panel"><div class="panel-head"><div class="panel-title">선택지역 보조금 소진 현황</div><div class="panel-note">무공해차 통합누리집 기준</div></div><div class="region-card" id="regionCard"></div></section>
@@ -109,11 +100,11 @@ function fillProvinces(){const sidos=[...new Set(subsidyData.regions.map(x=>x.si
 function fillDistricts(){const rows=subsidyData.regions.filter(x=>x.sido===province.value).sort((a,b)=>koreanSort(a.sigungu,b.sigungu));district.innerHTML=prompt('시·군·구 선택')+rows.map(x=>`<option value="${esc(x.sigungu)}">${esc(x.sigungu)}</option>`).join('');if(rows.length===1)district.value=rows[0].sigungu}
 province.onchange=()=>{resetSelection();fillDistricts();if(district.value)showSubsidy()};district.onchange=()=>{resetSelection();showSubsidy()};trimSelect.onchange=()=>{if(selectedRecord)renderWaterfall(selectedRecord)};
 
-function resetSelection(){selectedRecord=null;selectedDistrictName='';['selectedAnnounced','selectedReceived','selectedDelivered','selectedRemaining'].forEach(id=>document.getElementById(id).textContent='-');document.getElementById('selectedUseRate').textContent='-';document.getElementById('selectedRegionLabel').textContent='소재지를 선택하세요';renderEmpty()}
+function resetSelection(){selectedRecord=null;selectedDistrictName='';renderEmpty()}
 function renderEmpty(){document.getElementById('waterfallWrap').innerHTML='<div class="region-empty"><div><svg viewBox="0 0 48 48"><path d="M8 36h32M12 34V18h24v16M17 18V12h14v6M19 26h10M22 22v8M32 22h2M32 27h2"/></svg>고객의 시·도와 시·군·구를 선택하면<br>ES90 예상 구매가를 계산합니다.</div></div>';document.getElementById('regionCard').innerHTML='<div class="region-empty"><div><svg viewBox="0 0 48 48"><path d="M24 42s14-10.6 14-24A14 14 0 1 0 10 18c0 13.4 14 24 14 24Z"/><circle cx="24" cy="18" r="5"/></svg>고객 소재지를 선택해<br>보조금 출고잔여를 확인하세요.</div></div>'}
 
 function showSubsidy(){if(!province.value||!district.value){notice('고객 소재지를 먼저 선택해 주세요.');return}selectedDistrictName=district.value;selectedRecord=subsidyData.regions.find(x=>x.sido===province.value&&x.sigungu===selectedDistrictName);if(!selectedRecord){notice('선택지역 데이터를 찾지 못했습니다.');return}localStorage.setItem(SUBSIDY_LAST_LOCATION_KEY,JSON.stringify({sido:province.value,sigungu:selectedDistrictName}));renderSelected(selectedRecord)}
-function renderSelected(record){const useRate=record.announced?record.delivered/record.announced*100:0;document.getElementById('selectedAnnounced').innerHTML=`${fmt(record.announced)}<small>대</small>`;document.getElementById('selectedReceived').innerHTML=`${fmt(record.received)}<small>대</small>`;document.getElementById('selectedDelivered').innerHTML=`${fmt(record.delivered)}<small>대</small>`;document.getElementById('selectedRemaining').innerHTML=`${fmt(record.remaining)}<small>대</small>`;document.getElementById('selectedUseRate').textContent=pct(useRate);document.getElementById('selectedRegionLabel').textContent=`${record.sido} · ${record.sigungu}`;renderWaterfall(record);renderRegion(record,useRate)}
+function renderSelected(record){const useRate=record.announced?record.delivered/record.announced*100:0;renderWaterfall(record);renderRegion(record,useRate)}
 
 function renderWaterfall(record){
   const trim=TRIMS[Number(trimSelect.value)||0],rate=eligibilityRate(trim.priceWon),official=rate?findOfficialModel(trim):null;
