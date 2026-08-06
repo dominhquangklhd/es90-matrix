@@ -17566,7 +17566,10 @@ function openLiveSubsidyStatus(){
   });
   sessionStorage.setItem(SUBSIDY_RETURN_STATE_KEY, returnState);
   localStorage.setItem(SUBSIDY_RETURN_STATE_KEY, returnState);
-  window.location.href = './subsidy.html';
+  const subsidyUrl = new URL('./subsidy.html', window.location.href);
+  subsidyUrl.searchParams.set('es90Trim', STATE.es90Trim);
+  subsidyUrl.searchParams.set('airSuspension', SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim) ? '1' : '0');
+  window.location.href = subsidyUrl.href;
 }
 function open350kwChargerNetwork(){
   const returnState = JSON.stringify({
