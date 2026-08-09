@@ -1092,6 +1092,16 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 #panel2 .brand-pick-card,#panel2 .trim-pick-card{border-radius:var(--step-area-radius)!important;}
 #panel2 .brand-pick-thumb,#panel2 .brand-image-box,#panel2 .compare-cta{border-radius:var(--step-area-radius)!important;}
 #panel4>.card,#panel4 .hero-price-item,#panel4 .price-gap-banner,#panel4 .value-banner,#panel4 .diff-table-wrap,#panel4 .trim-switch-row,#panel4 .trim-switch-sel,#panel4 .cat-tabs,#panel4 .cat-tab,#panel4 .spec-table,#panel4 .opt-table{border-radius:var(--step-area-radius)!important;}
+:where(#panel1,#panel2,#panel4) :is(
+  .select-box,.select-control,
+  .btn-primary,.btn-secondary,.btn-cta,
+  .hero-trim-select,.hero-es-trim-trigger,.hero-comp-trim-trigger,.hero-comp-trim-static,
+  .hero-es-trim-menu,.hero-comp-trim-menu,.tab-btn,
+  .price-block,.table-scroll,.pc-box,.cat-card,
+  .pkg-warn,.color-swatch,.color-comp-box,.color-select-btn,.pkg-select-btn,
+  .pkg-calc-col,.pkg-disclaimer,.option-category-group,
+  .benefit-box,.upgrade-box,.script-card,.copy-btn
+){border-radius:var(--step-area-radius)!important;}
 .trim-name{font-size:16px!important;color:var(--navy-deep)!important;}
 .trim-price-big{color:var(--orange-deep)!important;}
 .trim-price-big.navy{color:var(--navy)!important;}
