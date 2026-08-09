@@ -632,10 +632,6 @@ button{font-family:inherit;}
 
 /* ===== Footer disclaimer (item 40) ===== */
 .footer-disclaimer{font-size:10.5px;color:var(--ink-faint);text-align:left;margin-top:16px;line-height:1.6;}
-.admin-contact{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px;color:var(--ink-faint);font-size:10.5px;line-height:1.6;}
-.admin-mail-link{display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;color:var(--orange-deep);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;}
-.admin-mail-link:hover{text-decoration:underline;}
-.admin-mail-link svg{width:14px;height:14px;flex:0 0 14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 
 /* ===== Profile mini row inside script card (item 37) ===== */
 .profile-row-mini{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
@@ -1138,8 +1134,8 @@ body:not(.cover-open){overflow-x:clip;overflow-y:visible;}
 .pkg-calc-vprice.es90-price,.pkg-calc-vprice.competitor-price{color:var(--orange-deep)!important;font-weight:800!important;}
 .pkg-calc-row span:last-child{color:var(--orange-deep)!important;font-weight:800!important;}
 .pkg-calc-total span:last-child{color:var(--orange-deep)!important;font-weight:800!important;}
-.footer-actions{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px!important;}
-.footer-actions .btn-secondary{width:100%;min-width:0;}
+.footer-actions{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px!important;align-items:stretch;}
+.footer-actions .btn-secondary{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:46px!important;padding:0 14px!important;text-align:center;line-height:1.25;}
 
 @media(max-width:900px){
   .topbar-inner,.steps,.content{padding-left:20px;padding-right:20px;}
@@ -17133,9 +17129,6 @@ function renderApp(){
 
 function showUpdateModal(){ document.getElementById('updateModal').classList.add('show'); }
 function hideUpdateModal(){ document.getElementById('updateModal').classList.remove('show'); }
-function openAdminEmail(){
-  showSelectionToast('데이터 문의 기능은 현재 준비 중입니다.');
-}
 function open350kwChargerNetwork(){
   const returnState = JSON.stringify({
     es90Trim: STATE.es90Trim,
@@ -17953,15 +17946,9 @@ if(score.priceDiff !== null){
       <button class="btn-secondary" onclick="showPanel(1); setTimeout(()=>{ const el=document.getElementById('waitlistCard'); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }, 60);">☷ ES90 대기고객 선택</button>
       <button class="btn-secondary" onclick="openStep2WithDirectDefault()">⇄ 다른 경쟁모델과 비교</button>
       <button class="btn-secondary" onclick="open350kwChargerNetwork()">⚡ 350kW 충전소</button>
-      <button class="btn-secondary" onclick="openAdminEmail()">✉ 데이터 문의 안내</button>
     </div>
 
     <div class="footer-disclaimer" style="text-align:left;">상기 정보 및 비교결과는 해당차량의 제원 및 옵션정보에 따라 수시로 변경가능합니다.</div>
-    <div class="admin-contact">
-      <span>사용자 모두가 다 함께 완성해나가는 Tool 입니다. 데이터 고침 및 기타 의견은</span>
-      <button type="button" class="admin-mail-link" onclick="openAdminEmail()"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span>데이터 문의 안내</span></button>
-      <span>을 클릭해 주세요.</span>
-    </div>
   `;
 
   const initialCat = (STATE.activeTab && cats.find(c=>c.category===STATE.activeTab)) || cats[0];
