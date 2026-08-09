@@ -198,7 +198,8 @@ button{font-family:inherit;}
 .price-gap-pct{font-size:19px;font-weight:800;}
 .price-gap-sub{color:rgba(255,255,255,0.6);font-size:11.5px;margin-top:5px;font-weight:500;}
 .price-gap-promo{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.16);font-size:11px;color:rgba(255,255,255,.72);}
-.price-gap-promo-source{display:inline-flex;align-items:center;height:20px;padding:0 7px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:rgba(255,255,255,.09);font-size:9px;font-weight:800;color:#fff;}
+.price-gap-promo-source{display:inline-flex;align-items:center;gap:4px;height:23px;padding:0 8px 0 6px;border:1px solid #ced9e1;border-radius:999px;background:linear-gradient(180deg,#fbfcfd 0%,#f2f6f8 100%);color:#526b7f;font-size:9px;font-weight:700;line-height:1;white-space:nowrap;box-shadow:0 1px 4px rgba(48,74,94,.08)}
+.price-gap-promo-source-icon{display:grid;place-items:center;width:15px;height:15px;color:#688094}.price-gap-promo-source-icon svg{display:block;width:14px;height:14px;fill:none;stroke:currentColor}.price-gap-promo-source-brand{color:#36536b;font-size:8px;font-weight:900;letter-spacing:.25px}.price-gap-promo-source-label{color:#d6520a;font-size:8px;font-weight:900;letter-spacing:.35px}.price-gap-promo-source-time{color:#36536b;font-variant-numeric:tabular-nums}
 .price-gap-promo strong{color:#fff;font-size:12px;}
 .price-gap-promo-result{color:#fff;font-weight:800;}
 .price-gap-promo-note{display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.52);font-size:9px;}
@@ -18303,10 +18304,13 @@ function buildPriceGapHtml(esTotal, compPrice, es90Trim, compName, fallbackLabel
     const promoDiff = promotion.discountedPrice - esTotal;
     const promoPct = Math.abs(Math.round((promoDiff / promotion.discountedPrice) * 100));
     const promoLabel = promoDiff > 0 ? '가격 경쟁력 확보' : '가치 경쟁력 확보';
-    const checkedAt = promotion.checkedAt ? ` · ${promotion.checkedAt}` : '';
+    const checkedAt = promotion.checkedAt || '';
     promotionHtml = `
       <div class="price-gap-promo">
-        <span class="price-gap-promo-source">Getcha 참고 할인가${checkedAt}</span>
+        <span class="price-gap-promo-source" title="Getcha 광고 확인일 ${checkedAt}">
+          <span class="price-gap-promo-source-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke-width="1.8"/><path d="M12 7.5V12l3.2 2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="price-gap-promo-source-brand">GETCHA</span><span class="price-gap-promo-source-label">UPDATE</span><span class="price-gap-promo-source-time">${checkedAt} 기준</span>
+        </span>
         <span><strong>${fmtWon(promotion.discountedPrice)}</strong> 기준</span>
         <span>가격차 <strong>${fmtWon(Math.abs(promoDiff))}</strong> (${promoDiff>0?'▼':'▲'} ${promoPct}%)</span>
         <span class="price-gap-promo-result">${promoLabel}</span>
