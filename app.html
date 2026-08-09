@@ -18047,7 +18047,7 @@ function renderStep1(){
           const price = getES90Price(t.trim);
           const priceTotal = price ? price.total + (t.airSuspension ? getEsAirSuspensionOptionPrice(t.trim) : 0) : null;
           const priceLbl = priceTotal!=null ? fmtWonRange(priceTotal, t.trim) : '';
-          const hasSubsidy = priceTotal!=null && priceTotal < 85000000;
+          const hasSubsidy = !String(t.trim||'').includes('Performance');
           return `
           <div class="waitlist-bar-col" onclick="selectTrimFromWaitlist('${t.trim}',${t.airSuspension===true})">
             <div class="waitlist-meta">
