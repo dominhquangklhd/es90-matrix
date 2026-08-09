@@ -79,6 +79,8 @@ const TRIMS=[
   {trim:'Twin Motor Ultra',air:true,label:'Twin Motor Ultra · Air Sus',priceWon:90410000},
   {trim:'Twin Motor Performance Ultra',air:false,label:'Twin Performance Ultra',priceWon:95410000}
 ];
+const ES90_ESTIMATED_NATIONAL_MANWON=328;
+const ES90_ESTIMATED_METRO_LOCAL_MANWON=98;
 let subsidyData={regions:[]},selectedRecord=null,selectedDistrictName='',returnState=null;
 const province=document.getElementById('province'),district=document.getElementById('district'),trimSelect=document.getElementById('trimSelect'),trimPicker=document.getElementById('trimPicker'),trimPickerTrigger=document.getElementById('trimPickerTrigger'),trimPickerMenu=document.getElementById('trimPickerMenu'),trimPickerSelected=document.getElementById('trimPickerSelected'),trimPickerBadge=document.getElementById('trimPickerBadge');
 const fmt=n=>Number(n||0).toLocaleString('ko-KR');
@@ -94,8 +96,8 @@ function notice(msg){const t=document.getElementById('toast');t.textContent=msg;
 function goBack(){keepAppSessionAlive();location.href='./app.html?returnStep=3&returnSource=subsidy'}
 function logoutToLogin(){if(!confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?'))return;localStorage.removeItem(APP_SESSION_KEY);sessionStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);location.href='./app.html'}
 
-function eligibilityRate(priceWon){if(priceWon<53000000)return 1;if(priceWon<85000000)return .5;return 0}
-function subsidyPriceRange(priceWon){if(priceWon<53000000)return {tone:'full',range:'5,300만원 미만',result:'국가 및 지자체 보조금 100% 지원 가능'};if(priceWon<85000000)return {tone:'half',range:'5,300만원 이상 ~ 8,500만원 미만',result:'국가 및 지자체 보조금 50% 지원 가능'};return {tone:'none',range:'8,500만원 이상',result:'국가 및 지자체 보조금 지급대상 제외'}}
+function eligibilityRate(trim){return hasHalfSubsidy(trim)?.5:0}
+function subsidyPriceRange(trim){if(!hasHalfSubsidy(trim))return {tone:'none',range:'Twin Performance Ultra',result:'국가 및 지자체 보조금 지급대상 제외'};return {tone:'half',range:'ES90 보조금 추정 기준',result:'국가 및 지자체 보조금 50% 적용 예상'}}
 function findOfficialModel(trim){
   const models=(subsidyData.modelStatus?.officialModels||[]).map(model=>({...model,key:String(model.modelName||'').toLowerCase()}));
   if(!models.length)return null;
@@ -122,12 +124,12 @@ function showSubsidy(){if(!province.value||!district.value){notice('고객 소�
 function renderSelected(record){const useRate=record.announced?record.delivered/record.announced*100:0;renderWaterfall(record);renderRegion(record,useRate)}
 
 function renderWaterfall(record){
-  const trim=TRIMS[Number(trimSelect.value)||0],rate=eligibilityRate(trim.priceWon),official=rate?findOfficialModel(trim):null;
-  const national=official?Number(official.nationalManwon||0):Math.round(record.nationalMaxManwon*rate);
-  const local=official?Math.round(national*record.localMaxManwon/Math.max(1,record.nationalMaxManwon)):Math.round(record.localMaxManwon*rate);
-  const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),totalSubsidy=national+local,focusFloor=totalSubsidy?Math.max(0,Math.round(final-totalSubsidy*1.8)):0,scale=totalSubsidy?240/Math.max(1,price-focusFloor):240/Math.max(1,price),nH=totalSubsidy?national*scale:0,lH=totalSubsidy?local*scale:0,finalY=20+nH+lH,finalH=totalSubsidy?Math.max(18,(final-focusFloor)*scale):240,badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님',priceRange=subsidyPriceRange(trim.priceWon),focusLabel=totalSubsidy?`가격 구간 확대 · ${fmt(focusFloor)}~${fmt(price)}만원`:'전체 가격 기준';
-  const warning=rate===0?'선택한 트림은 차량가격 기준상 국가 및 지자체 보조금 계산에서 제외됩니다.':official?`${official.modelName} 공식 국비를 적용했습니다. 지방비는 해당 지자체 지원비율로 계산합니다.`:(subsidyData.modelStatus?.message||'ES90 공식 보조금 확정 전 최대 예상액입니다.');
-  const nationalLabel=official?'공식 국비':`국비 ${fmt(record.nationalMaxManwon)}만원 × ${Math.round(rate*100)}%`,localLabel=official?'지방비 환산 예상':`지방비 ${fmt(record.localMaxManwon)}만원 × ${Math.round(rate*100)}%`;
+  const trim=TRIMS[Number(trimSelect.value)||0],rate=eligibilityRate(trim);
+  const national=Math.round(ES90_ESTIMATED_NATIONAL_MANWON*rate);
+  const local=Math.round(ES90_ESTIMATED_METRO_LOCAL_MANWON*rate);
+  const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),totalSubsidy=national+local,focusFloor=totalSubsidy?Math.max(0,Math.round(final-totalSubsidy*1.8)):0,scale=totalSubsidy?240/Math.max(1,price-focusFloor):240/Math.max(1,price),nH=totalSubsidy?national*scale:0,lH=totalSubsidy?local*scale:0,finalY=20+nH+lH,finalH=totalSubsidy?Math.max(18,(final-focusFloor)*scale):240,badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님',priceRange=subsidyPriceRange(trim),focusLabel=totalSubsidy?`가격 구간 확대 · ${fmt(focusFloor)}~${fmt(price)}만원`:'전체 가격 기준';
+  const warning=rate===0?'Twin Performance Ultra는 국가 및 지자체 보조금 계산에서 제외됩니다.':'ES90 공식 차종별 보조금 확정 전 추정치이며, 실제 지급액은 공식 고시와 지자체 공고에 따라 달라질 수 있습니다.';
+  const nationalLabel='국가 보조금(추정치)',localLabel='지자체 보조금(서울 및 8대 광역시 기준)';
   document.getElementById('waterfallWrap').innerHTML=`
   <div class="selection-line"><div class="selection-name">${esc(trim.label)} · ${fmt(price)}만원</div><span class="eligibility ${rate?'':'none'}">${badge}</span></div>
   <div class="price-range ${priceRange.tone}"><div class="price-range-main"><span class="price-range-tag">가격 구간</span><b>${esc(priceRange.range)}</b><strong>${esc(priceRange.result)}</strong></div><small>${esc(warning)}</small></div>
