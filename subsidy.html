@@ -96,7 +96,7 @@ function notice(msg){const t=document.getElementById('toast');t.textContent=msg;
 function goBack(){keepAppSessionAlive();location.href='./app.html?returnStep=3&returnSource=subsidy'}
 function logoutToLogin(){if(!confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?'))return;localStorage.removeItem(APP_SESSION_KEY);sessionStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);location.href='./app.html'}
 
-function eligibilityRate(trim){return hasHalfSubsidy(trim)?.5:0}
+function eligibilityRate(trim){return hasHalfSubsidy(trim)?0.5:0}
 function subsidyPriceRange(trim){if(!hasHalfSubsidy(trim))return {tone:'none',range:'Twin Performance Ultra',result:'국가 및 지자체 보조금 지급대상 제외'};return {tone:'half',range:'ES90 보조금 추정 기준',result:'국가 및 지자체 보조금 50% 적용 예상'}}
 function findOfficialModel(trim){
   const models=(subsidyData.modelStatus?.officialModels||[]).map(model=>({...model,key:String(model.modelName||'').toLowerCase()}));
