@@ -105,7 +105,7 @@ function findOfficialModel(trim){
   return models.length===1?models[0]:null;
 }
 function readReturnState(){try{const saved=JSON.parse(sessionStorage.getItem(SUBSIDY_RETURN_STATE_KEY)||localStorage.getItem(SUBSIDY_RETURN_STATE_KEY)||'null'),params=new URLSearchParams(location.search),urlTrim=params.get('es90Trim'),urlAir=params.get('airSuspension');returnState=urlTrim?{...(saved||{}),es90Trim:urlTrim,airSuspension:urlAir==='1'}:saved}catch(_){returnState=null}}
-function hasHalfSubsidy(trim){return trim.priceWon>=53000000&&trim.priceWon<85000000}
+function hasHalfSubsidy(trim){return !trim.trim.includes('Performance')}
 function closeTrimPicker(){trimPicker.classList.remove('open');trimPickerTrigger.setAttribute('aria-expanded','false')}
 function updateTrimPicker(){const index=Math.max(0,Number(trimSelect.value)||0),trim=TRIMS[index],eligible=hasHalfSubsidy(trim);trimPickerSelected.textContent=`${trim.label} · ${fmtManwon(trim.priceWon)}`;trimPickerBadge.hidden=!eligible;trimPickerMenu.querySelectorAll('.trim-option').forEach((option,i)=>{const selected=i===index;option.classList.toggle('selected',selected);option.setAttribute('aria-selected',String(selected))})}
 function selectTrimOption(index){trimSelect.value=String(index);updateTrimPicker();closeTrimPicker();if(selectedRecord)renderWaterfall(selectedRecord)}
