@@ -16878,6 +16878,7 @@ const STATE = {
 const CHARGER_RETURN_STATE_KEY = 'es90_charger_return_state';
 const CHARGER_LAST_STEP3_STATE_KEY = 'es90_charger_last_step3_state';
 const SUBSIDY_RETURN_STATE_KEY = 'es90_subsidy_return_state';
+const SUBSIDY_ALLOWED_CDSID = 'VCK-ES90';
 const PDF_RETURN_STATE_KEY = 'es90_pdf_return_state';
 let PRESERVE_CHARGER_RETURN = new URLSearchParams(window.location.search).get('returnStep') === '3';
 
@@ -17560,7 +17561,23 @@ function renderApp(){
 
 function showUpdateModal(){ document.getElementById('updateModal').classList.add('show'); }
 function hideUpdateModal(){ document.getElementById('updateModal').classList.remove('show'); }
+function isSubsidyAllowedCdsid(value){
+  return String(value || '').trim().toUpperCase() === SUBSIDY_ALLOWED_CDSID;
+}
+function canOpenLiveSubsidyStatus(){
+  try{
+    const session = JSON.parse(localStorage.getItem('es90_cdsid_session') || 'null');
+    const cdsid = String(localStorage.getItem('es90_last_cdsid') || '').trim().toUpperCase();
+    return isSubsidyAllowedCdsid(cdsid) && Number(session?.expiresAt) > Date.now();
+  }catch(error){
+    return false;
+  }
+}
 function openLiveSubsidyStatus(){
+  if(!canOpenLiveSubsidyStatus()){
+    showSelectionToast('업데이트 중');
+    return;
+  }
   const returnState = JSON.stringify({
     es90Trim: STATE.es90Trim,
     airSuspension: SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim),
