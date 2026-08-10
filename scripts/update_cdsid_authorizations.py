@@ -69,7 +69,7 @@ def text_in_frames(page: Page, text: str) -> tuple[Page, Frame, Locator] | None:
 def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> bool:
     found = text_in_frames(page, text)
     if found:
-        _, _, match = found
+        target_page, _, match = found
         click_target = match.evaluate(
             """element => ({
                 tag: element.tagName.toLowerCase(),
@@ -80,8 +80,14 @@ def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> boo
             })"""
         )
         print(f"Sales-DMS 메뉴 클릭: label={text} target={click_target}")
-        match.click(timeout=15_000)
-        page.wait_for_timeout(500)
+        if click_target["href"]:
+            with target_page.expect_navigation(
+                wait_until="domcontentloaded", timeout=60_000
+            ):
+                match.click(timeout=15_000)
+        else:
+            match.click(timeout=15_000)
+        target_page.wait_for_timeout(1_000)
         print(
             "Sales-DMS 열린 페이지: "
             + ", ".join(candidate.url for candidate in page.context.pages)
