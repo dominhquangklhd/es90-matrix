@@ -39,7 +39,7 @@ main{max-width:1280px;margin:auto;padding:22px 20px 42px}.hero{position:relative
   <section class="location">
     <div class="location-head"><div class="location-title">고객 소재지 및 ES90 트림 선택</div></div>
     <div class="location-row">
-      <div class="field"><label for="province">서울특별시·6대 광역시·세종특별자치시</label><select id="province"></select></div>
+      <div class="field"><label for="province">서울특별시 포함 8대 광역시</label><select id="province"></select></div>
       <div class="field trim-field"><label id="trimSelectLabel">ES90 트림</label><select id="trimSelect" class="native-trim-select" aria-hidden="true" tabindex="-1"></select><div class="trim-picker" id="trimPicker"><button class="trim-picker-trigger" id="trimPickerTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="trimSelectLabel trimPickerSelected"><span class="trim-picker-selected" id="trimPickerSelected"></span><span class="trim-picker-badge" id="trimPickerBadge" title="보조금 50% 적용" aria-label="보조금 50% 적용" hidden>50%</span></button><div class="trim-picker-menu" id="trimPickerMenu" role="listbox" aria-label="ES90 트림"></div></div></div>
       <button class="find" onclick="showSubsidy()">보조금 계산</button>
     </div>
@@ -120,14 +120,14 @@ function updateTrimPicker(){const index=Math.max(0,Number(trimSelect.value)||0),
 function selectTrimOption(index){trimSelect.value=String(index);updateTrimPicker();closeTrimPicker();resetSelection(currentPreviewStage())}
 function fillTrims(){trimSelect.innerHTML=TRIMS.map((t,i)=>`<option value="${i}">${esc(t.label)} · ${fmtManwon(t.priceWon)}${hasHalfSubsidy(t)?' · 보조금 50% 적용':''}</option>`).join('');trimPickerMenu.innerHTML=TRIMS.map((t,i)=>`<button class="trim-option" type="button" role="option" aria-selected="false" onclick="selectTrimOption(${i})"><span class="trim-option-main">${esc(t.label)} · ${fmtManwon(t.priceWon)}</span>${hasHalfSubsidy(t)?'<span class="trim-option-subsidy" title="보조금 50% 적용" aria-label="보조금 50% 적용"><span>보조금</span><b>50%</b><span>적용</span></span>':''}</button>`).join('');let index=TRIMS.findIndex(t=>t.trim===returnState?.es90Trim&&t.air===!!returnState?.airSuspension);if(index<0&&Number(returnState?.effectivePriceWon)>0)index=TRIMS.findIndex(t=>t.priceWon===Number(returnState.effectivePriceWon));if(index<0)index=2;trimSelect.value=String(index);updateTrimPicker()}
 function prompt(label){return `<option value="" selected disabled>${label}</option>`}
-function fillProvinces(selectedSido=''){if(!selectedSido)localStorage.removeItem(SUBSIDY_LAST_LOCATION_KEY);const sidos=[...new Set(subsidyData.regions.map(x=>x.sido).filter(sido=>SELECTABLE_CITY_REGIONS.has(sido)))].sort(koreanSort);province.innerHTML=prompt('서울특별시·6대 광역시·세종특별자치시 선택')+sidos.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');province.value=sidos.includes(selectedSido)?selectedSido:'';selectedRecord=null}
+function fillProvinces(selectedSido=''){if(!selectedSido)localStorage.removeItem(SUBSIDY_LAST_LOCATION_KEY);const sidos=[...new Set(subsidyData.regions.map(x=>x.sido).filter(sido=>SELECTABLE_CITY_REGIONS.has(sido)))].sort(koreanSort);province.innerHTML=prompt('서울특별시 포함 8대 광역시 선택')+sidos.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');province.value=sidos.includes(selectedSido)?selectedSido:'';selectedRecord=null}
 province.onchange=()=>{selectedRecord=null;renderPreview(currentPreviewStage())};trimSelect.onchange=()=>{updateTrimPicker();resetSelection(currentPreviewStage())};trimPickerTrigger.onclick=()=>{const open=!trimPicker.classList.contains('open');trimPicker.classList.toggle('open',open);trimPickerTrigger.setAttribute('aria-expanded',String(open))};document.addEventListener('pointerdown',event=>{if(!trimPicker.contains(event.target))closeTrimPicker()});document.addEventListener('keydown',event=>{if(event.key==='Escape')closeTrimPicker()});
 
 function currentPreviewStage(){return province.value?'region':'initial'}
 function resetSelection(stage=currentPreviewStage()){selectedRecord=null;renderPreview(stage)}
 function renderEmpty(){renderPreview('initial')}
 function renderPreview(stage='initial'){
-  const trim=TRIMS[Number(trimSelect.value)||0],price=Math.round(trim.priceWon/10000),place=province.value?province.value:'서울특별시·6대 광역시·세종특별자치시 선택 전';
+  const trim=TRIMS[Number(trimSelect.value)||0],price=Math.round(trim.priceWon/10000),place=province.value?province.value:'서울특별시 포함 8대 광역시 선택 전';
   const steps={initial:{n:64,l:38,rate:34,cue:'지역을 선택하면 도형이 움직이며 계산 준비를 시작합니다.'},region:{n:96,l:54,rate:62,cue:'보조금 계산을 누르면 실제 보조금과 구매가가 채워집니다.'}},step=steps[stage]||steps.initial,finalY=36+step.n+step.l,finalH=Math.max(42,260-finalY);
   document.getElementById('waterfallWrap').innerHTML=`
   <div class="preview-panel"><div class="selection-line preview"><div><div class="selection-name">${esc(trim.label)} · ${fmt(price)}만원</div><div class="preview-copy">${esc(place)}</div></div><span class="eligibility preview">계산 대기</span></div>
@@ -146,7 +146,7 @@ function renderPreview(stage='initial'){
   document.getElementById('regionCard').innerHTML=`
   <div class="region-status"><div><div class="region-status-name">${esc(place)}</div><div class="metric-sub">선택지역 보조금 소진 현황 미리보기</div></div><span class="status-badge preview">계산 전</span></div>
   <div class="region-donut-block"><div class="region-donut preview" style="--preview-rate:${step.rate}"><div class="region-donut-center"><span>민간공고대수</span><b>—대</b></div></div><div class="region-donut-legend"><div class="donut-row used"><i class="donut-dot used"></i><div class="donut-copy"><span>출고완료대수</span><b>—대</b></div><strong class="donut-rate">—%</strong></div><div class="donut-row remaining"><i class="donut-dot remaining"></i><div class="donut-copy"><span>출고잔여대수</span><b>—대</b></div><strong class="donut-rate">—%</strong></div></div></div>
-  <div class="method"><b>접수방법</b><br>${stage==='region'?'보조금 계산을 누르면 선택지역의 접수방법이 표시됩니다.':'서울특별시·6대 광역시·세종특별자치시 중 고객 거주지역을 선택해 주세요.'}</div>
+  <div class="method"><b>접수방법</b><br>${stage==='region'?'보조금 계산을 누르면 선택지역의 접수방법이 표시됩니다.':'서울특별시 포함 8대 광역시 중 고객 거주지역을 선택해 주세요.'}</div>
   <div class="preview-source"><a href="${OFFICIAL_SUBSIDY_PAYMENT_URL}" target="_blank" rel="noopener noreferrer external">공식 지급현황</a><a href="${OFFICIAL_MODEL_SUBSIDY_URL}" target="_blank" rel="noopener noreferrer external">공식 차종별 보조금</a></div>
   <div class="preview-legal">보조금 계산 후 선택지역의 공고대수·출고완료대수·출고잔여대수와 소진율이 실제 값으로 채워집니다.</div>`
 }
