@@ -159,7 +159,7 @@ function renderWaterfall(record){
   const {national,local}=estimatedSubsidy(trim);
   const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),totalSubsidy=national+local,focusFloor=totalSubsidy?Math.max(0,Math.round(final-totalSubsidy*1.8)):0,scale=totalSubsidy?240/Math.max(1,price-focusFloor):240/Math.max(1,price),nH=totalSubsidy?national*scale:0,lH=totalSubsidy?local*scale:0,finalY=20+nH+lH,finalH=totalSubsidy?Math.max(18,(final-focusFloor)*scale):240,badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님',priceRange=subsidyPriceRange(trim),focusLabel=totalSubsidy?`가격 구간 확대 · ${fmt(focusFloor)}~${fmt(price)}만원`:'전체 가격 기준';
   const warning=rate===0?'Twin Performance Ultra는 국가 및 지자체 보조금 계산에서 제외됩니다.':'ES90 공식 차종별 보조금 확정 전 추정치이며, 실제 지급액은 공식 고시와 지자체 공고에 따라 달라질 수 있습니다.';
-  const nationalLabel='국가 보조금(추정치)',localLabel='지자체 보조금(서울 및 8대 광역시 기준)';
+  const nationalLabel='국가 보조금(추정치)',localLabel='지자체 보조금(추정치)';
   document.getElementById('waterfallWrap').innerHTML=`
   <div class="selection-line"><div><div class="selection-name">${esc(trim.label)} · ${fmt(price)}만원</div><div class="preview-copy selection-line-spacer" aria-hidden="true">&nbsp;</div></div><span class="eligibility ${rate?'':'none'}">${badge}</span></div>
   <div class="price-range ${priceRange.tone}"><div class="price-range-main"><span class="price-range-tag">가격 구간</span><b>${esc(priceRange.range)}</b><strong>${esc(priceRange.result)}</strong></div><small>${esc(warning)}</small></div>
