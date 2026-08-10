@@ -27,6 +27,22 @@ class CdsidAuthorizationTests(unittest.TestCase):
         self.assertEqual(updated.count(second), 1)
         self.assertEqual(updater.read_authorized_hashes(updated), [first, second])
 
+    def test_update_revokes_departed_and_departure_wins(self) -> None:
+        active = updater.hash_cdsid("ACTIVE-ONE")
+        departed = updater.hash_cdsid("DEPARTED-TWO")
+        source = (
+            "before\nconst AUTHORIZED_CDSID_HASHES = new Set([\n"
+            f"  '{active}',\n"
+            f"  '{departed}'\n"
+            "]);\nafter\n"
+        )
+        updated = updater.update_authorized_hashes(
+            source,
+            {departed},
+            {departed},
+        )
+        self.assertEqual(updater.read_authorized_hashes(updated), [active])
+
     def test_normalize_date_text(self) -> None:
         self.assertEqual(updater.normalize_date_text("2026-08-10"), "260810")
         self.assertEqual(updater.normalize_date_text("26.08.10"), "260810")
@@ -38,7 +54,11 @@ class CdsidAuthorizationTests(unittest.TestCase):
                 updater.write_github_output(True, 4, 1)
             self.assertEqual(
                 output.read_text(encoding="utf-8"),
-                "changed=true\nscanned_count=4\nnew_count=1\n",
+                "changed=true\n"
+                "scanned_count=4\n"
+                "new_count=1\n"
+                "departed_count=0\n"
+                "revoked_count=0\n",
             )
 
 

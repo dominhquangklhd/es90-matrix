@@ -145,14 +145,27 @@ def open_employee_registration(page: Page) -> tuple[Page, Frame]:
     return wait_for_employee_grid(page)
 
 
-def configure_date_range(page: Page, start_date: str, end_date: str) -> None:
+def configure_date_range(
+    page: Page,
+    date_label: str,
+    employment_status: str,
+    start_date: str,
+    end_date: str,
+) -> None:
     _, frame = wait_for_employee_grid(page)
     date_type = frame.locator("#date_type")
+    status_type = frame.locator("select[name='resign_type']")
     start_input = frame.locator("#s_date")
     end_input = frame.locator("#e_date")
-    if not (date_type.count() and start_input.count() and end_input.count()):
-        raise RuntimeError("입사일자 시작일·종료일 입력창을 찾지 못했습니다.")
-    date_type.select_option(label="입사일자")
+    if not (
+        date_type.count()
+        and status_type.count()
+        and start_input.count()
+        and end_input.count()
+    ):
+        raise RuntimeError(f"{date_label} 검색 조건을 찾지 못했습니다.")
+    date_type.select_option(label=date_label)
+    status_type.select_option(label=employment_status)
     start_input.fill(start_date)
     end_input.fill(end_date)
 
@@ -188,7 +201,13 @@ def normalize_date_text(value: str) -> str:
     return digits
 
 
-def extract_grid_rows(frame: Frame, expected_role: str) -> list[str]:
+def extract_grid_rows(
+    frame: Frame,
+    expected_role: str,
+    date_label: str,
+    start_date: str,
+    end_date: str,
+) -> list[str]:
     rows = frame.locator("tr").evaluate_all(
         """rows => rows.map(row =>
             Array.from(row.querySelectorAll('th,td')).map(cell =>
@@ -200,7 +219,7 @@ def extract_grid_rows(frame: Frame, expected_role: str) -> list[str]:
         (
             index
             for index, row in enumerate(rows)
-            if "직원 CDSID" in row and "직원권한" in row and "입사일자" in row
+            if "직원 CDSID" in row and "직원권한" in row and date_label in row
         ),
         -1,
     )
@@ -213,21 +232,58 @@ def extract_grid_rows(frame: Frame, expected_role: str) -> list[str]:
     header = rows[header_index]
     role_index = header.index("직원권한")
     cdsid_index = header.index("직원 CDSID")
-    hire_date_index = header.index("입사일자")
-    max_index = max(role_index, cdsid_index, hire_date_index)
+    date_index = header.index(date_label)
+    max_index = max(role_index, cdsid_index, date_index)
     results: list[str] = []
     for row in rows[header_index + 1 :]:
         if len(row) <= max_index:
             continue
         role = row[role_index].strip()
         cdsid = normalize_cdsid(row[cdsid_index])
-        hire_date = normalize_date_text(row[hire_date_index])
-        if role == expected_role and cdsid and START_DATE <= hire_date <= today_yymmdd():
+        employee_date = normalize_date_text(row[date_index])
+        if role == expected_role and cdsid and start_date <= employee_date <= end_date:
             results.append(cdsid)
     return results
 
 
-def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[str, int]]:
+def collect_role_cdsids(
+    page: Page,
+    date_label: str,
+    employment_status: str,
+    end_date: str,
+) -> tuple[set[str], dict[str, int]]:
+    configure_date_range(
+        page,
+        date_label,
+        employment_status,
+        START_DATE,
+        end_date,
+    )
+    collected: set[str] = set()
+    role_counts: dict[str, int] = {}
+    for role in TARGET_ROLES:
+        page, frame = wait_for_employee_grid(page)
+        role_select = frame.locator("#com_cd")
+        if not role_select.count():
+            raise RuntimeError("직원권한 선택창을 찾지 못했습니다.")
+        role_select.select_option(label=role)
+        page, frame = click_search(page)
+        role_rows = extract_grid_rows(
+            frame,
+            role,
+            date_label,
+            START_DATE,
+            end_date,
+        )
+        role_counts[role] = len(role_rows)
+        collected.update(role_rows)
+    return collected, role_counts
+
+
+def collect_access_changes(
+    user_id: str,
+    password: str,
+) -> tuple[set[str], set[str], dict[str, int], dict[str, int]]:
     from playwright.sync_api import sync_playwright
 
     end_date = today_yymmdd()
@@ -239,20 +295,19 @@ def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[s
             page, frame = open_employee_registration(page)
             set_page_size(page)
             page, frame = wait_for_employee_grid(page)
-            configure_date_range(page, START_DATE, end_date)
-            collected: set[str] = set()
-            role_counts: dict[str, int] = {}
-            for role in TARGET_ROLES:
-                page, frame = wait_for_employee_grid(page)
-                role_select = frame.locator("#com_cd")
-                if not role_select.count():
-                    raise RuntimeError("직원권한 선택창을 찾지 못했습니다.")
-                role_select.select_option(label=role)
-                page, frame = click_search(page)
-                role_rows = extract_grid_rows(frame, role)
-                role_counts[role] = len(role_rows)
-                collected.update(role_rows)
-            return collected, role_counts
+            hired, hire_counts = collect_role_cdsids(
+                page,
+                "입사일자",
+                "재직자",
+                end_date,
+            )
+            departed, departure_counts = collect_role_cdsids(
+                page,
+                "퇴사일자",
+                "퇴사자",
+                end_date,
+            )
+            return hired, departed, hire_counts, departure_counts
         finally:
             browser.close()
 
@@ -269,12 +324,18 @@ def read_authorized_hashes(app_text: str) -> list[str]:
     return hashes
 
 
-def append_authorized_hashes(app_text: str, new_hashes: set[str]) -> str:
+def update_authorized_hashes(
+    app_text: str,
+    new_hashes: set[str],
+    revoked_hashes: set[str],
+) -> str:
     existing_hashes = read_authorized_hashes(app_text)
-    additions = sorted(new_hashes - set(existing_hashes))
-    if not additions:
+    existing_set = set(existing_hashes)
+    additions = sorted(new_hashes - existing_set - revoked_hashes)
+    retained = [value for value in existing_hashes if value not in revoked_hashes]
+    all_hashes = retained + additions
+    if all_hashes == existing_hashes:
         return app_text
-    all_hashes = existing_hashes + additions
     replacement = (
         "const AUTHORIZED_CDSID_HASHES = new Set([\n"
         + ",\n".join(f"  '{value}'" for value in all_hashes)
@@ -286,7 +347,17 @@ def append_authorized_hashes(app_text: str, new_hashes: set[str]) -> str:
     return updated
 
 
-def write_github_output(changed: bool, scanned_count: int, new_count: int) -> None:
+def append_authorized_hashes(app_text: str, new_hashes: set[str]) -> str:
+    return update_authorized_hashes(app_text, new_hashes, set())
+
+
+def write_github_output(
+    changed: bool,
+    scanned_count: int,
+    new_count: int,
+    departed_count: int = 0,
+    revoked_count: int = 0,
+) -> None:
     output_path = os.environ.get("GITHUB_OUTPUT", "").strip()
     if not output_path:
         return
@@ -294,26 +365,51 @@ def write_github_output(changed: bool, scanned_count: int, new_count: int) -> No
         output.write(f"changed={'true' if changed else 'false'}\n")
         output.write(f"scanned_count={scanned_count}\n")
         output.write(f"new_count={new_count}\n")
+        output.write(f"departed_count={departed_count}\n")
+        output.write(f"revoked_count={revoked_count}\n")
 
 
 def main() -> int:
     try:
         user_id = required_env("VOLVO_SALES_ID")
         password = required_env("VOLVO_SALES_PASSWORD")
-        cdsids, role_counts = collect_recent_cdsids(user_id, password)
+        hired_cdsids, departed_cdsids, hire_counts, departure_counts = (
+            collect_access_changes(user_id, password)
+        )
         app_text = APP_PATH.read_text(encoding="utf-8")
         existing_hashes = set(read_authorized_hashes(app_text))
-        scanned_hashes = {hash_cdsid(cdsid) for cdsid in cdsids}
-        new_hashes = scanned_hashes - existing_hashes
-        updated_app = append_authorized_hashes(app_text, new_hashes)
+        hired_hashes = {hash_cdsid(cdsid) for cdsid in hired_cdsids}
+        departed_hashes = {hash_cdsid(cdsid) for cdsid in departed_cdsids}
+        new_hashes = hired_hashes - existing_hashes - departed_hashes
+        revoked_hashes = departed_hashes & existing_hashes
+        updated_app = update_authorized_hashes(
+            app_text,
+            new_hashes,
+            departed_hashes,
+        )
         changed = updated_app != app_text
         if changed:
             APP_PATH.write_text(updated_app, encoding="utf-8")
-        write_github_output(changed, len(scanned_hashes), len(new_hashes))
-        role_summary = ", ".join(f"{role} {role_counts.get(role, 0)}명" for role in TARGET_ROLES)
+        write_github_output(
+            changed,
+            len(hired_hashes),
+            len(new_hashes),
+            len(departed_hashes),
+            len(revoked_hashes),
+        )
+        hire_summary = ", ".join(
+            f"{role} {hire_counts.get(role, 0)}명" for role in TARGET_ROLES
+        )
+        departure_summary = ", ".join(
+            f"{role} {departure_counts.get(role, 0)}명" for role in TARGET_ROLES
+        )
         print(
-            f"Sales-DMS 신규 입사자 확인 완료: {role_summary}, "
-            f"중복 제거 {len(scanned_hashes)}명, 신규 권한 {len(new_hashes)}명"
+            f"Sales-DMS 신규 입사자 확인 완료: {hire_summary}, "
+            f"신규 권한 {len(new_hashes)}명"
+        )
+        print(
+            f"Sales-DMS 퇴사자 확인 완료: {departure_summary}, "
+            f"로그인 차단 {len(revoked_hashes)}명"
         )
         return 0
     except Exception as error:
