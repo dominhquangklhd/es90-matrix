@@ -143,6 +143,24 @@ def row_containing_in_frames(page: Page, label: str) -> tuple[Frame, Locator]:
             return frame, row_containing(frame, label)
         except RuntimeError:
             continue
+    for frame_index, frame in enumerate(page.frames):
+        controls = frame.locator("input,select,button")
+        if not controls.count():
+            continue
+        control_summary = controls.evaluate_all(
+            """elements => elements.slice(0, 40).map(element => ({
+                tag: element.tagName.toLowerCase(),
+                type: element.getAttribute('type') || '',
+                id: element.id || '',
+                name: element.getAttribute('name') || '',
+                aria: element.getAttribute('aria-label') || '',
+                placeholder: element.getAttribute('placeholder') || ''
+            }))"""
+        )
+        print(
+            f"Sales-DMS 검색영역 진단 frame={frame_index} "
+            f"url={frame.url} controls={control_summary}"
+        )
     raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
 
 
