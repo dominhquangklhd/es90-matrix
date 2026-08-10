@@ -2,8 +2,8 @@ name: Update nationwide EV subsidy data
 
 on:
   schedule:
-    # Retry hourly from 07:35 through 18:35 Asia/Seoul.
-    # After today's official snapshot succeeds, later retries are skipped.
+    # Refresh hourly from 07:35 through 18:35 Asia/Seoul so that
+    # same-day changes published by the official portal are propagated.
     - cron: "35 22-23,0-9 * * *"
   workflow_dispatch:
 
@@ -31,42 +31,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check whether today's subsidy data was already verified
-        id: daily
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          from datetime import datetime
-          from pathlib import Path
-          from zoneinfo import ZoneInfo
-
-          should_run = True
-          checked_at = None
-          if os.environ.get("EVENT_NAME") == "schedule":
-              data = json.loads(Path("version.json").read_text(encoding="utf-8"))
-              checked_at = data.get("subsidyCheckedAt")
-              if checked_at:
-                  checked_date = datetime.fromisoformat(checked_at).astimezone(
-                      ZoneInfo("Asia/Seoul")
-                  ).date()
-                  should_run = checked_date < datetime.now(
-                      ZoneInfo("Asia/Seoul")
-                  ).date()
-
-          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
-              output.write(f"should_run={'true' if should_run else 'false'}\n")
-          print(f"Subsidy daily check: previous={checked_at or 'none'}, should_run={should_run}")
-          PY
-
       - name: Install browser and HTML parsers
-        if: steps.daily.outputs.should_run == 'true'
         run: python -m pip install --disable-pip-version-check lxml==6.0.2 selenium==4.38.0
 
       - name: Render official EV portal pages
-        if: steps.daily.outputs.should_run == 'true'
         run: |
           python scripts/render_subsidy_pages.py \
             --payment-output /tmp/subsidy-payment.html \
@@ -74,7 +42,6 @@ jobs:
             --model-output /tmp/subsidy-model.html
 
       - name: Build and validate nationwide subsidy snapshot
-        if: steps.daily.outputs.should_run == 'true'
         run: |
           python scripts/update_subsidy_data.py \
             --payment-html /tmp/subsidy-payment.html \
@@ -87,11 +54,15 @@ jobs:
           assert len(data["regions"]) >= 150
           assert data["regions"][0]["sido"] == "서울특별시"
           assert data["allocationBasis"] == "일반 승용"
+          assert all(
+              region["remaining"]
+              == max(0, region["announced"] - region["delivered"])
+              for region in data["regions"]
+          )
           print(f"Validated {len(data['regions'])} official regions")
           PY
 
-      - name: Publish daily subsidy check
-        if: steps.daily.outputs.should_run == 'true'
+      - name: Publish subsidy snapshot
         run: |
           CHECKED_AT="$(python -c "import json; print(json.load(open('subsidy-data.json', encoding='utf-8'))['checkedAt'])")"
           git config user.name "ES90 Subsidy Auto Update"
