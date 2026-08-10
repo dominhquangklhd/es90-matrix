@@ -102,7 +102,15 @@ def employee_grid_in_context(page: Page) -> tuple[Page, Frame] | None:
     for candidate_page in reversed(page.context.pages):
         for frame in candidate_page.frames:
             body_text = frame.locator("body").inner_text(timeout=5_000)
-            if "직원 목록" in body_text and "직원 CDSID" in body_text:
+            page_controls_ready = (
+                frame.locator("#s_empt_id").count() > 0
+                and frame.locator("#com_cd").count() > 0
+            )
+            if (
+                page_controls_ready
+                and "직원 목록" in body_text
+                and "직원 CDSID" in body_text
+            ):
                 return candidate_page, frame
     return None
 
