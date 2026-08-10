@@ -237,16 +237,15 @@ def choose_dropdown_value(page: Page, frame: Frame, row: Locator, value: str) ->
 
 
 def configure_date_range(page: Page, start_date: str, end_date: str) -> None:
-    frame, period_row = row_containing_in_frames(page, "기간조회")
-    choose_dropdown_value(page, frame, period_row, "입사일자")
-    inputs = period_row.locator(
-        "input:not([type='hidden']):not([type='button']):not([disabled])"
-    )
-    visible_inputs = [inputs.nth(index) for index in range(inputs.count()) if visible(inputs.nth(index))]
-    if len(visible_inputs) < 2:
+    _, frame = wait_for_employee_grid(page)
+    date_type = frame.locator("#date_type")
+    start_input = frame.locator("#s_date")
+    end_input = frame.locator("#e_date")
+    if not (date_type.count() and start_input.count() and end_input.count()):
         raise RuntimeError("입사일자 시작일·종료일 입력창을 찾지 못했습니다.")
-    visible_inputs[-2].fill(start_date)
-    visible_inputs[-1].fill(end_date)
+    date_type.select_option(label="입사일자")
+    start_input.fill(start_date)
+    end_input.fill(end_date)
 
 
 def set_page_size(page: Page) -> None:
@@ -263,16 +262,14 @@ def set_page_size(page: Page) -> None:
             return
 
 
-def click_search(page: Page) -> None:
-    for frame in page.frames:
-        searches = frame.get_by_text("검색", exact=True)
-        for index in range(searches.count()):
-            search = searches.nth(index)
-            if visible(search):
-                search.click(timeout=10_000)
-                page.wait_for_timeout(1_000)
-                return
-    raise RuntimeError("직원등록 검색 버튼을 찾지 못했습니다.")
+def click_search(page: Page) -> tuple[Page, Frame]:
+    target_page, frame = wait_for_employee_grid(page)
+    search = frame.locator("#search")
+    if not search.count() or not visible(search):
+        raise RuntimeError("직원등록 검색 버튼을 찾지 못했습니다.")
+    search.click(timeout=10_000)
+    target_page.wait_for_timeout(1_000)
+    return wait_for_employee_grid(page)
 
 
 def normalize_date_text(value: str) -> str:
@@ -334,15 +331,15 @@ def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[s
             set_page_size(page)
             page, frame = wait_for_employee_grid(page)
             configure_date_range(page, START_DATE, end_date)
-            role_frame, role_row = row_containing_in_frames(page, "직원권한")
             collected: set[str] = set()
             role_counts: dict[str, int] = {}
             for role in TARGET_ROLES:
-                choose_dropdown_value(page, role_frame, role_row, role)
-                click_search(page)
-                employee_grid = employee_grid_in_context(page)
-                if employee_grid:
-                    page, frame = employee_grid
+                page, frame = wait_for_employee_grid(page)
+                role_select = frame.locator("#com_cd")
+                if not role_select.count():
+                    raise RuntimeError("직원권한 선택창을 찾지 못했습니다.")
+                role_select.select_option(label=role)
+                page, frame = click_search(page)
                 role_rows = extract_grid_rows(frame, role)
                 role_counts[role] = len(role_rows)
                 collected.update(role_rows)
