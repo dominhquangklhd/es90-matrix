@@ -6,24 +6,6 @@
 <meta name="theme-color" content="#071b2c">
 <title>ES90 전국 전기차 보조금 현황</title>
 <link rel="preload" href="https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2" as="font" type="font/woff2" crossorigin>
-<script>
-let fontRevealDone=false;
-const revealStablePage=()=>{
-  if(fontRevealDone)return;
-  fontRevealDone=true;
-  requestAnimationFrame(()=>document.documentElement.classList.remove('font-stabilizing'));
-};
-const fontRevealSafety=setTimeout(revealStablePage,1200);
-fetch('./app.html',{cache:'force-cache'}).then(r=>r.text()).then(source=>{
-  const faces=(source.match(/@font-face\s*\{[\s\S]*?\}/g)||[]).filter(face=>face.includes("font-family:'VolvoCentum"));
-  if(faces.length){const style=document.createElement('style');style.textContent=faces.join('\n');document.head.appendChild(style)}
-  if(!document.fonts)return;
-  return Promise.allSettled([
-    document.fonts.load("500 16px Paperlogy",'전국 전기차 보조금 현황'),
-    document.fonts.load("600 16px 'VolvoCentum'",'NATIONWIDE EV SUBSIDY STATUS')
-  ]);
-  }).catch(()=>{}).finally(()=>{clearTimeout(fontRevealSafety);revealStablePage()});
-</script>
 <style>
 @font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:optional}
 :root{--navy:#102a43;--deep:#071b2c;--blue:#385a72;--orange:#ef6b37;--orange2:#ce541f;--ink:#243746;--muted:#6c7f8d;--faint:#94a2ac;--line:#dbe3e8;--line2:#e9eef1;--soft:#eef2f5;--paper:#fff;--green:#38805b;--red:#a34d3d;--shadow:0 9px 25px rgba(16,42,67,.07)}
