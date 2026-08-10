@@ -70,17 +70,8 @@ def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> boo
     found = text_in_frames(page, text)
     if found:
         target_page, _, match = found
-        click_target = match.evaluate(
-            """element => ({
-                tag: element.tagName.toLowerCase(),
-                text: (element.textContent || '').trim().replace(/\\s+/g, ' '),
-                href: element.getAttribute('href') || '',
-                onclick: element.getAttribute('onclick') || '',
-                className: element.className || ''
-            })"""
-        )
-        print(f"Sales-DMS 메뉴 클릭: label={text} target={click_target}")
-        if click_target["href"]:
+        href = match.get_attribute("href") or ""
+        if href:
             with target_page.expect_navigation(
                 wait_until="domcontentloaded", timeout=60_000
             ):
@@ -88,10 +79,6 @@ def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> boo
         else:
             match.click(timeout=15_000)
         target_page.wait_for_timeout(1_000)
-        print(
-            "Sales-DMS 열린 페이지: "
-            + ", ".join(candidate.url for candidate in page.context.pages)
-        )
         return True
     if required:
         raise RuntimeError(f"Sales-DMS 메뉴를 찾지 못했습니다: {text}")
@@ -156,84 +143,6 @@ def open_employee_registration(page: Page) -> tuple[Page, Frame]:
         click_text_in_frames(page, menu_text)
 
     return wait_for_employee_grid(page)
-
-
-def row_containing(frame: Frame, label: str) -> Locator:
-    normalized_label = re.sub(r"\s", "", label).lower()
-    rows = frame.locator("tr")
-    for index in range(rows.count()):
-        row = rows.nth(index)
-        if not visible(row):
-            continue
-        normalized_text = re.sub(r"\s", "", row.inner_text(timeout=5_000)).lower()
-        if normalized_label in normalized_text:
-            return row
-    raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
-
-
-def row_containing_in_frames(page: Page, label: str) -> tuple[Frame, Locator]:
-    for frame in page.frames:
-        try:
-            return frame, row_containing(frame, label)
-        except RuntimeError:
-            continue
-    for frame_index, frame in enumerate(page.frames):
-        controls = frame.locator("input,select,button")
-        if not controls.count():
-            continue
-        control_summary = controls.evaluate_all(
-            """elements => elements.slice(0, 40).map(element => ({
-                tag: element.tagName.toLowerCase(),
-                type: element.getAttribute('type') || '',
-                id: element.id || '',
-                name: element.getAttribute('name') || '',
-                aria: element.getAttribute('aria-label') || '',
-                placeholder: element.getAttribute('placeholder') || ''
-            }))"""
-        )
-        print(
-            f"Sales-DMS 검색영역 진단 frame={frame_index} "
-            f"url={frame.url} controls={control_summary}"
-        )
-        panel_text = frame.locator("body").inner_text(timeout=5_000).split("직원 목록", 1)[0]
-        panel_text = re.sub(r"\s+", " ", panel_text).strip()[:2_000]
-        print(f"Sales-DMS 검색영역 문구 frame={frame_index}: {panel_text}")
-        select_summary = frame.locator("select").evaluate_all(
-            """selects => selects.map(select => ({
-                id: select.id || '',
-                name: select.getAttribute('name') || '',
-                options: Array.from(select.options).map(option =>
-                    (option.textContent || '').trim().replace(/\\s+/g, ' ')
-                )
-            }))"""
-        )
-        print(f"Sales-DMS 선택항목 frame={frame_index}: {select_summary}")
-    raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
-
-
-def choose_dropdown_value(page: Page, frame: Frame, row: Locator, value: str) -> None:
-    selects = row.locator("select")
-    for index in range(selects.count()):
-        select = selects.nth(index)
-        options = select.locator("option").all_text_contents(timeout=5_000)
-        if any(option.strip() == value for option in options):
-            select.select_option(label=value)
-            return
-
-    inputs = row.locator("input:not([type='hidden']):not([disabled])")
-    for index in reversed(range(inputs.count())):
-        input_box = inputs.nth(index)
-        if not visible(input_box):
-            continue
-        input_box.click(timeout=10_000)
-        page.wait_for_timeout(250)
-        found = text_in_frames(page, value)
-        if found:
-            _, _, option = found
-            option.click(timeout=10_000)
-            page.wait_for_timeout(250)
-            return
-    raise RuntimeError(f"직원등록 드롭다운 값을 선택하지 못했습니다: {value}")
 
 
 def configure_date_range(page: Page, start_date: str, end_date: str) -> None:
