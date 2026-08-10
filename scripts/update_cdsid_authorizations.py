@@ -177,11 +177,11 @@ def set_page_size(frame: Frame) -> None:
     label = frame.get_by_text("리스트 갯수", exact=True)
     if not label.count():
         return
-    container = label.first().locator("xpath=parent::*")
+    container = label.first.locator("xpath=parent::*")
     input_box = container.locator("input:not([type='hidden'])")
-    if input_box.count() and visible(input_box.first()):
-        input_box.first().fill("500")
-        input_box.first().press("Enter")
+    if input_box.count() and visible(input_box.first):
+        input_box.first.fill("500")
+        input_box.first.press("Enter")
 
 
 def click_search(page: Page, frame: Frame) -> None:
