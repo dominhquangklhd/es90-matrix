@@ -54,21 +54,22 @@ def visible(locator: Locator) -> bool:
         return False
 
 
-def text_in_frames(page: Page, text: str) -> tuple[Frame, Locator] | None:
+def text_in_frames(page: Page, text: str) -> tuple[Page, Frame, Locator] | None:
     pattern = re.compile(re.escape(text), re.IGNORECASE)
-    for frame in page.frames:
-        matches = frame.get_by_text(pattern)
-        for index in range(matches.count()):
-            match = matches.nth(index)
-            if visible(match):
-                return frame, match
+    for candidate_page in reversed(page.context.pages):
+        for frame in candidate_page.frames:
+            matches = frame.get_by_text(pattern)
+            for index in range(matches.count()):
+                match = matches.nth(index)
+                if visible(match):
+                    return candidate_page, frame, match
     return None
 
 
 def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> bool:
     found = text_in_frames(page, text)
     if found:
-        _, match = found
+        _, _, match = found
         match.click(timeout=15_000)
         page.wait_for_timeout(500)
         return True
@@ -77,11 +78,12 @@ def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> boo
     return False
 
 
-def frame_with_employee_grid(page: Page) -> Frame | None:
-    for frame in page.frames:
-        body_text = frame.locator("body").inner_text(timeout=5_000)
-        if "직원 목록" in body_text and "직원 CDSID" in body_text:
-            return frame
+def employee_grid_in_context(page: Page) -> tuple[Page, Frame] | None:
+    for candidate_page in reversed(page.context.pages):
+        for frame in candidate_page.frames:
+            body_text = frame.locator("body").inner_text(timeout=5_000)
+            if "직원 목록" in body_text and "직원 CDSID" in body_text:
+                return candidate_page, frame
     return None
 
 
@@ -102,8 +104,8 @@ def login(page: Page, user_id: str, password: str) -> None:
         raise RuntimeError("Sales-DMS 로그인에 실패했습니다. GitHub Secret을 확인해 주세요.")
 
 
-def open_employee_registration(page: Page) -> Frame:
-    existing = frame_with_employee_grid(page)
+def open_employee_registration(page: Page) -> tuple[Page, Frame]:
+    existing = employee_grid_in_context(page)
     if existing:
         return existing
 
@@ -117,9 +119,9 @@ def open_employee_registration(page: Page) -> Frame:
 
     deadline = datetime.now().timestamp() + 30
     while datetime.now().timestamp() < deadline:
-        frame = frame_with_employee_grid(page)
-        if frame:
-            return frame
+        employee_grid = employee_grid_in_context(page)
+        if employee_grid:
+            return employee_grid
         page.wait_for_timeout(500)
     raise RuntimeError("직원등록 화면이 열리지 않았습니다.")
 
@@ -182,7 +184,7 @@ def choose_dropdown_value(page: Page, frame: Frame, row: Locator, value: str) ->
         page.wait_for_timeout(250)
         found = text_in_frames(page, value)
         if found:
-            _, option = found
+            _, _, option = found
             option.click(timeout=10_000)
             page.wait_for_timeout(250)
             return
@@ -282,7 +284,7 @@ def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[s
         page = browser.new_page()
         try:
             login(page, user_id, password)
-            frame = open_employee_registration(page)
+            page, frame = open_employee_registration(page)
             set_page_size(page)
             configure_date_range(page, START_DATE, end_date)
             role_frame, role_row = row_containing_in_frames(page, "직원권한")
@@ -291,7 +293,9 @@ def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[s
             for role in TARGET_ROLES:
                 choose_dropdown_value(page, role_frame, role_row, role)
                 click_search(page)
-                frame = frame_with_employee_grid(page) or frame
+                employee_grid = employee_grid_in_context(page)
+                if employee_grid:
+                    page, frame = employee_grid
                 role_rows = extract_grid_rows(frame, role)
                 role_counts[role] = len(role_rows)
                 collected.update(role_rows)
