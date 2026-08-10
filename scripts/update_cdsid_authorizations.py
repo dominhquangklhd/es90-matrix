@@ -54,9 +54,10 @@ def visible(locator: Locator) -> bool:
         return False
 
 
-def exact_text_in_frames(page: Page, text: str) -> tuple[Frame, Locator] | None:
+def text_in_frames(page: Page, text: str) -> tuple[Frame, Locator] | None:
+    pattern = re.compile(re.escape(text), re.IGNORECASE)
     for frame in page.frames:
-        matches = frame.get_by_text(text, exact=True)
+        matches = frame.get_by_text(pattern)
         for index in range(matches.count()):
             match = matches.nth(index)
             if visible(match):
@@ -65,7 +66,7 @@ def exact_text_in_frames(page: Page, text: str) -> tuple[Frame, Locator] | None:
 
 
 def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> bool:
-    found = exact_text_in_frames(page, text)
+    found = text_in_frames(page, text)
     if found:
         _, match = found
         match.click(timeout=15_000)
@@ -96,6 +97,7 @@ def login(page: Page, user_id: str, password: str) -> None:
         raise RuntimeError("Sales-DMS 로그인 버튼을 찾지 못했습니다.")
     login_button.click()
     page.wait_for_load_state("domcontentloaded", timeout=60_000)
+    page.wait_for_timeout(3_000)
     if "/login/" in page.url.lower():
         raise RuntimeError("Sales-DMS 로그인에 실패했습니다. GitHub Secret을 확인해 주세요.")
 
@@ -149,7 +151,7 @@ def choose_dropdown_value(page: Page, frame: Frame, row: Locator, value: str) ->
             continue
         input_box.click(timeout=10_000)
         page.wait_for_timeout(250)
-        found = exact_text_in_frames(page, value)
+        found = text_in_frames(page, value)
         if found:
             _, option = found
             option.click(timeout=10_000)
