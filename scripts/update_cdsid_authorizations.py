@@ -115,6 +115,16 @@ def employee_grid_in_context(page: Page) -> tuple[Page, Frame] | None:
     return None
 
 
+def wait_for_employee_grid(page: Page, timeout_ms: int = 30_000) -> tuple[Page, Frame]:
+    deadline = datetime.now().timestamp() + (timeout_ms / 1_000)
+    while datetime.now().timestamp() < deadline:
+        employee_grid = employee_grid_in_context(page)
+        if employee_grid:
+            return employee_grid
+        page.wait_for_timeout(500)
+    raise RuntimeError("직원등록 검색 제어가 로드되지 않습니다.")
+
+
 def login(page: Page, user_id: str, password: str) -> None:
     page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60_000)
     textboxes = page.get_by_role("textbox")
@@ -145,13 +155,7 @@ def open_employee_registration(page: Page) -> tuple[Page, Frame]:
     ):
         click_text_in_frames(page, menu_text)
 
-    deadline = datetime.now().timestamp() + 30
-    while datetime.now().timestamp() < deadline:
-        employee_grid = employee_grid_in_context(page)
-        if employee_grid:
-            return employee_grid
-        page.wait_for_timeout(500)
-    raise RuntimeError("직원등록 화면이 열리지 않았습니다.")
+    return wait_for_employee_grid(page)
 
 
 def row_containing(frame: Frame, label: str) -> Locator:
@@ -255,6 +259,7 @@ def set_page_size(page: Page) -> None:
         if input_box.count() and visible(input_box.first):
             input_box.first.fill("500")
             input_box.first.press("Enter")
+            wait_for_employee_grid(page)
             return
 
 
@@ -327,6 +332,7 @@ def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[s
             login(page, user_id, password)
             page, frame = open_employee_registration(page)
             set_page_size(page)
+            page, frame = wait_for_employee_grid(page)
             configure_date_range(page, START_DATE, end_date)
             role_frame, role_row = row_containing_in_frames(page, "직원권한")
             collected: set[str] = set()
