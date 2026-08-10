@@ -29,7 +29,7 @@ fetch('./app.html',{cache:'force-cache'}).then(response=>response.text()).then(s
     document.fonts.load("500 16px Paperlogy",'초고속 충전소 안내'),
     document.fonts.load("600 16px 'VolvoCentum'",'CUSTOMER LOCATION BASED GUIDE')
   ]);
-}).finally(()=>{clearTimeout(fontRevealSafety);revealStablePage()});
+  }).catch(()=>{}).finally(()=>{clearTimeout(fontRevealSafety);revealStablePage()});
 </script>
 <style>
 @font-face{font-family:'Paperlogy';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Paperlogy-5Medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap;unicode-range:U+AC00-D7A3,U+1100-11FF,U+3130-318F,U+A960-A97F,U+D7B0-D7FF}
