@@ -125,7 +125,7 @@ def open_employee_registration(page: Page) -> Frame:
 
 
 def row_containing(frame: Frame, label: str) -> Locator:
-    label_locator = frame.get_by_text(label, exact=True)
+    label_locator = frame.get_by_text(re.compile(re.escape(label), re.IGNORECASE))
     for index in range(label_locator.count()):
         candidate = label_locator.nth(index)
         if visible(candidate):
@@ -174,7 +174,7 @@ def configure_date_range(page: Page, frame: Frame, start_date: str, end_date: st
 
 
 def set_page_size(frame: Frame) -> None:
-    label = frame.get_by_text("리스트 갯수", exact=True)
+    label = frame.get_by_text(re.compile(r"리스트\s*갯수", re.IGNORECASE))
     if not label.count():
         return
     container = label.first.locator("xpath=parent::*")
