@@ -117,6 +117,11 @@ function goBack(){keepAppSessionAlive();location.href='./app.html?returnStep=3&r
 function logoutToLogin(){if(!confirm('로그아웃하고 로그인 화면으로 이동하시겠습니까?'))return;localStorage.removeItem(APP_SESSION_KEY);sessionStorage.removeItem(SUBSIDY_RETURN_STATE_KEY);location.href='./app.html'}
 
 function eligibilityRate(trim){return hasHalfSubsidy(trim)?0.5:0}
+function estimatedSubsidy(trim){
+  if(!hasHalfSubsidy(trim))return {national:0,local:0};
+  if(trim.trim.startsWith('Twin Motor'))return {national:165,local:50};
+  return {national:Math.round(ES90_ESTIMATED_NATIONAL_MANWON*0.5),local:Math.round(ES90_ESTIMATED_METRO_LOCAL_MANWON*0.5)};
+}
 function subsidyPriceRange(trim){if(!hasHalfSubsidy(trim))return {tone:'none',range:'Twin Performance Ultra',result:'국가 및 지자체 보조금 지급대상 제외'};return {tone:'half',range:'ES90 보조금 추정 기준',result:'국가 및 지자체 보조금 50% 적용 예상'}}
 function findOfficialModel(trim){
   const models=(subsidyData.modelStatus?.officialModels||[]).map(model=>({...model,key:String(model.modelName||'').toLowerCase()}));
@@ -169,8 +174,7 @@ function renderSelected(record){const useRate=record.announced?record.delivered/
 
 function renderWaterfall(record){
   const trim=TRIMS[Number(trimSelect.value)||0],rate=eligibilityRate(trim);
-  const national=Math.round(ES90_ESTIMATED_NATIONAL_MANWON*rate);
-  const local=Math.round(ES90_ESTIMATED_METRO_LOCAL_MANWON*rate);
+  const {national,local}=estimatedSubsidy(trim);
   const price=Math.round(trim.priceWon/10000),final=Math.max(0,price-national-local),totalSubsidy=national+local,focusFloor=totalSubsidy?Math.max(0,Math.round(final-totalSubsidy*1.8)):0,scale=totalSubsidy?240/Math.max(1,price-focusFloor):240/Math.max(1,price),nH=totalSubsidy?national*scale:0,lH=totalSubsidy?local*scale:0,finalY=20+nH+lH,finalH=totalSubsidy?Math.max(18,(final-focusFloor)*scale):240,badge=rate?`${Math.round(rate*100)}% 보조금 적용`:'보조금 대상 아님',priceRange=subsidyPriceRange(trim),focusLabel=totalSubsidy?`가격 구간 확대 · ${fmt(focusFloor)}~${fmt(price)}만원`:'전체 가격 기준';
   const warning=rate===0?'Twin Performance Ultra는 국가 및 지자체 보조금 계산에서 제외됩니다.':'ES90 공식 차종별 보조금 확정 전 추정치이며, 실제 지급액은 공식 고시와 지자체 공고에 따라 달라질 수 있습니다.';
   const nationalLabel='국가 보조금(추정치)',localLabel='지자체 보조금(서울 및 8대 광역시 기준)';
