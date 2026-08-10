@@ -137,6 +137,15 @@ def row_containing(frame: Frame, label: str) -> Locator:
     raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
 
 
+def row_containing_in_frames(page: Page, label: str) -> tuple[Frame, Locator]:
+    for frame in page.frames:
+        try:
+            return frame, row_containing(frame, label)
+        except RuntimeError:
+            continue
+    raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
+
+
 def choose_dropdown_value(page: Page, frame: Frame, row: Locator, value: str) -> None:
     selects = row.locator("select")
     for index in range(selects.count()):
@@ -162,8 +171,8 @@ def choose_dropdown_value(page: Page, frame: Frame, row: Locator, value: str) ->
     raise RuntimeError(f"직원등록 드롭다운 값을 선택하지 못했습니다: {value}")
 
 
-def configure_date_range(page: Page, frame: Frame, start_date: str, end_date: str) -> None:
-    period_row = row_containing(frame, "기간조회")
+def configure_date_range(page: Page, start_date: str, end_date: str) -> None:
+    frame, period_row = row_containing_in_frames(page, "기간조회")
     choose_dropdown_value(page, frame, period_row, "입사일자")
     inputs = period_row.locator(
         "input:not([type='hidden']):not([type='button']):not([disabled])"
@@ -175,25 +184,28 @@ def configure_date_range(page: Page, frame: Frame, start_date: str, end_date: st
     visible_inputs[-1].fill(end_date)
 
 
-def set_page_size(frame: Frame) -> None:
-    label = frame.get_by_text(re.compile(r"리스트\s*갯수", re.IGNORECASE))
-    if not label.count():
-        return
-    container = label.first.locator("xpath=parent::*")
-    input_box = container.locator("input:not([type='hidden'])")
-    if input_box.count() and visible(input_box.first):
-        input_box.first.fill("500")
-        input_box.first.press("Enter")
-
-
-def click_search(page: Page, frame: Frame) -> None:
-    searches = frame.get_by_text("검색", exact=True)
-    for index in range(searches.count()):
-        search = searches.nth(index)
-        if visible(search):
-            search.click(timeout=10_000)
-            page.wait_for_timeout(1_000)
+def set_page_size(page: Page) -> None:
+    for frame in page.frames:
+        label = frame.get_by_text(re.compile(r"리스트\s*갯수", re.IGNORECASE))
+        if not label.count():
+            continue
+        container = label.first.locator("xpath=parent::*")
+        input_box = container.locator("input:not([type='hidden'])")
+        if input_box.count() and visible(input_box.first):
+            input_box.first.fill("500")
+            input_box.first.press("Enter")
             return
+
+
+def click_search(page: Page) -> None:
+    for frame in page.frames:
+        searches = frame.get_by_text("검색", exact=True)
+        for index in range(searches.count()):
+            search = searches.nth(index)
+            if visible(search):
+                search.click(timeout=10_000)
+                page.wait_for_timeout(1_000)
+                return
     raise RuntimeError("직원등록 검색 버튼을 찾지 못했습니다.")
 
 
@@ -253,14 +265,14 @@ def collect_recent_cdsids(user_id: str, password: str) -> tuple[set[str], dict[s
         try:
             login(page, user_id, password)
             frame = open_employee_registration(page)
-            set_page_size(frame)
-            configure_date_range(page, frame, START_DATE, end_date)
-            role_row = row_containing(frame, "직원권한")
+            set_page_size(page)
+            configure_date_range(page, START_DATE, end_date)
+            role_frame, role_row = row_containing_in_frames(page, "직원권한")
             collected: set[str] = set()
             role_counts: dict[str, int] = {}
             for role in TARGET_ROLES:
-                choose_dropdown_value(page, frame, role_row, role)
-                click_search(page, frame)
+                choose_dropdown_value(page, role_frame, role_row, role)
+                click_search(page)
                 frame = frame_with_employee_grid(page) or frame
                 role_rows = extract_grid_rows(frame, role)
                 role_counts[role] = len(role_rows)
