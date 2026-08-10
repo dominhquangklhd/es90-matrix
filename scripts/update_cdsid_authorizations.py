@@ -70,8 +70,22 @@ def click_text_in_frames(page: Page, text: str, *, required: bool = True) -> boo
     found = text_in_frames(page, text)
     if found:
         _, _, match = found
+        click_target = match.evaluate(
+            """element => ({
+                tag: element.tagName.toLowerCase(),
+                text: (element.textContent || '').trim().replace(/\\s+/g, ' '),
+                href: element.getAttribute('href') || '',
+                onclick: element.getAttribute('onclick') || '',
+                className: element.className || ''
+            })"""
+        )
+        print(f"Sales-DMS 메뉴 클릭: label={text} target={click_target}")
         match.click(timeout=15_000)
         page.wait_for_timeout(500)
+        print(
+            "Sales-DMS 열린 페이지: "
+            + ", ".join(candidate.url for candidate in page.context.pages)
+        )
         return True
     if required:
         raise RuntimeError(f"Sales-DMS 메뉴를 찾지 못했습니다: {text}")
