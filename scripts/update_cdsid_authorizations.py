@@ -177,6 +177,19 @@ def row_containing_in_frames(page: Page, label: str) -> tuple[Frame, Locator]:
             f"Sales-DMS 검색영역 진단 frame={frame_index} "
             f"url={frame.url} controls={control_summary}"
         )
+        panel_text = frame.locator("body").inner_text(timeout=5_000).split("직원 목록", 1)[0]
+        panel_text = re.sub(r"\s+", " ", panel_text).strip()[:2_000]
+        print(f"Sales-DMS 검색영역 문구 frame={frame_index}: {panel_text}")
+        select_summary = frame.locator("select").evaluate_all(
+            """selects => selects.map(select => ({
+                id: select.id || '',
+                name: select.getAttribute('name') || '',
+                options: Array.from(select.options).map(option =>
+                    (option.textContent || '').trim().replace(/\\s+/g, ' ')
+                )
+            }))"""
+        )
+        print(f"Sales-DMS 선택항목 frame={frame_index}: {select_summary}")
     raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
 
 
