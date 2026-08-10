@@ -125,13 +125,15 @@ def open_employee_registration(page: Page) -> Frame:
 
 
 def row_containing(frame: Frame, label: str) -> Locator:
-    label_locator = frame.get_by_text(re.compile(re.escape(label), re.IGNORECASE))
-    for index in range(label_locator.count()):
-        candidate = label_locator.nth(index)
-        if visible(candidate):
-            row = candidate.locator("xpath=ancestor::tr[1]")
-            if row.count():
-                return row
+    normalized_label = re.sub(r"\s", "", label).lower()
+    rows = frame.locator("tr")
+    for index in range(rows.count()):
+        row = rows.nth(index)
+        if not visible(row):
+            continue
+        normalized_text = re.sub(r"\s", "", row.inner_text(timeout=5_000)).lower()
+        if normalized_label in normalized_text:
+            return row
     raise RuntimeError(f"직원등록 검색조건을 찾지 못했습니다: {label}")
 
 
