@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-10T12:04:31+09:00",
+  "checkedAt": "2026-08-10T12:07:23+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "일반 승용",
@@ -1424,7 +1424,7 @@
       "sido": "전라남도",
       "sigungu": "장흥군",
       "announced": 119,
-      "received": 150,
+      "received": 151,
       "delivered": 62,
       "remaining": 57,
       "nationalMaxManwon": 648,
