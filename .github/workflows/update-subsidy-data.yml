@@ -2,9 +2,9 @@ name: Update nationwide EV subsidy data
 
 on:
   schedule:
-    # Retry hourly from 06:20 through 18:20 Asia/Seoul, in sync with the
-    # TMAP/350kW charger check. Once today's check succeeds, later retries skip.
-    - cron: "20 21-23,0-9 * * *"
+    # Every three hours from 08:00 through the 18:00 operating window
+    # (08:00, 11:00, 14:00, 17:00 Asia/Seoul).
+    - cron: "0 23,2,5,8 * * *"
   workflow_dispatch:
 
 permissions:
@@ -31,8 +31,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check whether today's subsidy data was already verified
-        id: daily
+      - name: Check whether the latest three-hour subsidy slot was already verified
+        id: slot
         env:
           EVENT_NAME: ${{ github.event_name }}
         run: |
@@ -45,31 +45,41 @@ jobs:
 
           should_run = True
           checked_at = None
+          required_slot = None
           if os.environ.get("EVENT_NAME") == "schedule":
+              seoul = ZoneInfo("Asia/Seoul")
+              now = datetime.now(seoul)
+              slots = [
+                  now.replace(hour=hour, minute=0, second=0, microsecond=0)
+                  for hour in (8, 11, 14, 17)
+              ]
+              required_slot = max((slot for slot in slots if slot <= now), default=None)
               data = json.loads(Path("version.json").read_text(encoding="utf-8"))
               checked_at = data.get("subsidyCheckedAt")
-              if checked_at:
-                  checked_date = datetime.fromisoformat(checked_at).astimezone(
-                      ZoneInfo("Asia/Seoul")
-                  ).date()
-                  should_run = checked_date < datetime.now(
-                      ZoneInfo("Asia/Seoul")
-                  ).date()
+              checked_time = (
+                  datetime.fromisoformat(checked_at).astimezone(seoul)
+                  if checked_at
+                  else None
+              )
+              should_run = required_slot is not None and (
+                  checked_time is None or checked_time < required_slot
+              )
 
           with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
               output.write(f"should_run={'true' if should_run else 'false'}\n")
           print(
-              f"Subsidy daily check: previous={checked_at or 'none'}, "
+              f"Subsidy slot check: required={required_slot or 'manual'}, "
+              f"previous={checked_at or 'none'}, "
               f"should_run={should_run}"
           )
           PY
 
       - name: Install browser and HTML parsers
-        if: steps.daily.outputs.should_run == 'true'
+        if: steps.slot.outputs.should_run == 'true'
         run: python -m pip install --disable-pip-version-check lxml==6.0.2 selenium==4.38.0
 
       - name: Render official EV portal pages
-        if: steps.daily.outputs.should_run == 'true'
+        if: steps.slot.outputs.should_run == 'true'
         run: |
           python scripts/render_subsidy_pages.py \
             --payment-output /tmp/subsidy-payment.html \
@@ -77,7 +87,7 @@ jobs:
             --model-output /tmp/subsidy-model.html
 
       - name: Build and validate nationwide subsidy snapshot
-        if: steps.daily.outputs.should_run == 'true'
+        if: steps.slot.outputs.should_run == 'true'
         run: |
           python scripts/update_subsidy_data.py \
             --payment-html /tmp/subsidy-payment.html \
@@ -99,7 +109,7 @@ jobs:
           PY
 
       - name: Publish subsidy snapshot
-        if: steps.daily.outputs.should_run == 'true'
+        if: steps.slot.outputs.should_run == 'true'
         run: |
           CHECKED_AT="$(python -c "import json; print(json.load(open('subsidy-data.json', encoding='utf-8'))['checkedAt'])")"
           git config user.name "ES90 Subsidy Auto Update"
