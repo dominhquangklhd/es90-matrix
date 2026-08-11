@@ -17949,6 +17949,13 @@ const TRIM_GROUPS = [
     ]
   }
 ];
+function isReservationBestTrim(item){
+  const best = RESERVATION_DATA.byTrim[0];
+  return !!best && best.trim===item.trim && !!best.airSuspension===!!item.airSuspension;
+}
+function orderTrimGroupItems(trims){
+  return [...trims].sort((a,b)=>Number(isReservationBestTrim(b))-Number(isReservationBestTrim(a)));
+}
 // item: 대기고객 막대그래프 클릭 시 해당 트림을 선택하고 바로 STEP2로 이동
 function selectTrimFromWaitlist(trim, airSuspension=false){
   STATE.es90Trim = trim;
@@ -18091,24 +18098,24 @@ function renderStep1(){
       <div class="trim-col-cards" data-grp="${grp.label}"></div>
     `;
     const cards = col.querySelector('.trim-col-cards');
-    grp.trims.forEach(item=>{
+    orderTrimGroupItems(grp.trims).forEach(item=>{
       const trim = item.trim;
       const price = getES90Price(trim);
       const cardPrice = price && item.airSuspension ? {...price, total:price.total+getEsAirSuspensionOptionPrice(trim)} : price;
-      const isReservationBest = RESERVATION_DATA.byTrim[0] && RESERVATION_DATA.byTrim[0].trim===trim;
+      const isReservationBest = isReservationBestTrim(item);
       const card = el(`
-        <div class="trim-card${isReservationBest && item.airSuspension===true?' is-reservation-best':''}" data-trim="${trim}" data-air-suspension="${item.airSuspension===true?'true':'false'}">
+        <div class="trim-card${isReservationBest?' is-reservation-best':''}" data-trim="${trim}" data-air-suspension="${item.airSuspension===true?'true':'false'}">
           <div class="trim-card-inner">
             <div class="trim-card-left">
               <div class="trim-card-heading" style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
                 <div class="trim-badge" style="margin-bottom:0;font-family:'Paperlogy','VolvoCentum SemiBold','VolvoCentum',sans-serif;">Volvo ES90</div>
-                ${isReservationBest && item.airSuspension===true ? `<div class="waitlist-best-label" style="margin-bottom:0;">★ 실시간 BEST</div>` : ''}
+                ${isReservationBest ? `<div class="waitlist-best-label" style="margin-bottom:0;">★ 실시간 BEST</div>` : ''}
               </div>
               <div class="trim-name" style="font-family:'Paperlogy','VolvoCentum SemiBold','VolvoCentum',sans-serif;">${es90TrimDisplay(trim)}${item.variant?`<span class="trim-variant-badge">${item.variant}</span>`:''}</div>
             </div>
             <div class="trim-card-thumb"><img src="${es90TrimImage(trim)}" alt="${es90TrimDisplay(trim)} 차량" loading="eager"></div>
             <div class="trim-card-right">
-              <div class="trim-price-big${isReservationBest && item.airSuspension===true?'':' navy'}">${(()=>{ const lbl = cardPrice? fmtWonRange(cardPrice.total, trim):'가격 미정'; const {main,sub} = splitPriceLabel(lbl); return sub ? `<span class="trim-price-main">${main}</span><span class="trim-price-sub">${sub}</span>` : `<span class="trim-price-main">${main}</span>`; })()}</div>
+              <div class="trim-price-big${isReservationBest?'':' navy'}">${(()=>{ const lbl = cardPrice? fmtWonRange(cardPrice.total, trim):'가격 미정'; const {main,sub} = splitPriceLabel(lbl); return sub ? `<span class="trim-price-main">${main}</span><span class="trim-price-sub">${sub}</span>` : `<span class="trim-price-main">${main}</span>`; })()}</div>
             </div>
           </div>
         </div>
