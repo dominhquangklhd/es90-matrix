@@ -2,9 +2,10 @@ name: Update nationwide EV subsidy data
 
 on:
   schedule:
-    # Every three hours from 08:00 through the 18:00 operating window
-    # (08:00, 11:00, 14:00, 17:00 Asia/Seoul).
-    - cron: "0 23,2,5,8 * * *"
+    # Retry each three-hour slot away from the top-of-hour congestion window.
+    # Asia/Seoul slots: 08:07/27/47, 11:07/27/47, 14:07/27/47, 17:07/27/47.
+    # The slot guard below skips every retry after the first successful check.
+    - cron: "7,27,47 23,2,5,8 * * *"
   workflow_dispatch:
 
 permissions:
