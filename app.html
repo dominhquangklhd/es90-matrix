@@ -17845,13 +17845,13 @@ const RESERVATION_DATA = {
   total: 2094,
   previousDayTotal: 2073,
   byTrim: [
-    {trim:'Single Motor Ultra', count:1086, airSuspension:true},
-    {trim:'Twin Motor Ultra', count:696, airSuspension:true},
+    {trim:'Single Motor Ultra', count:1089, airSuspension:true},
+    {trim:'Twin Motor Ultra', count:695, airSuspension:true},
     {trim:'Twin Motor Performance Ultra', count:127},
     {trim:'Single Motor Ultra', count:80, airSuspension:false, variant:'No Air Sus'},
-    {trim:'Single Motor Plus', count:57},
+    {trim:'Single Motor Plus', count:56},
     {trim:'Twin Motor Ultra', count:33, airSuspension:false, variant:'No Air Sus'},
-    {trim:'Twin Motor Plus', count:15}
+    {trim:'Twin Motor Plus', count:14}
   ]
 };
 const BRAND_STATUS_BADGES = {
@@ -17888,7 +17888,7 @@ function isTopBrandInCurrentGroup(brand){
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
-let RESERVATION_UPDATED_AT = '2026-08-14 15:04';
+let RESERVATION_UPDATED_AT = '2026-08-14 16:04';
 function formatDeploymentUpdatedAt(value){
   const date = new Date(value);
   if(Number.isNaN(date.getTime())) return null;
