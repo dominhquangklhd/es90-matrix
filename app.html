@@ -1627,12 +1627,11 @@ body.cover-open{overflow:hidden;background:#05070a;}
 .login-visit-sep{color:rgba(226,232,236,.34);}
 .login-visit-sep-wide{margin:0 7px;}
 .login-visit-stats strong{color:#fff;font-size:inherit;font-weight:650;}
-.login-getcha-update{display:inline-flex;align-items:center;gap:3px;height:21px;margin-left:auto;padding:0 8px 0 6px;border:1px solid rgba(173,202,221,.34);border-radius:999px;background:linear-gradient(180deg,rgba(30,67,93,.82) 0%,rgba(14,44,66,.88) 100%);color:rgba(229,239,245,.84);font-size:8.5px;font-weight:700;line-height:1;letter-spacing:.08px;text-shadow:none;box-shadow:0 2px 8px rgba(3,18,29,.18);white-space:nowrap;}
-.login-getcha-update-icon{display:grid;place-items:center;width:14px;height:14px;margin-right:1px;color:#a9c7d9;}
-.login-getcha-update-icon svg{display:block;width:13px;height:13px;fill:none;stroke:currentColor;}
-.login-getcha-update-brand{color:#f2f7fa;font-size:8px;font-weight:850;letter-spacing:.22px;}
-.login-getcha-update-label{color:#9ec2d7;font-size:8px;font-weight:850;letter-spacing:.28px;}
-.login-getcha-update-time{color:rgba(221,234,241,.82);font-variant-numeric:tabular-nums;}
+.login-update-stamp{display:inline-flex;align-items:center;gap:4px;height:21px;margin-left:auto;padding:0 9px 0 7px;border:1px solid rgba(173,202,221,.34);border-radius:999px;background:linear-gradient(180deg,rgba(30,67,93,.82) 0%,rgba(14,44,66,.88) 100%);color:rgba(229,239,245,.84);font-size:8.5px;font-weight:700;line-height:1;letter-spacing:.08px;text-shadow:none;box-shadow:0 2px 8px rgba(3,18,29,.18);white-space:nowrap;}
+.login-update-stamp-icon{display:grid;place-items:center;width:14px;height:14px;color:#a9c7d9;}
+.login-update-stamp-icon svg{display:block;width:13px;height:13px;fill:none;stroke:currentColor;}
+.login-update-stamp-label{color:#9ec2d7;font-size:8px;font-weight:850;letter-spacing:.28px;}
+.login-update-stamp-time{color:rgba(221,234,241,.82);font-variant-numeric:tabular-nums;}
 .login-footer-since{color:inherit;font:inherit;letter-spacing:inherit;white-space:nowrap;}
 .login-footer-since:before{content:'·';margin-right:8px;color:inherit;}
 @media screen and (min-width:821px) and (max-width:1366px) and (orientation:landscape){
@@ -1660,9 +1659,9 @@ body.cover-open{overflow:hidden;background:#05070a;}
   .login-id-input{font-size:14px;}
   .login-submit{font-size:14px;letter-spacing:0;}
   .login-visit-stats{font-size:10.5px;gap:6px;}
-  .login-getcha-update{height:20px;margin-left:auto;padding:0 6px 0 5px;font-size:7.8px;gap:2px;}
-  .login-getcha-update-icon{width:13px;height:13px;}
-  .login-getcha-update-icon svg{width:12px;height:12px;}
+  .login-update-stamp{height:20px;margin-left:auto;padding:0 7px 0 5px;font-size:7.8px;gap:3px;}
+  .login-update-stamp-icon{width:13px;height:13px;}
+  .login-update-stamp-icon svg{width:12px;height:12px;}
   .login-footer{margin-top:4px;font-size:10.5px;gap:6px;}
   .login-footer-since:before{margin-right:6px;}
 }
@@ -1695,7 +1694,7 @@ body.cover-open{overflow:hidden;background:#05070a;}
       </div>
       <button class="login-submit" type="submit"><span class="login-submit-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="5.5"/><path d="M12 2.8V9"/><path d="M6.8 10h10.4"/><path d="M12 5.2v1.6"/></svg></span><span class="login-submit-text">ES90 경쟁력 분석 시작</span></button>
       <div class="login-message" id="loginCoverMessage" aria-live="polite"></div>
-      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite"><span class="login-visit-label">접속 현황</span><span class="login-visit-sep">·</span><span>오늘 <strong id="loginTodayVisitors">—</strong>명</span><span class="login-visit-sep login-visit-sep-wide">·</span><span>누적 <strong id="loginTotalVisitors">—</strong>명</span><span class="login-getcha-update" id="loginGetchaUpdate" aria-label="Getcha 업데이트 확인일"><span class="login-getcha-update-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" stroke-width="1.8"/><path d="M12 7.5V12l3.2 2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="login-getcha-update-brand">GETCHA</span><span class="login-getcha-update-label">UPDATE</span><span class="login-getcha-update-time" id="loginGetchaUpdateTime">2026-08-18 기준</span></span></div>
+      <div class="login-visit-stats" aria-label="접속자 현황" aria-live="polite"><span class="login-visit-label">접속 현황</span><span class="login-visit-sep">·</span><span>오늘 <strong id="loginTodayVisitors">—</strong>명</span><span class="login-visit-sep login-visit-sep-wide">·</span><span>누적 <strong id="loginTotalVisitors">—</strong>명</span><span class="login-update-stamp" id="loginUpdateStamp" aria-label="업데이트 시각"><span class="login-update-stamp-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" stroke-width="1.8"/><path d="M12 7.5V12l3.2 2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="login-update-stamp-label">UPDATE</span><span class="login-update-stamp-time" id="loginUpdateTime">2026-08-18 11:10 기준</span></span></div>
       <div class="login-security"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" stroke-width="1.7"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" stroke-width="1.7" stroke-linecap="round"/></svg><span>볼보 공식 딜러사 소속 영업직원 · 스페셜리스트만 이용 가능합니다.</span></div>
       <div class="login-footer"><span>Copyright (C) Volvo Car Korea. All rights reserved.</span><span class="login-footer-since">Since 260722</span></div>
     </form>
