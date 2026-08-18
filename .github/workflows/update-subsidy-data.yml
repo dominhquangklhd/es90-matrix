@@ -22,13 +22,13 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Sync latest main branch
         run: git pull --ff-only origin main
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -101,10 +101,20 @@ jobs:
           assert len(data["regions"]) >= 150
           assert data["regions"][0]["sido"] == "서울특별시"
           assert data["allocationBasis"] == "일반 승용"
+          assert data["collection"]["payment"] == "live-official"
           assert all(
               region["remaining"]
               == max(0, region["announced"] - region["delivered"])
               for region in data["regions"]
+          )
+          key_regions = {
+              "서울특별시", "부산광역시", "대구광역시", "인천광역시",
+              "광주광역시", "대전광역시", "울산광역시", "세종특별자치시",
+          }
+          assert all(
+              region["combinedMaxManwon"] > 0
+              for region in data["regions"]
+              if region["sido"] in key_regions
           )
           print(f"Validated {len(data['regions'])} official regions")
           PY
@@ -137,3 +147,16 @@ jobs:
 
           echo "Unable to publish subsidy snapshot after 5 attempts." >&2
           exit 1
+
+      - name: Upload subsidy diagnostics on failure
+        if: failure() && steps.slot.outputs.should_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: subsidy-render-diagnostics-${{ github.run_id }}
+          path: |
+            /tmp/subsidy-payment.html
+            /tmp/subsidy-price.html
+            /tmp/subsidy-model.html
+            subsidy-data.json
+          if-no-files-found: ignore
+          retention-days: 7
