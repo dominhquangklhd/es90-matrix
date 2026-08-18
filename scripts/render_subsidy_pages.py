@@ -132,14 +132,13 @@ def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
             """
         )
     )
-    total_pages = int(
-        driver.find_element(
-            By.CSS_SELECTOR, ".pagination--fraction .pagination__total"
-        ).text
-    )
     rows_by_key: dict[tuple[str, str], dict] = {}
+    seen_pages: set[tuple] = set()
 
-    for page_number in range(1, total_pages + 1):
+    # Do not rely on the visible page counter.  In headless Chrome the portal
+    # can expose the AG Grid before its counter gets non-empty text.  Instead,
+    # walk until the next button is disabled or the grid no longer advances.
+    for page_number in range(1, 101):
         page_rows = driver.execute_script(
             """
             const root = document.querySelector('.ag-root-wrapper[grid-id]');
@@ -151,33 +150,93 @@ def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
         )
         if not page_rows:
             raise RuntimeError(f"공식 보조금 그리드 {page_number}페이지가 비어 있습니다.")
+        page_signature = tuple(
+            (
+                str(row.get("localCd", "")),
+                str(row.get("carNm", "")),
+                str(row.get("releaArr", "")),
+                str(row.get("resiArr", "")),
+            )
+            for row in page_rows
+        )
+        if page_signature in seen_pages:
+            break
+        seen_pages.add(page_signature)
+
         for row in page_rows:
             if row.get("carNm") != "전기승용":
                 continue
             key = (str(row.get("localCd", "")), str(row.get("carNm", "")))
             rows_by_key[key] = row
 
-        if page_number == total_pages:
-            break
         next_button = driver.find_element(
             By.CSS_SELECTOR,
             ".pagination--fraction .pagination__button[data-page='next']",
         )
-        driver.execute_script("arguments[0].click()", next_button)
-        WebDriverWait(driver, 15, poll_frequency=0.1).until(
-            lambda current, target=page_number + 1: int(
-                current.find_element(
-                    By.CSS_SELECTOR,
-                    ".pagination--fraction .pagination__current",
-                ).text
-            )
-            == target
+        next_disabled = driver.execute_script(
+            """
+            const button = arguments[0];
+            return button.disabled
+              || button.getAttribute('aria-disabled') === 'true'
+              || button.classList.contains('disabled')
+              || button.classList.contains('is-disabled');
+            """,
+            next_button,
         )
+        if next_disabled:
+            break
+
+        driver.execute_script("arguments[0].click()", next_button)
+        try:
+            WebDriverWait(driver, 15, poll_frequency=0.1).until(
+                lambda current, previous=page_signature: tuple(
+                    (
+                        str(row.get("localCd", "")),
+                        str(row.get("carNm", "")),
+                        str(row.get("releaArr", "")),
+                        str(row.get("resiArr", "")),
+                    )
+                    for row in current.execute_script(
+                        """
+                        const root = document.querySelector('.ag-root-wrapper[grid-id]');
+                        const api = root && window.agGrid.getGridApi(root.getAttribute('grid-id'));
+                        const rows = [];
+                        if (api) api.forEachNode(node => rows.push(node.data));
+                        return rows;
+                        """
+                    )
+                )
+                != previous
+            )
+        except TimeoutException:
+            # The final page may keep an enabled-looking button while refusing
+            # to advance.  A repeated signature is a deterministic end signal.
+            repeated_rows = driver.execute_script(
+                """
+                const root = document.querySelector('.ag-root-wrapper[grid-id]');
+                const api = root && window.agGrid.getGridApi(root.getAttribute('grid-id'));
+                const rows = [];
+                if (api) api.forEachNode(node => rows.push(node.data));
+                return rows;
+                """
+            )
+            repeated_signature = tuple(
+                (
+                    str(row.get("localCd", "")),
+                    str(row.get("carNm", "")),
+                    str(row.get("releaArr", "")),
+                    str(row.get("resiArr", "")),
+                )
+                for row in repeated_rows
+            )
+            if repeated_signature != page_signature:
+                raise
+            break
 
     rows = list(rows_by_key.values())
     if len(rows) < 150:
         raise RuntimeError(f"전국 전기승용 데이터가 불완전합니다: {len(rows)}개 지역")
-    print(f"Collected {len(rows)} electric-passenger regions from {total_pages} pages")
+    print(f"Collected {len(rows)} electric-passenger regions from {len(seen_pages)} pages")
     return rows
 
 
