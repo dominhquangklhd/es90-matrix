@@ -17897,6 +17897,22 @@ function isTopBrandInCurrentGroup(brand){
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
+function syncLoginGetchaUpdate(){
+  const badge = document.getElementById('loginGetchaUpdate');
+  const time = document.getElementById('loginGetchaUpdateTime');
+  if(!badge || !time) return;
+  let checkedAt = '';
+  Object.values(D.prices || {}).forEach(model=>{
+    Object.values(model || {}).forEach(trim=>{
+      const date = String((trim && trim.promotionCheckedAt) || '');
+      if(date > checkedAt) checkedAt = date;
+    });
+  });
+  badge.hidden = !checkedAt;
+  if(!checkedAt) return;
+  time.textContent = `${checkedAt} 기준`;
+  badge.setAttribute('aria-label', `Getcha 업데이트 ${checkedAt} 기준`);
+}
 let RESERVATION_UPDATED_AT = '2026-08-18 11:10';
 function formatDeploymentUpdatedAt(value){
   const date = new Date(value);
@@ -20588,7 +20604,8 @@ function initLoginCover(){
   let lockTimer = null;
   let loginTransitioning = false;
   let lastActivityWrite = 0;
-  syncLoginGetchaUpdate();
+  // 로그인/접속 현황 같은 핵심 초기화가 부가 배지 오류로 중단되지 않게 격리한다.
+  try{ syncLoginGetchaUpdate(); }catch(_){ }
   const refreshLoginVisitStats = ()=>{
     if(document.visibilityState === 'hidden' || cover?.hidden) return;
     syncEs90VisitStats().catch(()=>{});
