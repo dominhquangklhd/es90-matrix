@@ -212,7 +212,7 @@ def write_payment_table(rows: list[dict], output: Path) -> None:
             "<tr>" + "".join(f"<td>{escape(cell)}</td>" for cell in cells) + "</tr>"
         )
     output.write_text(
-        "<!doctype html><html><body><table>"
+        "<!doctype html><html><head><meta charset='utf-8'></head><body><table>"
         f"<caption>{LEGACY_PAYMENT_TITLE}</caption>"
         "<thead><tr>"
         + "".join(f"<th>{escape(heading)}</th>" for heading in headings)
