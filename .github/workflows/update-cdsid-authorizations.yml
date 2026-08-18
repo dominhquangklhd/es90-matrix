@@ -2,8 +2,8 @@ name: Update CDSID authorizations
 
 on:
   schedule:
-    # Every day at 09:00 Asia/Seoul (00:00 UTC).
-    - cron: "0 0 * * *"
+    # Asia/Seoul 09:07/09:27/09:47. Later attempts are skipped after success.
+    - cron: "7,27,47 0 * * *"
   workflow_dispatch:
 
 permissions:
@@ -16,26 +16,66 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Sync latest main branch
         run: git pull --ff-only origin main
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
+      - name: Check whether today's CDSID roster was already verified
+        id: slot
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          should_run = True
+          checked_at = None
+          required = None
+          if os.environ.get("EVENT_NAME") == "schedule":
+              seoul = ZoneInfo("Asia/Seoul")
+              now = datetime.now(seoul)
+              required = now.replace(hour=9, minute=0, second=0, microsecond=0)
+              data = json.loads(Path("version.json").read_text(encoding="utf-8"))
+              checked_at = data.get("cdsidCheckedAt")
+              checked_time = (
+                  datetime.fromisoformat(checked_at).astimezone(seoul)
+                  if checked_at
+                  else None
+              )
+              should_run = now >= required and (
+                  checked_time is None or checked_time.date() < now.date()
+              )
+
+          with Path(os.environ["GITHUB_OUTPUT"]).open("a", encoding="utf-8") as output:
+              output.write(f"should_run={'true' if should_run else 'false'}\n")
+          print(
+              f"CDSID daily check: required={required or 'manual'}, "
+              f"previous={checked_at or 'none'}, should_run={should_run}"
+          )
+          PY
+
       - name: Install browser
+        if: steps.slot.outputs.should_run == 'true'
         run: |
           python -m pip install --disable-pip-version-check playwright==1.54.0
           python -m playwright install --with-deps chromium
 
       - name: Check Sales-DMS access changes
+        if: steps.slot.outputs.should_run == 'true'
         id: cdsid
         env:
           VOLVO_SALES_ID: ${{ secrets.VOLVO_SALES_ID }}
@@ -43,12 +83,20 @@ jobs:
         run: python scripts/update_cdsid_authorizations.py
 
       - name: Publish CDSID authorization changes
-        if: steps.cdsid.outputs.changed == 'true'
+        if: steps.slot.outputs.should_run == 'true'
+        env:
+          ACCESS_CHANGED: ${{ steps.cdsid.outputs.changed }}
+          CHECKED_AT: ${{ steps.cdsid.outputs.checked_at }}
         run: |
           git config user.name "ES90 Auto Update"
           git config user.email "actions@users.noreply.github.com"
-          git add app.html
-          git commit -m "Auto update Sales-DMS login access"
+          python scripts/update_version_metadata.py --cdsid-checked-at "$CHECKED_AT"
+          git add app.html version.json
+          if [ "$ACCESS_CHANGED" = "true" ]; then
+            git commit -m "Auto update Sales-DMS login access"
+          else
+            git commit -m "Record Sales-DMS access check"
+          fi
 
           for attempt in 1 2 3 4 5; do
             if git push; then
