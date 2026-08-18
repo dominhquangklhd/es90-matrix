@@ -11,8 +11,14 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 APP_PATH = ROOT / "app.html"
 LOGIN_URL = "https://sales.volvocars.kr/login/login.asp"
-START_DATE = "260722"
-TARGET_ROLES = ("영업직원", "영업팀장", "스페셜리스트")
+START_DATE = "260811"
+TARGET_ROLES = (
+    "영업직원",
+    "영업팀장",
+    "스페셜리스트",
+    "세일즈 본부장",
+    "세일즈 지점장",
+)
 AUTH_BLOCK_PATTERN = re.compile(
     r"const AUTHORIZED_CDSID_HASHES = new Set\(\[(.*?)\]\);",
     re.DOTALL,
@@ -40,6 +46,10 @@ def hash_cdsid(value: str) -> str:
 
 def today_yymmdd() -> str:
     return datetime.now(ZoneInfo("Asia/Seoul")).strftime("%y%m%d")
+
+
+def now_iso() -> str:
+    return datetime.now(ZoneInfo("Asia/Seoul")).isoformat(timespec="seconds")
 
 
 Frame = Any
@@ -207,7 +217,7 @@ def extract_grid_rows(
     date_label: str,
     start_date: str,
     end_date: str,
-) -> list[str]:
+) -> dict[str, str]:
     rows = frame.locator("tr").evaluate_all(
         """rows => rows.map(row =>
             Array.from(row.querySelectorAll('th,td')).map(cell =>
@@ -234,7 +244,7 @@ def extract_grid_rows(
     cdsid_index = header.index("직원 CDSID")
     date_index = header.index(date_label)
     max_index = max(role_index, cdsid_index, date_index)
-    results: list[str] = []
+    results: dict[str, str] = {}
     for row in rows[header_index + 1 :]:
         if len(row) <= max_index:
             continue
@@ -242,7 +252,7 @@ def extract_grid_rows(
         cdsid = normalize_cdsid(row[cdsid_index])
         employee_date = normalize_date_text(row[date_index])
         if role == expected_role and cdsid and start_date <= employee_date <= end_date:
-            results.append(cdsid)
+            results[cdsid] = max(results.get(cdsid, ""), employee_date)
     return results
 
 
@@ -251,7 +261,7 @@ def collect_role_cdsids(
     date_label: str,
     employment_status: str,
     end_date: str,
-) -> tuple[set[str], dict[str, int]]:
+) -> tuple[dict[str, str], dict[str, int]]:
     configure_date_range(
         page,
         date_label,
@@ -259,7 +269,7 @@ def collect_role_cdsids(
         START_DATE,
         end_date,
     )
-    collected: set[str] = set()
+    collected: dict[str, str] = {}
     role_counts: dict[str, int] = {}
     for role in TARGET_ROLES:
         page, frame = wait_for_employee_grid(page)
@@ -276,14 +286,39 @@ def collect_role_cdsids(
             end_date,
         )
         role_counts[role] = len(role_rows)
-        collected.update(role_rows)
+        for cdsid, event_date in role_rows.items():
+            collected[cdsid] = max(collected.get(cdsid, ""), event_date)
     return collected, role_counts
+
+
+def resolve_access_events(
+    hired_dates: dict[str, str],
+    departed_dates: dict[str, str],
+) -> tuple[set[str], set[str]]:
+    """Resolve access from the latest hire/departure event per CDSID.
+
+    A returning employee can have both events inside the search range.  A hire
+    on the same day as, or after, the latest departure restores access; only a
+    strictly later departure revokes it.
+    """
+
+    all_cdsids = set(hired_dates) | set(departed_dates)
+    active_hires: set[str] = set()
+    final_departures: set[str] = set()
+    for cdsid in all_cdsids:
+        hire_date = hired_dates.get(cdsid, "")
+        departure_date = departed_dates.get(cdsid, "")
+        if hire_date and hire_date >= departure_date:
+            active_hires.add(cdsid)
+        elif departure_date:
+            final_departures.add(cdsid)
+    return active_hires, final_departures
 
 
 def collect_access_changes(
     user_id: str,
     password: str,
-) -> tuple[set[str], set[str], dict[str, int], dict[str, int]]:
+) -> tuple[dict[str, str], dict[str, str], dict[str, int], dict[str, int]]:
     from playwright.sync_api import sync_playwright
 
     end_date = today_yymmdd()
@@ -357,6 +392,7 @@ def write_github_output(
     new_count: int,
     departed_count: int = 0,
     revoked_count: int = 0,
+    checked_at: str | None = None,
 ) -> None:
     output_path = os.environ.get("GITHUB_OUTPUT", "").strip()
     if not output_path:
@@ -367,14 +403,19 @@ def write_github_output(
         output.write(f"new_count={new_count}\n")
         output.write(f"departed_count={departed_count}\n")
         output.write(f"revoked_count={revoked_count}\n")
+        output.write(f"checked_at={checked_at or now_iso()}\n")
 
 
 def main() -> int:
     try:
         user_id = required_env("VOLVO_SALES_ID")
         password = required_env("VOLVO_SALES_PASSWORD")
-        hired_cdsids, departed_cdsids, hire_counts, departure_counts = (
+        hired_dates, departed_dates, hire_counts, departure_counts = (
             collect_access_changes(user_id, password)
+        )
+        hired_cdsids, departed_cdsids = resolve_access_events(
+            hired_dates,
+            departed_dates,
         )
         app_text = APP_PATH.read_text(encoding="utf-8")
         existing_hashes = set(read_authorized_hashes(app_text))
@@ -392,10 +433,11 @@ def main() -> int:
             APP_PATH.write_text(updated_app, encoding="utf-8")
         write_github_output(
             changed,
-            len(hired_hashes),
+            len(hired_dates),
             len(new_hashes),
-            len(departed_hashes),
+            len(departed_dates),
             len(revoked_hashes),
+            now_iso(),
         )
         hire_summary = ", ".join(
             f"{role} {hire_counts.get(role, 0)}명" for role in TARGET_ROLES
@@ -411,6 +453,8 @@ def main() -> int:
             f"Sales-DMS 퇴사자 확인 완료: {departure_summary}, "
             f"로그인 차단 {len(revoked_hashes)}명"
         )
+        returning_count = len(set(hired_dates) & set(departed_dates) & hired_cdsids)
+        print(f"재입사 우선 처리 완료: 로그인 유지 또는 복원 {returning_count}명")
         return 0
     except Exception as error:
         print(f"CDSID 자동 갱신 실패: {error}", file=sys.stderr)

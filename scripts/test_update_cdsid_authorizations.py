@@ -43,6 +43,35 @@ class CdsidAuthorizationTests(unittest.TestCase):
         )
         self.assertEqual(updater.read_authorized_hashes(updated), [active])
 
+    def test_rehire_on_or_after_departure_restores_access(self) -> None:
+        hired, departed = updater.resolve_access_events(
+            {
+                "RETURNED-LATER": "260815",
+                "RETURNED-SAME-DAY": "260814",
+                "LEFT-LATER": "260812",
+            },
+            {
+                "RETURNED-LATER": "260812",
+                "RETURNED-SAME-DAY": "260814",
+                "LEFT-LATER": "260817",
+            },
+        )
+        self.assertEqual(hired, {"RETURNED-LATER", "RETURNED-SAME-DAY"})
+        self.assertEqual(departed, {"LEFT-LATER"})
+
+    def test_target_roles_and_baseline_date(self) -> None:
+        self.assertEqual(updater.START_DATE, "260811")
+        self.assertEqual(
+            updater.TARGET_ROLES,
+            (
+                "영업직원",
+                "영업팀장",
+                "스페셜리스트",
+                "세일즈 본부장",
+                "세일즈 지점장",
+            ),
+        )
+
     def test_normalize_date_text(self) -> None:
         self.assertEqual(updater.normalize_date_text("2026-08-10"), "260810")
         self.assertEqual(updater.normalize_date_text("26.08.10"), "260810")
@@ -51,14 +80,20 @@ class CdsidAuthorizationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "output.txt"
             with patch.dict("os.environ", {"GITHUB_OUTPUT": str(output)}):
-                updater.write_github_output(True, 4, 1)
+                updater.write_github_output(
+                    True,
+                    4,
+                    1,
+                    checked_at="2026-08-18T09:07:00+09:00",
+                )
             self.assertEqual(
                 output.read_text(encoding="utf-8"),
                 "changed=true\n"
                 "scanned_count=4\n"
                 "new_count=1\n"
                 "departed_count=0\n"
-                "revoked_count=0\n",
+                "revoked_count=0\n"
+                "checked_at=2026-08-18T09:07:00+09:00\n",
             )
 
 
