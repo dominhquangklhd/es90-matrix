@@ -17854,8 +17854,8 @@ const RESERVATION_DATA = {
   total: 2265,
   previousDayTotal: 2263,
   byTrim: [
-    {trim:'Single Motor Ultra', count:1199, airSuspension:true},
-    {trim:'Twin Motor Ultra', count:733, airSuspension:true},
+    {trim:'Single Motor Ultra', count:1198, airSuspension:true},
+    {trim:'Twin Motor Ultra', count:734, airSuspension:true},
     {trim:'Twin Motor Performance Ultra', count:134},
     {trim:'Single Motor Ultra', count:89, airSuspension:false, variant:'No Air Sus'},
     {trim:'Single Motor Plus', count:62},
@@ -17897,23 +17897,7 @@ function isTopBrandInCurrentGroup(brand){
 function getDocumentUpdatedAt(){
   return D.meta.updated;
 }
-function syncLoginGetchaUpdate(){
-  const badge = document.getElementById('loginGetchaUpdate');
-  const time = document.getElementById('loginGetchaUpdateTime');
-  if(!badge || !time) return;
-  let checkedAt = '';
-  Object.values(D.prices||{}).forEach(model=>{
-    Object.values(model||{}).forEach(trim=>{
-      const date = String(trim?.promotionCheckedAt||'');
-      if(date > checkedAt) checkedAt = date;
-    });
-  });
-  badge.hidden = !checkedAt;
-  if(!checkedAt) return;
-  time.textContent = `${checkedAt} 기준`;
-  badge.setAttribute('aria-label', `Getcha 업데이트 ${checkedAt} 기준`);
-}
-let RESERVATION_UPDATED_AT = '2026-08-18 10:05';
+let RESERVATION_UPDATED_AT = '2026-08-18 11:10';
 function formatDeploymentUpdatedAt(value){
   const date = new Date(value);
   if(Number.isNaN(date.getTime())) return null;
