@@ -404,6 +404,8 @@ button{font-family:inherit;}
 .ov-opt.option-jump::before{content:'👆';position:absolute;left:-5px;top:-6px;display:flex;align-items:center;justify-content:center;width:9px;height:9px;border:1px solid #efb98f;border-radius:50%;background:#fff8f2;font-size:6px;line-height:1;box-shadow:0 1px 2px rgba(22,48,70,.14);pointer-events:none;}
 .ov-opt.option-jump:hover{filter:brightness(.94);transform:translateY(-1px);}
 .certification-pending-badge{margin-left:6px;vertical-align:middle;cursor:default;pointer-events:none;}
+.es-product-best-value{display:inline-flex;align-items:center;color:var(--ink);white-space:nowrap;}
+.es-product-best-number{display:inline-block;flex:0 0 58px;width:58px;text-align:left;}
 .ov-opt.es-air-option-toggle.is-selected{background:#f15a24;color:#fff;box-shadow:0 1px 4px rgba(241,90,36,.25);}
 .sound-spec-inline{white-space:nowrap;}
 .option-name-with-dolby{display:inline-flex;align-items:center;gap:6px;width:auto;max-width:calc(100% - 50px);min-width:0;white-space:normal;vertical-align:middle;}
@@ -18807,11 +18809,13 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
   const fmtDimension = value => value!=null ? addComma(value)+'mm' : '확인 불가';
   const productBestBadge = '<span class="ov-opt certification-pending-badge">볼보 프로덕트 중 최고</span>';
   const fmtEsDimension = (value,productBest=false) => value!=null
-    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtDimension(value)}${productBest?productBestBadge:''}</span>`
+    ? (productBest
+      ? `<span class="es-product-best-value"><span class="es-product-best-number">${fmtDimension(value)}</span>${productBestBadge}</span>`
+      : `<span style="color:var(--ink);white-space:nowrap;">${fmtDimension(value)}</span>`)
     : '확인 불가';
   const fmtRatio = value => value!=null ? value.toFixed(2)+'%' : '확인 불가';
   const fmtEsRatio = value => value!=null
-    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtRatio(value)}${productBestBadge}</span>`
+    ? `<span class="es-product-best-value"><span class="es-product-best-number">${fmtRatio(value)}</span>${productBestBadge}</span>`
     : '확인 불가';
   // add thousand-separator commas to every number embedded in a trunk-capacity string
   const fmtTrunkStr = s => s ? String(s).replace(/\d{4,}/g, m => addComma(m)) : s;
