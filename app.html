@@ -18804,6 +18804,9 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     ? dimensions.wheelbase_mm / dimensions.length_mm * 100
     : null;
   const fmtDimension = value => value!=null ? addComma(value)+'mm' : '확인 불가';
+  const fmtEsDimension = value => value!=null
+    ? `<span style="color:var(--ink);">${fmtDimension(value)}<span class="ov-opt certification-pending-badge">인증진행중</span></span>`
+    : '확인 불가';
   const fmtRatio = value => value!=null ? value.toFixed(2)+'%' : '확인 불가';
   // add thousand-separator commas to every number embedded in a trunk-capacity string
   const fmtTrunkStr = s => s ? String(s).replace(/\d{4,}/g, m => addComma(m)) : s;
@@ -18841,13 +18844,13 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
   // 차체 제원 5개를 포함한 핵심 비교항목을 먼저, 비교 제외 항목(배터리 보증류)은 맨 아래로
   const coreRows = [
     {label:'전장',              esVal:dimensionValue(esDimensions,'length_mm'), compVal:dimensionValue(compDimensions,'length_mm'),
-      es:fmtDimension(dimensionValue(esDimensions,'length_mm')), comp:fmtDimension(dimensionValue(compDimensions,'length_mm')), compare:true, lowerBetter:false},
+      es:fmtEsDimension(dimensionValue(esDimensions,'length_mm')), comp:fmtDimension(dimensionValue(compDimensions,'length_mm')), compare:true, lowerBetter:false},
     {label:'전폭',              esVal:dimensionValue(esDimensions,'width_mm'), compVal:dimensionValue(compDimensions,'width_mm'),
-      es:fmtDimension(dimensionValue(esDimensions,'width_mm')), comp:fmtDimension(dimensionValue(compDimensions,'width_mm')), compare:true, lowerBetter:false},
+      es:fmtEsDimension(dimensionValue(esDimensions,'width_mm')), comp:fmtDimension(dimensionValue(compDimensions,'width_mm')), compare:true, lowerBetter:false},
     {label:'전고',              esVal:dimensionValue(esDimensions,'height_mm'), compVal:dimensionValue(compDimensions,'height_mm'),
-      es:fmtDimension(dimensionValue(esDimensions,'height_mm')), comp:fmtDimension(dimensionValue(compDimensions,'height_mm')), compare:true, lowerBetter:false},
+      es:fmtEsDimension(dimensionValue(esDimensions,'height_mm')), comp:fmtDimension(dimensionValue(compDimensions,'height_mm')), compare:true, lowerBetter:false},
     {label:'휠베이스',           esVal:dimensionValue(esDimensions,'wheelbase_mm'), compVal:dimensionValue(compDimensions,'wheelbase_mm'),
-      es:fmtDimension(dimensionValue(esDimensions,'wheelbase_mm')), comp:fmtDimension(dimensionValue(compDimensions,'wheelbase_mm')), compare:true, lowerBetter:false},
+      es:fmtEsDimension(dimensionValue(esDimensions,'wheelbase_mm')), comp:fmtDimension(dimensionValue(compDimensions,'wheelbase_mm')), compare:true, lowerBetter:false},
     {label:'휠베이스/전장 비율', esVal:wheelbaseRatio(esDimensions), compVal:wheelbaseRatio(compDimensions),
       es:fmtRatio(wheelbaseRatio(esDimensions)), comp:fmtRatio(wheelbaseRatio(compDimensions)), compare:true, lowerBetter:false},
     {label:'배터리 용량',      esVal:esSpec.battery_kwh,  compVal:compSpec?compSpec.battery_kwh:null,
