@@ -18804,7 +18804,7 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     ? dimensions.wheelbase_mm / dimensions.length_mm * 100
     : null;
   const fmtDimension = value => value!=null ? addComma(value)+'mm' : '확인 불가';
-  const fmtRatio = value => value!=null ? value.toFixed(1)+'%' : '확인 불가';
+  const fmtRatio = value => value!=null ? value.toFixed(2)+'%' : '확인 불가';
   // add thousand-separator commas to every number embedded in a trunk-capacity string
   const fmtTrunkStr = s => s ? String(s).replace(/\d{4,}/g, m => addComma(m)) : s;
   // 트렁크 용량은 최소/최대 두 값을 모두 비교한다.
