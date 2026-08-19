@@ -18805,14 +18805,13 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     ? dimensions.wheelbase_mm / dimensions.length_mm * 100
     : null;
   const fmtDimension = value => value!=null ? addComma(value)+'mm' : '확인 불가';
-  const certificationPendingBadge = '<span class="ov-opt certification-pending-badge">인증진행중</span>';
   const productBestBadge = '<span class="ov-opt certification-pending-badge">볼보 프로덕트 중 최고</span>';
   const fmtEsDimension = (value,productBest=false) => value!=null
-    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtDimension(value)}${certificationPendingBadge}${productBest?productBestBadge:''}</span>`
+    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtDimension(value)}${productBest?productBestBadge:''}</span>`
     : '확인 불가';
   const fmtRatio = value => value!=null ? value.toFixed(2)+'%' : '확인 불가';
   const fmtEsRatio = value => value!=null
-    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtRatio(value)}${certificationPendingBadge}${productBestBadge}</span>`
+    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtRatio(value)}${productBestBadge}</span>`
     : '확인 불가';
   // add thousand-separator commas to every number embedded in a trunk-capacity string
   const fmtTrunkStr = s => s ? String(s).replace(/\d{4,}/g, m => addComma(m)) : s;
