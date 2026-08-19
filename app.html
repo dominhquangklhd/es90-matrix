@@ -17085,6 +17085,23 @@ const PLATFORM_INFO = {
   'BMW 6 Series GT':{name:'CLAR', dedicated:false}
 };
 
+// ES90_competitive_analysis_260720.xlsx > MY27 Technical Data (전장/전폭/전고/휠베이스)
+// 같은 모델의 세부 트림은 차체 제원이 동일하므로 브랜드·모델 단위로 공통 적용한다.
+const VEHICLE_DIMENSIONS = {
+  'ES90':             {length_mm:5000, width_mm:1942, height_mm:1547, wheelbase_mm:3102},
+  'Hyundai':          {length_mm:5050, width_mm:1880, height_mm:1460, wheelbase_mm:2895},
+  'Genesis':          {length_mm:5135, width_mm:1925, height_mm:1480, wheelbase_mm:3140},
+  'Audi':             {length_mm:4930, width_mm:1925, height_mm:1470, wheelbase_mm:2950},
+  'BMW 6 Series GT':  {length_mm:5090, width_mm:1900, height_mm:1540, wheelbase_mm:3070},
+  'BMW i5':           {length_mm:5060, width_mm:1900, height_mm:1515, wheelbase_mm:2995},
+  'BMW iX3':          {length_mm:4782, width_mm:1895, height_mm:1635, wheelbase_mm:2897},
+  'Mercedes-Benz':    {length_mm:4965, width_mm:1905, height_mm:1510, wheelbase_mm:3120},
+  'Polestar 3':       {length_mm:4900, width_mm:1970, height_mm:1615, wheelbase_mm:2985},
+  'Polestar 4':       {length_mm:4840, width_mm:2140, height_mm:1545, wheelbase_mm:2999},
+  'Tesla Model S':    {length_mm:5021, width_mm:1987, height_mm:1431, wheelbase_mm:2960},
+  'Tesla':            {length_mm:4790, width_mm:1980, height_mm:1670, wheelbase_mm:3040}
+};
+
 // brand logo badges (inline SVG, no external dependency — always renders on iPad)
 const BRAND_LOGO = {
   'Audi':         '—',
@@ -18780,6 +18797,14 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
   if(!esSpec) return '<div class="empty-hint">스펙 데이터 없음</div>';
   const fmtAccel = v => v!=null ? parseFloat(v).toFixed(1)+'초' : '확인 불가';
   const addComma = n => Number(n).toLocaleString('ko-KR');
+  const esDimensions = VEHICLE_DIMENSIONS.ES90;
+  const compDimensions = VEHICLE_DIMENSIONS[brandKey] || null;
+  const dimensionValue = (dimensions,key) => dimensions ? dimensions[key] : null;
+  const wheelbaseRatio = dimensions => dimensions && dimensions.length_mm
+    ? dimensions.wheelbase_mm / dimensions.length_mm * 100
+    : null;
+  const fmtDimension = value => value!=null ? addComma(value)+'mm' : '확인 불가';
+  const fmtRatio = value => value!=null ? value.toFixed(1)+'%' : '확인 불가';
   // add thousand-separator commas to every number embedded in a trunk-capacity string
   const fmtTrunkStr = s => s ? String(s).replace(/\d{4,}/g, m => addComma(m)) : s;
   // 트렁크 용량은 최소/최대 두 값을 모두 비교한다.
@@ -18813,8 +18838,18 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     }
   }
 
-  // item 6,7: 7개 핵심 비교항목을 먼저, 비교 제외 항목(배터리 보증류)은 맨 아래로
+  // 차체 제원 5개를 포함한 핵심 비교항목을 먼저, 비교 제외 항목(배터리 보증류)은 맨 아래로
   const coreRows = [
+    {label:'전장',              esVal:dimensionValue(esDimensions,'length_mm'), compVal:dimensionValue(compDimensions,'length_mm'),
+      es:fmtDimension(dimensionValue(esDimensions,'length_mm')), comp:fmtDimension(dimensionValue(compDimensions,'length_mm')), compare:true, lowerBetter:false},
+    {label:'전폭',              esVal:dimensionValue(esDimensions,'width_mm'), compVal:dimensionValue(compDimensions,'width_mm'),
+      es:fmtDimension(dimensionValue(esDimensions,'width_mm')), comp:fmtDimension(dimensionValue(compDimensions,'width_mm')), compare:true, lowerBetter:false},
+    {label:'전고',              esVal:dimensionValue(esDimensions,'height_mm'), compVal:dimensionValue(compDimensions,'height_mm'),
+      es:fmtDimension(dimensionValue(esDimensions,'height_mm')), comp:fmtDimension(dimensionValue(compDimensions,'height_mm')), compare:true, lowerBetter:false},
+    {label:'휠베이스',           esVal:dimensionValue(esDimensions,'wheelbase_mm'), compVal:dimensionValue(compDimensions,'wheelbase_mm'),
+      es:fmtDimension(dimensionValue(esDimensions,'wheelbase_mm')), comp:fmtDimension(dimensionValue(compDimensions,'wheelbase_mm')), compare:true, lowerBetter:false},
+    {label:'휠베이스/전장 비율', esVal:wheelbaseRatio(esDimensions), compVal:wheelbaseRatio(compDimensions),
+      es:fmtRatio(wheelbaseRatio(esDimensions)), comp:fmtRatio(wheelbaseRatio(compDimensions)), compare:true, lowerBetter:false},
     {label:'배터리 용량',      esVal:esSpec.battery_kwh,  compVal:compSpec?compSpec.battery_kwh:null,
       es: esSpec.battery_kwh!=null? esSpec.battery_kwh+'kWh':'확인 불가',
       comp: compSpec&&compSpec.battery_kwh!=null? compSpec.battery_kwh+'kWh':(brandKey==='BMW 6 Series GT'?'해당 없음':'확인 불가'), compare:true, lowerBetter:false},
