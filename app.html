@@ -18805,10 +18805,15 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     ? dimensions.wheelbase_mm / dimensions.length_mm * 100
     : null;
   const fmtDimension = value => value!=null ? addComma(value)+'mm' : '확인 불가';
-  const fmtEsDimension = value => value!=null
-    ? `<span style="color:var(--ink);">${fmtDimension(value)}<span class="ov-opt certification-pending-badge">인증진행중</span></span>`
+  const certificationPendingBadge = '<span class="ov-opt certification-pending-badge">인증진행중</span>';
+  const productBestBadge = '<span class="ov-opt certification-pending-badge">볼보 프로덕트 중 최고</span>';
+  const fmtEsDimension = (value,productBest=false) => value!=null
+    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtDimension(value)}${certificationPendingBadge}${productBest?productBestBadge:''}</span>`
     : '확인 불가';
   const fmtRatio = value => value!=null ? value.toFixed(2)+'%' : '확인 불가';
+  const fmtEsRatio = value => value!=null
+    ? `<span style="color:var(--ink);white-space:nowrap;">${fmtRatio(value)}${certificationPendingBadge}${productBestBadge}</span>`
+    : '확인 불가';
   // add thousand-separator commas to every number embedded in a trunk-capacity string
   const fmtTrunkStr = s => s ? String(s).replace(/\d{4,}/g, m => addComma(m)) : s;
   // 트렁크 용량은 최소/최대 두 값을 모두 비교한다.
@@ -18851,9 +18856,9 @@ function renderSpecCompare(esSpec, compSpec, compName, es90Trim, compTrim, brand
     {label:'전고',              esVal:dimensionValue(esDimensions,'height_mm'), compVal:dimensionValue(compDimensions,'height_mm'),
       es:fmtEsDimension(dimensionValue(esDimensions,'height_mm')), comp:fmtDimension(dimensionValue(compDimensions,'height_mm')), compare:true, lowerBetter:false},
     {label:'휠베이스',           esVal:dimensionValue(esDimensions,'wheelbase_mm'), compVal:dimensionValue(compDimensions,'wheelbase_mm'),
-      es:fmtEsDimension(dimensionValue(esDimensions,'wheelbase_mm')), comp:fmtDimension(dimensionValue(compDimensions,'wheelbase_mm')), compare:true, lowerBetter:false},
+      es:fmtEsDimension(dimensionValue(esDimensions,'wheelbase_mm'),true), comp:fmtDimension(dimensionValue(compDimensions,'wheelbase_mm')), compare:true, lowerBetter:false},
     {label:'휠베이스/전장 비율', esVal:wheelbaseRatio(esDimensions), compVal:wheelbaseRatio(compDimensions),
-      es:fmtRatio(wheelbaseRatio(esDimensions)), comp:fmtRatio(wheelbaseRatio(compDimensions)), compare:true, lowerBetter:false},
+      es:fmtEsRatio(wheelbaseRatio(esDimensions)), comp:fmtRatio(wheelbaseRatio(compDimensions)), compare:true, lowerBetter:false},
     {label:'배터리 용량',      esVal:esSpec.battery_kwh,  compVal:compSpec?compSpec.battery_kwh:null,
       es: esSpec.battery_kwh!=null? esSpec.battery_kwh+'kWh':'확인 불가',
       comp: compSpec&&compSpec.battery_kwh!=null? compSpec.battery_kwh+'kWh':(brandKey==='BMW 6 Series GT'?'해당 없음':'확인 불가'), compare:true, lowerBetter:false},
