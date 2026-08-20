@@ -1,11 +1,11 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "source": {
     "name": "무공해차 통합누리집",
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-20T09:26:36+09:00",
+  "checkedAt": "2026-08-20T10:34:28+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -35,15 +35,16 @@
       "sido": "서울특별시",
       "sigungu": "서울특별시",
       "announced": 15430,
-      "received": 15357,
-      "selected": 15180,
-      "delivered": 14100,
-      "selectionRemaining": 250,
-      "remaining": 1330,
+      "received": 15353,
+      "selected": 15190,
+      "delivered": 14114,
+      "selectionRemaining": 240,
+      "remaining": 1316,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.07 13:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1"
     },
     {
@@ -52,13 +53,14 @@
       "announced": 7467,
       "received": 7466,
       "selected": 7449,
-      "delivered": 7104,
+      "delivered": 7106,
       "selectionRemaining": 18,
-      "remaining": 363,
+      "remaining": 361,
       "nationalMaxManwon": 648,
       "localMaxManwon": 224,
       "combinedMaxManwon": 872,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.22 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -66,7 +68,7 @@
       "sigungu": "대구광역시",
       "announced": 4087,
       "received": 4374,
-      "selected": 4372,
+      "selected": 4373,
       "delivered": 4229,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -74,6 +76,7 @@
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.08 18:00",
       "notice": "본공고 1"
     },
     {
@@ -89,13 +92,14 @@
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.24 15:26",
       "notice": "본공고 1 / 본공고 2"
     },
     {
       "sido": "광주광역시",
       "sigungu": "광주광역시",
       "announced": 2606,
-      "received": 2241,
+      "received": 2336,
       "selected": 2241,
       "delivered": 2241,
       "selectionRemaining": 365,
@@ -104,6 +108,7 @@
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.04 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1"
     },
     {
@@ -112,13 +117,14 @@
       "announced": 1726,
       "received": 2401,
       "selected": 2396,
-      "delivered": 2258,
+      "delivered": 2260,
       "selectionRemaining": 0,
       "remaining": 0,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.07 18:00",
       "notice": "추경1차 1 / 추경1차 2"
     },
     {
@@ -134,13 +140,14 @@
       "localMaxManwon": 221,
       "combinedMaxManwon": 869,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.16 10:33",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
       "sido": "세종특별자치시",
       "sigungu": "세종특별자치시",
       "announced": 1221,
-      "received": 776,
+      "received": 775,
       "selected": 761,
       "delivered": 752,
       "selectionRemaining": 460,
@@ -149,21 +156,23 @@
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
       "sido": "경기도",
       "sigungu": "수원시",
       "announced": 4970,
-      "received": 4327,
-      "selected": 4319,
-      "delivered": 3653,
-      "selectionRemaining": 651,
-      "remaining": 1317,
+      "received": 4325,
+      "selected": 4317,
+      "delivered": 3665,
+      "selectionRemaining": 653,
+      "remaining": 1305,
       "nationalMaxManwon": 648,
       "localMaxManwon": 270,
       "combinedMaxManwon": 918,
       "applicationMethod": "일반: (자격부여)접수순, (대상자선정)출고등록순 / *우선: (자격부여)접수순, (대상자선정)출고등록순",
+      "applicationDeadline": "2026.08.18 12:28",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -179,6 +188,7 @@
       "localMaxManwon": 291,
       "combinedMaxManwon": 939,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.18 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -186,14 +196,15 @@
       "sigungu": "의정부시",
       "announced": 1071,
       "received": 873,
-      "selected": 866,
-      "delivered": 817,
-      "selectionRemaining": 205,
-      "remaining": 254,
+      "selected": 869,
+      "delivered": 820,
+      "selectionRemaining": 202,
+      "remaining": 251,
       "nationalMaxManwon": 648,
       "localMaxManwon": 237,
       "combinedMaxManwon": 885,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.01 18:00",
       "notice": "본공고 1"
     },
     {
@@ -209,6 +220,7 @@
       "localMaxManwon": 275,
       "combinedMaxManwon": 923,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.11 14:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1"
     },
     {
@@ -217,13 +229,14 @@
       "announced": 800,
       "received": 830,
       "selected": 813,
-      "delivered": 586,
+      "delivered": 590,
       "selectionRemaining": 0,
-      "remaining": 214,
+      "remaining": 210,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.14 11:10",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2 / 추경2차 1"
     },
     {
@@ -239,6 +252,7 @@
       "localMaxManwon": 453,
       "combinedMaxManwon": 1101,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.01 10:14",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -254,6 +268,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.08 09:46",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -269,6 +284,7 @@
       "localMaxManwon": 362,
       "combinedMaxManwon": 1010,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.07 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -284,6 +300,7 @@
       "localMaxManwon": 259,
       "combinedMaxManwon": 907,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.19 13:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -299,6 +316,7 @@
       "localMaxManwon": 259,
       "combinedMaxManwon": 907,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.07 16:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -314,6 +332,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.15 09:15",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -329,6 +348,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.04 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -337,13 +357,14 @@
       "announced": 2330,
       "received": 2581,
       "selected": 2578,
-      "delivered": 2515,
+      "delivered": 2516,
       "selectionRemaining": 0,
       "remaining": 0,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: (자격부여) 접수순 / (대상자확정) 출고등록순 / *우선: (자격부여) 접수순 / (대상자확정) 출고등록순",
+      "applicationDeadline": "2026.08.03 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -359,6 +380,7 @@
       "localMaxManwon": 302,
       "combinedMaxManwon": 950,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.15 13:00",
       "notice": "본공고 1"
     },
     {
@@ -374,21 +396,23 @@
       "localMaxManwon": 259,
       "combinedMaxManwon": 907,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.08 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
       "sido": "경기도",
       "sigungu": "군포시",
       "announced": 900,
-      "received": 722,
-      "selected": 722,
+      "received": 720,
+      "selected": 720,
       "delivered": 668,
-      "selectionRemaining": 178,
+      "selectionRemaining": 180,
       "remaining": 232,
       "nationalMaxManwon": 648,
       "localMaxManwon": 313,
       "combinedMaxManwon": 961,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.19 11:50",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -404,6 +428,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.23 11:30",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -411,14 +436,15 @@
       "sigungu": "하남시",
       "announced": 1457,
       "received": 1362,
-      "selected": 1359,
+      "selected": 1358,
       "delivered": 1256,
-      "selectionRemaining": 98,
+      "selectionRemaining": 99,
       "remaining": 201,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.12 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -434,6 +460,7 @@
       "localMaxManwon": 280,
       "combinedMaxManwon": 928,
       "applicationMethod": "일반: 지원가능확인요청순 / *우선: 지원가능확인요청순",
+      "applicationDeadline": "2026.07.01 15:40",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -449,6 +476,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.07 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -464,6 +492,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.27 12:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -479,6 +508,7 @@
       "localMaxManwon": 388,
       "combinedMaxManwon": 1036,
       "applicationMethod": "일반: 접수순 / *우선: -",
+      "applicationDeadline": "2026.07.03 09:33",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
@@ -494,6 +524,7 @@
       "localMaxManwon": 259,
       "combinedMaxManwon": 907,
       "applicationMethod": "일반: 출고등록순 / *우선: -",
+      "applicationDeadline": "2026.07.07 14:00",
       "notice": "본공고 1"
     },
     {
@@ -509,6 +540,7 @@
       "localMaxManwon": 216,
       "combinedMaxManwon": 864,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.23 13:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -524,6 +556,7 @@
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.04 18:00",
       "notice": "본공고 1 / 본공고 3"
     },
     {
@@ -539,6 +572,7 @@
       "localMaxManwon": 270,
       "combinedMaxManwon": 918,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.04.27 11:11",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -554,6 +588,7 @@
       "localMaxManwon": 259,
       "combinedMaxManwon": 907,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.05.29 15:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -569,6 +604,7 @@
       "localMaxManwon": 446,
       "combinedMaxManwon": 1094,
       "applicationMethod": "일반: 접수순(초과시 출고등록순) / *우선: 접수순(초과시 출고등록순)",
+      "applicationDeadline": "2026.06.18 10:10",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -584,6 +620,7 @@
       "localMaxManwon": 615,
       "combinedMaxManwon": 1263,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.10 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1"
     },
     {
@@ -599,6 +636,7 @@
       "localMaxManwon": 216,
       "combinedMaxManwon": 864,
       "applicationMethod": "일반: 출고등록순 / *우선: 하반기 우선순위 물량 없음",
+      "applicationDeadline": "2026.07.27 09:00",
       "notice": "추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -614,6 +652,7 @@
       "localMaxManwon": 432,
       "combinedMaxManwon": 1080,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.07 11:35",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -629,6 +668,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: -",
+      "applicationDeadline": "2026.05.08 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -644,13 +684,14 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.20 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
       "sido": "강원특별자치도",
       "sigungu": "강릉시",
       "announced": 1075,
-      "received": 522,
+      "received": 537,
       "selected": 522,
       "delivered": 522,
       "selectionRemaining": 553,
@@ -659,6 +700,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 접수순 / *우선: -",
+      "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -674,6 +716,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.30 18:00",
       "notice": "추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -689,6 +732,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.18 11:01",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -704,6 +748,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.04.29 10:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -719,6 +764,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.24 00:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -734,6 +780,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.07.22 14:07",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -749,6 +796,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.13 00:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -764,6 +812,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.06 15:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -779,6 +828,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.19 12:00",
       "notice": "본공고 2 / 본공고 3"
     },
     {
@@ -794,6 +844,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.12.04 18:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -809,6 +860,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.10 10:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -824,6 +876,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.13 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -839,6 +892,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 접수순 / *우선: -",
+      "applicationDeadline": "2026.08.11 10:02",
       "notice": "추경1차 1 / 추경1차 2"
     },
     {
@@ -854,6 +908,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.20 09:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -869,6 +924,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.30 18:00",
       "notice": "본공고 1"
     },
     {
@@ -884,6 +940,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.31 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1"
     },
     {
@@ -899,6 +956,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.30 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -914,6 +972,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.19 18:00",
       "notice": "추경1차 1"
     },
     {
@@ -929,6 +988,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.19 09:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -944,6 +1004,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: -",
+      "applicationDeadline": "2026.07.08 18:00",
       "notice": "본공고 1"
     },
     {
@@ -959,6 +1020,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.16 14:01",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -974,6 +1036,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.05.21 10:05",
       "notice": "본공고 1"
     },
     {
@@ -989,6 +1052,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: -",
+      "applicationDeadline": "2026.07.02 18:00",
       "notice": "본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1004,6 +1068,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.22 09:30",
       "notice": "추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -1019,6 +1084,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.02 09:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1034,6 +1100,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.31 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
@@ -1049,6 +1116,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.27 18:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -1064,6 +1132,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.23 10:08",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1079,6 +1148,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.12 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1094,6 +1164,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.31 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2 / 추경1차 3 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -1109,6 +1180,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.27 18:00",
       "notice": "추경2차 1"
     },
     {
@@ -1124,6 +1196,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.10 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1139,6 +1212,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.20 09:07",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1154,6 +1228,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.05.18 18:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -1169,6 +1244,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.31 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1184,6 +1260,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -1199,6 +1276,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.15 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -1214,6 +1292,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.11 18:00",
       "notice": "본공고 1"
     },
     {
@@ -1229,6 +1308,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.27 13:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -1244,6 +1324,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.26 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1259,6 +1340,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.05 16:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -1274,6 +1356,7 @@
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.22 15:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1289,6 +1372,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.29 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -1304,6 +1388,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.04 09:01",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1319,6 +1404,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.16 18:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -1326,14 +1412,15 @@
       "sigungu": "정읍시",
       "announced": 388,
       "received": 466,
-      "selected": 312,
+      "selected": 313,
       "delivered": 199,
-      "selectionRemaining": 76,
+      "selectionRemaining": 75,
       "remaining": 189,
       "nationalMaxManwon": 648,
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 지원가능확인요청순 / *우선: 지원가능확인요청순",
+      "applicationDeadline": "2026.08.21 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -1349,14 +1436,15 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.07 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2"
     },
     {
       "sido": "전북특별자치도",
       "sigungu": "김제시",
       "announced": 253,
-      "received": 438,
-      "selected": 254,
+      "received": 440,
+      "selected": 258,
       "delivered": 191,
       "selectionRemaining": 0,
       "remaining": 62,
@@ -1364,6 +1452,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.12.11 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -1379,6 +1468,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.11 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1394,6 +1484,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.21 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1409,6 +1500,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.01 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1424,6 +1516,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1439,6 +1532,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.09 12:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1454,6 +1548,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.07 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -1469,6 +1564,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.08 18:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -1484,6 +1580,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.20 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -1499,14 +1596,15 @@
       "localMaxManwon": 453,
       "combinedMaxManwon": 1101,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.22 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
       "sido": "전라남도",
       "sigungu": "여수시",
       "announced": 950,
-      "received": 1009,
-      "selected": 1005,
+      "received": 1011,
+      "selected": 1006,
       "delivered": 646,
       "selectionRemaining": 0,
       "remaining": 304,
@@ -1514,6 +1612,7 @@
       "localMaxManwon": 453,
       "combinedMaxManwon": 1101,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.04 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -1529,6 +1628,7 @@
       "localMaxManwon": 453,
       "combinedMaxManwon": 1101,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.02.25 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1544,6 +1644,7 @@
       "localMaxManwon": 453,
       "combinedMaxManwon": 1101,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.23 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1559,6 +1660,7 @@
       "localMaxManwon": 324,
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: -",
+      "applicationDeadline": "2026.06.26 10:30",
       "notice": "추경1차 1 / 추경1차 2"
     },
     {
@@ -1574,6 +1676,7 @@
       "localMaxManwon": 864,
       "combinedMaxManwon": 1512,
       "applicationMethod": "일반: 지원가능확인요청순(출고등록순) / *우선: 지원가능확인요청순(출고등록순)",
+      "applicationDeadline": "2026.07.28 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -1589,6 +1692,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.15 10:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1604,6 +1708,7 @@
       "localMaxManwon": 750,
       "combinedMaxManwon": 1398,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.04.06 15:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1619,6 +1724,7 @@
       "localMaxManwon": 972,
       "combinedMaxManwon": 1620,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.03.24 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1634,6 +1740,7 @@
       "localMaxManwon": 972,
       "combinedMaxManwon": 1620,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.10 10:00",
       "notice": "본공고 1"
     },
     {
@@ -1649,6 +1756,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.13 12:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -1664,6 +1772,7 @@
       "localMaxManwon": 864,
       "combinedMaxManwon": 1512,
       "applicationMethod": "일반: 출고등록순(지원가능 확인요청순) / *우선: 출고등록순(지원가능 확인요청순)",
+      "applicationDeadline": "2026.08.31 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -1679,6 +1788,7 @@
       "localMaxManwon": 864,
       "combinedMaxManwon": 1512,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.28 10:36",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1694,6 +1804,7 @@
       "localMaxManwon": 798,
       "combinedMaxManwon": 1446,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.06.02 15:30",
       "notice": "본공고 1"
     },
     {
@@ -1709,6 +1820,7 @@
       "localMaxManwon": 604,
       "combinedMaxManwon": 1252,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.02.26 09:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1724,6 +1836,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.27 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -1739,6 +1852,7 @@
       "localMaxManwon": 756,
       "combinedMaxManwon": 1404,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.06.10 11:00",
       "notice": "본공고 1"
     },
     {
@@ -1754,6 +1868,7 @@
       "localMaxManwon": 777,
       "combinedMaxManwon": 1425,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.22 13:10",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1769,6 +1884,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.31 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1784,13 +1900,14 @@
       "localMaxManwon": 972,
       "combinedMaxManwon": 1620,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.13 18:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
       "sido": "전라남도",
       "sigungu": "진도군",
       "announced": 140,
-      "received": 159,
+      "received": 160,
       "selected": 143,
       "delivered": 89,
       "selectionRemaining": 0,
@@ -1799,6 +1916,7 @@
       "localMaxManwon": 798,
       "combinedMaxManwon": 1446,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.11.12 23:59",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1814,6 +1932,7 @@
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.06 16:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1"
     },
     {
@@ -1822,13 +1941,14 @@
       "announced": 1084,
       "received": 1858,
       "selected": 1854,
-      "delivered": 993,
+      "delivered": 1000,
       "selectionRemaining": 0,
-      "remaining": 91,
+      "remaining": 84,
       "nationalMaxManwon": 648,
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.07 18:00",
       "notice": "추경1차 1 / 추경2차 3"
     },
     {
@@ -1836,14 +1956,15 @@
       "sigungu": "경주시",
       "announced": 1161,
       "received": 1589,
-      "selected": 1588,
-      "delivered": 813,
+      "selected": 1587,
+      "delivered": 815,
       "selectionRemaining": 0,
-      "remaining": 348,
+      "remaining": 346,
       "nationalMaxManwon": 648,
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.14 18:00",
       "notice": "추경1차 1 / 추경1차 2"
     },
     {
@@ -1851,14 +1972,15 @@
       "sigungu": "김천시",
       "announced": 960,
       "received": 965,
-      "selected": 958,
-      "delivered": 804,
-      "selectionRemaining": 2,
-      "remaining": 156,
+      "selected": 957,
+      "delivered": 807,
+      "selectionRemaining": 3,
+      "remaining": 153,
       "nationalMaxManwon": 648,
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.25 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -1874,6 +1996,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.06 18:00",
       "notice": "추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
@@ -1889,6 +2012,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.05 18:00",
       "notice": "추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -1904,6 +2028,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.30 18:00",
       "notice": "본공고 1"
     },
     {
@@ -1919,6 +2044,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.01 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1934,6 +2060,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.16 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1949,6 +2076,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.19 11:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -1964,6 +2092,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.10 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -1979,6 +2108,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.11 23:59",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
@@ -1994,14 +2124,15 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.10 10:02",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
       "sido": "경상북도",
       "sigungu": "영양군",
       "announced": 79,
-      "received": 97,
-      "selected": 87,
+      "received": 96,
+      "selected": 86,
       "delivered": 51,
       "selectionRemaining": 0,
       "remaining": 28,
@@ -2009,6 +2140,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.08.18 15:03",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
@@ -2024,6 +2156,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.30 17:00",
       "notice": "본공고 1 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -2039,6 +2172,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.08 09:00",
       "notice": "추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
@@ -2054,6 +2188,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.11 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -2069,6 +2204,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.26 15:20",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1 / 추경1차 2 / 추경1차 3 / 추경2차 1 / 추경2차 2"
     },
     {
@@ -2084,6 +2220,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.01 18:00",
       "notice": "추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
@@ -2091,7 +2228,7 @@
       "sigungu": "예천군",
       "announced": 120,
       "received": 309,
-      "selected": 231,
+      "selected": 232,
       "delivered": 157,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -2099,6 +2236,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.10.30 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -2114,6 +2252,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.13 15:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -2122,13 +2261,14 @@
       "announced": 210,
       "received": 242,
       "selected": 222,
-      "delivered": 178,
+      "delivered": 181,
       "selectionRemaining": 0,
-      "remaining": 32,
+      "remaining": 29,
       "nationalMaxManwon": 648,
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.12 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -2144,6 +2284,7 @@
       "localMaxManwon": 1224,
       "combinedMaxManwon": 1872,
       "applicationMethod": "일반: 접수순(초과시 출고등록순) / *우선: 접수순(초과시 출고등록순)",
+      "applicationDeadline": "2026.06.30 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -2159,6 +2300,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.19 12:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -2174,6 +2316,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.21 10:50",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -2189,6 +2332,7 @@
       "localMaxManwon": 616,
       "combinedMaxManwon": 1264,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.13 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -2204,6 +2348,7 @@
       "localMaxManwon": 227,
       "combinedMaxManwon": 875,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.20 18:00",
       "notice": "본공고 1 / 본공고 2"
     },
     {
@@ -2219,6 +2364,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.06 16:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
@@ -2234,6 +2380,7 @@
       "localMaxManwon": 260,
       "combinedMaxManwon": 908,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.20 14:40",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
@@ -2249,6 +2396,7 @@
       "localMaxManwon": 227,
       "combinedMaxManwon": 875,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.15 09:55",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1"
     },
     {
@@ -2264,6 +2412,7 @@
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.01 18:00",
       "notice": "추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -2279,6 +2428,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 접수순 / *우선: 접수순",
+      "applicationDeadline": "2026.06.17 17:40",
       "notice": "본공고 1"
     },
     {
@@ -2294,6 +2444,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.16 14:05",
       "notice": "본공고 1"
     },
     {
@@ -2309,6 +2460,7 @@
       "localMaxManwon": 455,
       "combinedMaxManwon": 1103,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.03 11:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2 / 추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
@@ -2324,6 +2476,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.06.22 12:00",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
@@ -2339,6 +2492,7 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.20 15:00",
       "notice": "본공고 1 / 본공고 3"
     },
     {
@@ -2347,13 +2501,14 @@
       "announced": 160,
       "received": 124,
       "selected": 124,
-      "delivered": 69,
+      "delivered": 71,
       "selectionRemaining": 36,
-      "remaining": 91,
+      "remaining": 89,
       "nationalMaxManwon": 648,
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.19 16:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
@@ -2369,21 +2524,23 @@
       "localMaxManwon": 195,
       "combinedMaxManwon": 843,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.08.13 11:30",
       "notice": "본공고 1 / 추경1차 1"
     },
     {
       "sido": "경상남도",
       "sigungu": "함양군",
       "announced": 184,
-      "received": 83,
-      "selected": 81,
+      "received": 84,
+      "selected": 82,
       "delivered": 56,
-      "selectionRemaining": 103,
+      "selectionRemaining": 102,
       "remaining": 128,
       "nationalMaxManwon": 648,
       "localMaxManwon": 246,
       "combinedMaxManwon": 894,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.12.11 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
@@ -2399,6 +2556,7 @@
       "localMaxManwon": 365,
       "combinedMaxManwon": 1013,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.07.07 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
@@ -2414,6 +2572,7 @@
       "localMaxManwon": 715,
       "combinedMaxManwon": 1363,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
+      "applicationDeadline": "2026.05.12 11:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3"
     },
     {
@@ -2421,7 +2580,7 @@
       "sigungu": "제주특별자치도",
       "announced": 4200,
       "received": 5100,
-      "selected": 4817,
+      "selected": 4818,
       "delivered": 3730,
       "selectionRemaining": 0,
       "remaining": 470,
@@ -2429,6 +2588,7 @@
       "localMaxManwon": 447,
       "combinedMaxManwon": 1095,
       "applicationMethod": "일반: 접수+출고등록순 / *우선: 접수+출고등록순",
+      "applicationDeadline": "2026.08.12 18:00",
       "notice": "본공고 1 / 추경1차 1"
     }
   ]
