@@ -132,78 +132,150 @@ def category_text(row: dict, array_key: str, total_key: str) -> str:
     return str(row.get(total_key, ""))
 
 
+def selection_breakdown_from_rows(region_name: str, rows: list[dict]) -> dict:
+    """Build and validate a metropolitan selection breakdown DOM snapshot."""
+    selected_by_category = {
+        str(row.get("category", "")).strip(): first_int(
+            str(row.get("selected", ""))
+        )
+        for row in rows
+        if str(row.get("category", "")).strip()
+    }
+    breakdown = {
+        "general": selected_by_category.get("일반", 0),
+        "priority": selected_by_category.get("우선순위", 0),
+        "taxi": selected_by_category.get("택시", 0),
+        "corporate": selected_by_category.get("법인·기관", 0),
+        "total": selected_by_category.get("전체", 0),
+    }
+    if sum(
+        breakdown[key]
+        for key in ("general", "priority", "taxi", "corporate")
+    ) != breakdown["total"]:
+        raise RuntimeError(f"선정 세부 합계 불일치: {region_name}: {breakdown}")
+    return breakdown
+
+
 def collect_visible_selection_breakdowns(
     driver: webdriver.Chrome,
     breakdowns: dict[str, dict],
 ) -> None:
-    detail_buttons = driver.find_elements(
-        By.XPATH,
-        "//span[normalize-space()='상세보기']/ancestor::button[1]",
+    # The official portal redraws both AG Grids immediately after opening a
+    # detail modal.  Holding Selenium WebElement objects across that redraw
+    # intermittently raises StaleElementReferenceException.  Discover, click,
+    # and read each modal with synchronous JavaScript DOM snapshots instead.
+    visible_regions = driver.execute_script(
+        """
+        const rows = Array.from(document.querySelectorAll('[role="row"]'));
+        return arguments[0].filter(name => rows.some(row => {
+          const button = Array.from(row.querySelectorAll('button')).find(
+            candidate => candidate.innerText.trim().includes('상세보기')
+          );
+          return Boolean(button && row.innerText.includes(name));
+        }));
+        """,
+        list(PRICE_REGIONS),
     )
-    for button in detail_buttons:
-        row = button.find_element(By.XPATH, "ancestor::*[@role='row'][1]")
-        row_text = row.text
-        region_name = next(
-            (
-                region
-                for region in PRICE_REGIONS
-                if region not in breakdowns and region in row_text
-            ),
-            None,
-        )
-        if not region_name:
+    for region_name in visible_regions:
+        if region_name in breakdowns:
             continue
 
-        driver.execute_script("arguments[0].click()", button)
-        WebDriverWait(driver, 20, poll_frequency=0.2).until(
-            lambda current, name=region_name: current.execute_script(
-                """
-                const modal = document.querySelector('.modal-container.is-active');
-                return Boolean(
-                  modal
-                  && modal.innerText.includes(arguments[0])
-                  && modal.querySelectorAll('#myGrid3 [role="row"][row-index]').length
-                );
-                """,
-                name,
-            )
-        )
-        detail_rows = driver.find_elements(
-            By.CSS_SELECTOR,
-            ".modal-container.is-active #myGrid3 [role='row'][row-index]",
-        )
-        selected_by_category: dict[str, int] = {}
-        for detail_row in detail_rows:
-            category = detail_row.find_element(
-                By.CSS_SELECTOR, "[role='gridcell'][col-id='category']"
-            ).text.strip()
-            selected = detail_row.find_element(
-                By.CSS_SELECTOR, "[role='gridcell'][col-id='choice']"
-            ).text.strip()
-            selected_by_category[category] = first_int(selected)
+        last_error: Exception | None = None
+        for attempt in range(1, 4):
+            try:
+                clicked = driver.execute_script(
+                    """
+                    const name = arguments[0];
+                    const row = Array.from(
+                      document.querySelectorAll('[role="row"]')
+                    ).find(candidate => {
+                      const button = Array.from(candidate.querySelectorAll('button')).find(
+                        item => item.innerText.trim().includes('상세보기')
+                      );
+                      return Boolean(button && candidate.innerText.includes(name));
+                    });
+                    if (!row) return false;
+                    const button = Array.from(row.querySelectorAll('button')).find(
+                      item => item.innerText.trim().includes('상세보기')
+                    );
+                    button.click();
+                    return true;
+                    """,
+                    region_name,
+                )
+                if not clicked:
+                    raise RuntimeError(f"상세보기 버튼을 찾을 수 없음: {region_name}")
 
-        breakdown = {
-            "general": selected_by_category.get("일반", 0),
-            "priority": selected_by_category.get("우선순위", 0),
-            "taxi": selected_by_category.get("택시", 0),
-            "corporate": selected_by_category.get("법인·기관", 0),
-            "total": selected_by_category.get("전체", 0),
-        }
-        if sum(
-            breakdown[key]
-            for key in ("general", "priority", "taxi", "corporate")
-        ) != breakdown["total"]:
-            raise RuntimeError(f"선정 세부 합계 불일치: {region_name}: {breakdown}")
-        breakdowns[region_name] = breakdown
-        driver.find_element(
-            By.CSS_SELECTOR,
-            ".modal-container.is-active .js-detail-close",
-        ).click()
-        WebDriverWait(driver, 10, poll_frequency=0.1).until(
-            lambda current: not current.find_elements(
-                By.CSS_SELECTOR, ".modal-container.is-active"
-            )
-        )
+                WebDriverWait(driver, 20, poll_frequency=0.2).until(
+                    lambda current, name=region_name: current.execute_script(
+                        """
+                        const modal = document.querySelector('.modal-container.is-active');
+                        return Boolean(
+                          modal
+                          && modal.innerText.includes(arguments[0])
+                          && modal.querySelectorAll(
+                            '#myGrid3 [role="row"][row-index]'
+                          ).length
+                        );
+                        """,
+                        name,
+                    )
+                )
+                detail_rows = driver.execute_script(
+                    """
+                    const modal = document.querySelector('.modal-container.is-active');
+                    if (!modal) return [];
+                    return Array.from(
+                      modal.querySelectorAll('#myGrid3 [role="row"][row-index]')
+                    ).map(row => ({
+                      category: row.querySelector(
+                        '[role="gridcell"][col-id="category"]'
+                      )?.textContent?.trim() || '',
+                      selected: row.querySelector(
+                        '[role="gridcell"][col-id="choice"]'
+                      )?.textContent?.trim() || '',
+                    }));
+                    """
+                )
+                breakdowns[region_name] = selection_breakdown_from_rows(
+                    region_name, detail_rows
+                )
+
+                closed = driver.execute_script(
+                    """
+                    const modal = document.querySelector('.modal-container.is-active');
+                    const close = modal && modal.querySelector('.js-detail-close');
+                    if (!close) return false;
+                    close.click();
+                    return true;
+                    """
+                )
+                if not closed:
+                    raise RuntimeError(f"상세보기 닫기 버튼을 찾을 수 없음: {region_name}")
+                WebDriverWait(driver, 10, poll_frequency=0.1).until(
+                    lambda current: not current.execute_script(
+                        "return Boolean(document.querySelector('.modal-container.is-active'));"
+                    )
+                )
+                break
+            except (TimeoutException, WebDriverException, RuntimeError) as error:
+                last_error = error
+                driver.execute_script(
+                    """
+                    const modal = document.querySelector('.modal-container.is-active');
+                    const close = modal && modal.querySelector('.js-detail-close');
+                    if (close) close.click();
+                    """
+                )
+                time.sleep(attempt)
+                print(
+                    f"Selection breakdown retry {attempt}/3: "
+                    f"{region_name}: {error}"
+                )
+        else:
+            raise RuntimeError(
+                f"선정 세부 데이터 렌더링 실패: {region_name}"
+            ) from last_error
 
 
 def collect_new_payment_rows(
@@ -422,30 +494,31 @@ def expand_price_regions(driver: webdriver.Chrome) -> int:
     )
     expanded = 0
     for region_name in PRICE_REGIONS:
-        item = driver.execute_script(
+        local_code = driver.execute_script(
             """
-            return Array.from(document.querySelectorAll('.accordion-item')).find(
+            const item = Array.from(document.querySelectorAll('.accordion-item')).find(
               item => item.querySelector('.location__district')?.innerText.trim()
                 === arguments[0]
-            ) || null;
+            );
+            if (!item) return null;
+            item.querySelector('.accordion-button')?.click();
+            return item.getAttribute('data-local-cd');
             """,
             region_name,
         )
-        if item is None:
+        if local_code is None:
             print(f"Price region not found; preserving fallback: {region_name}")
             continue
-        local_code = item.get_attribute("data-local-cd")
         try:
-            button = item.find_element(By.CSS_SELECTOR, ".accordion-button")
-            driver.execute_script("arguments[0].click()", button)
             WebDriverWait(driver, 30, poll_frequency=0.25).until(
-                lambda current, code=local_code: len(
-                    current.find_elements(
-                        By.CSS_SELECTOR,
-                        f"#carGrid_{code} [role='row'][row-index]",
-                    )
-                )
-                > 0
+                lambda current, code=local_code: current.execute_script(
+                    """
+                    return document.querySelectorAll(
+                      `#carGrid_${arguments[0]} [role="row"][row-index]`
+                    ).length;
+                    """,
+                    code,
+                ) > 0
             )
             expanded += 1
         except (TimeoutException, WebDriverException) as error:
