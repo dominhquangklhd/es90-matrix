@@ -17,10 +17,12 @@ def payment_html(region_count: int) -> str:
             "<tr>"
             f"<td>서울</td><td>지역{index}</td><td>전기승용</td>"
             "<td>본공고</td><td>출고등록순</td>"
-            "<td>100 (0) (0) (0) (100)</td>"
-            "<td>80 (0) (0) (0) (80)</td>"
-            "<td>60 (0) (0) (0) (60)</td>"
-            "<td>40 (0) (0) (0) (40)</td>"
+            "<td>100</td>"
+            "<td>80</td>"
+            "<td>70</td>"
+            "<td>60</td>"
+            "<td>30</td>"
+            "<td>40</td>"
             "</tr>"
         )
     return (
@@ -78,6 +80,9 @@ class SubsidySnapshotTests(unittest.TestCase):
 
             self.assertEqual(150, len(snapshot["regions"]))
             self.assertEqual(40, snapshot["regions"][0]["remaining"])
+            self.assertEqual(70, snapshot["regions"][0]["selected"])
+            self.assertEqual(30, snapshot["regions"][0]["selectionRemaining"])
+            self.assertEqual("전기승용 전체", snapshot["allocationBasis"])
             self.assertEqual(842, snapshot["regions"][149]["combinedMaxManwon"])
             self.assertEqual(
                 "live-selected-regions-with-last-known-good-fallback",

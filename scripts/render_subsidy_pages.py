@@ -154,6 +154,7 @@ def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
             (
                 str(row.get("localCd", "")),
                 str(row.get("carNm", "")),
+                str(row.get("choice", "")),
                 str(row.get("releaArr", "")),
                 str(row.get("resiArr", "")),
             )
@@ -193,6 +194,7 @@ def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
                     (
                         str(row.get("localCd", "")),
                         str(row.get("carNm", "")),
+                        str(row.get("choice", "")),
                         str(row.get("releaArr", "")),
                         str(row.get("resiArr", "")),
                     )
@@ -224,6 +226,7 @@ def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
                 (
                     str(row.get("localCd", "")),
                     str(row.get("carNm", "")),
+                    str(row.get("choice", "")),
                     str(row.get("releaArr", "")),
                     str(row.get("resiArr", "")),
                 )
@@ -249,7 +252,9 @@ def write_payment_table(rows: list[dict], output: Path) -> None:
         "접수방법",
         "공고대수",
         "접수대수",
+        "선정대수",
         "출고대수",
+        "선정잔여대수",
         "출고잔여대수",
     ]
     rendered_rows = []
@@ -262,10 +267,12 @@ def write_payment_table(rows: list[dict], output: Path) -> None:
             " / ".join(label for label in labels if label)
             or str(row.get("noticeKind", "")),
             str(row.get("accept", "")),
-            category_text(row, "tcntArr", "tcnt"),
-            category_text(row, "receiArr", "recei"),
-            category_text(row, "releaArr", "relea"),
-            category_text(row, "resiArr", "resi"),
+            str(row.get("tcnt", "")),
+            str(row.get("recei", "")),
+            str(row.get("choice", "")),
+            str(row.get("relea", "")),
+            str(row.get("choiceRemain", "")),
+            str(row.get("resi", "")),
         ]
         rendered_rows.append(
             "<tr>" + "".join(f"<td>{escape(cell)}</td>" for cell in cells) + "</tr>"

@@ -100,7 +100,14 @@ jobs:
           data = json.load(open("subsidy-data.json", encoding="utf-8"))
           assert len(data["regions"]) >= 150
           assert data["regions"][0]["sido"] == "서울특별시"
-          assert data["allocationBasis"] == "일반 승용"
+          assert data["allocationBasis"] == "전기승용 전체"
+          assert all(
+              all(field in region for field in (
+                  "announced", "received", "selected", "delivered",
+                  "selectionRemaining", "remaining",
+              ))
+              for region in data["regions"]
+          )
           assert data["collection"]["payment"] == "live-official"
           assert all(
               region["remaining"]

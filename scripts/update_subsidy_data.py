@@ -49,19 +49,6 @@ def first_int(text: str) -> int:
     return int(match.group(0).replace(",", "")) if match else 0
 
 
-def general_passenger_int(text: str) -> int:
-    """Return the general-passenger value from an EV portal allocation cell.
-
-    The official payment table lists one total followed by four parenthesized
-    categories in this order: priority, corporation/institution, taxi, general.
-    ES90 retail consultations must use the final (general) category, not total.
-    """
-    categories = re.findall(r"\(\s*(-?[\d,]+)\s*\)", text or "")
-    if len(categories) < 4:
-        raise ValueError(f"일반 승용 구분값을 찾지 못했습니다: {text!r}")
-    return int(categories[-1].replace(",", ""))
-
-
 def table_rows(path: Path, caption_text: str) -> list[list[str]]:
     root = html.parse(str(path))
     tables = root.xpath(
@@ -181,16 +168,29 @@ def build_snapshot(
             continue
         sido = SIDO_NAMES.get(row[0], row[0])
         combined = price_by_region.get((sido, row[1]), 0)
-        announced = general_passenger_int(row[5])
-        received = general_passenger_int(row[6])
-        delivered = general_passenger_int(row[7])
+        announced = first_int(row[5])
+        received = first_int(row[6])
+        if len(row) >= 11:
+            selected = first_int(row[7])
+            delivered = first_int(row[8])
+            selection_remaining = first_int(row[9])
+            delivery_remaining = first_int(row[10])
+        else:
+            # The legacy table did not expose selection separately. Preserve
+            # compatibility while using the same visible total-value basis.
+            delivered = first_int(row[7])
+            selected = delivered
+            selection_remaining = max(0, announced - selected)
+            delivery_remaining = first_int(row[8])
         regions.append({
             "sido": sido,
             "sigungu": row[1],
             "announced": announced,
             "received": received,
+            "selected": selected,
             "delivered": delivered,
-            "remaining": max(0, announced - delivered),
+            "selectionRemaining": max(0, selection_remaining),
+            "remaining": max(0, delivery_remaining),
             "nationalMaxManwon": NATIONAL_MAX_MANWON,
             "localMaxManwon": max(0, combined - NATIONAL_MAX_MANWON),
             "combinedMaxManwon": combined,
@@ -238,7 +238,7 @@ def build_snapshot(
 
     now = datetime.now(SEOUL).replace(microsecond=0).isoformat()
     return {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "source": {
             "name": "무공해차 통합누리집",
             "paymentUrl": PAYMENT_URL,
@@ -247,7 +247,7 @@ def build_snapshot(
         "checkedAt": now,
         "year": datetime.now(SEOUL).year,
         "vehicleType": "전기승용",
-        "allocationBasis": "일반 승용",
+        "allocationBasis": "전기승용 전체",
         "collection": {
             "payment": "live-official",
             "prices": price_mode,
