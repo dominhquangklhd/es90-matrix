@@ -86,6 +86,17 @@ def fallback_prices(snapshot: dict | None) -> dict[tuple[str, str], int]:
     }
 
 
+def fallback_deadlines(snapshot: dict | None) -> dict[tuple[str, str], str]:
+    if not snapshot:
+        return {}
+    return {
+        (str(region.get("sido", "")), str(region.get("sigungu", ""))): str(
+            region.get("applicationDeadline", "") or ""
+        )
+        for region in snapshot.get("regions", [])
+    }
+
+
 def new_price_data(path: Path) -> tuple[dict[tuple[str, str], int], list[dict], list[str]]:
     if not path.exists() or path.stat().st_size == 0:
         return {}, [], []
@@ -140,6 +151,7 @@ def build_snapshot(
 ) -> dict:
     payments = table_rows(payment_html, "지자체별 무공해차 구매보조금 지급현황")
     price_by_region = fallback_prices(fallback_snapshot)
+    deadline_by_region = fallback_deadlines(fallback_snapshot)
     price_mode = "last-known-good"
     price_regions_live: list[str] = []
     official_models: list[dict] = []
@@ -168,13 +180,16 @@ def build_snapshot(
             continue
         sido = SIDO_NAMES.get(row[0], row[0])
         combined = price_by_region.get((sido, row[1]), 0)
-        announced = first_int(row[5])
-        received = first_int(row[6])
-        if len(row) >= 11:
-            selected = first_int(row[7])
-            delivered = first_int(row[8])
-            selection_remaining = first_int(row[9])
-            delivery_remaining = first_int(row[10])
+        has_deadline = len(row) >= 12
+        deadline = row[5] if has_deadline else deadline_by_region.get((sido, row[1]), "")
+        count_start = 6 if has_deadline else 5
+        announced = first_int(row[count_start])
+        received = first_int(row[count_start + 1])
+        if len(row) >= count_start + 6:
+            selected = first_int(row[count_start + 2])
+            delivered = first_int(row[count_start + 3])
+            selection_remaining = first_int(row[count_start + 4])
+            delivery_remaining = first_int(row[count_start + 5])
         else:
             # The legacy table did not expose selection separately. Preserve
             # compatibility while using the same visible total-value basis.
@@ -195,6 +210,7 @@ def build_snapshot(
             "localMaxManwon": max(0, combined - NATIONAL_MAX_MANWON),
             "combinedMaxManwon": combined,
             "applicationMethod": row[4].lstrip("*"),
+            "applicationDeadline": deadline,
             "notice": row[3],
         })
 
@@ -238,7 +254,7 @@ def build_snapshot(
 
     now = datetime.now(SEOUL).replace(microsecond=0).isoformat()
     return {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "source": {
             "name": "무공해차 통합누리집",
             "paymentUrl": PAYMENT_URL,

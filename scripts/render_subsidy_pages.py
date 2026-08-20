@@ -250,6 +250,7 @@ def write_payment_table(rows: list[dict], output: Path) -> None:
         "차종",
         "공고",
         "접수방법",
+        "신청마감",
         "공고대수",
         "접수대수",
         "선정대수",
@@ -267,6 +268,7 @@ def write_payment_table(rows: list[dict], output: Path) -> None:
             " / ".join(label for label in labels if label)
             or str(row.get("noticeKind", "")),
             str(row.get("accept", "")),
+            str(row.get("deadline", "")),
             str(row.get("tcnt", "")),
             str(row.get("recei", "")),
             str(row.get("choice", "")),

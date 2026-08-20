@@ -2,10 +2,10 @@ name: Update nationwide EV subsidy data
 
 on:
   schedule:
-    # Retry each three-hour slot away from the top-of-hour congestion window.
-    # Asia/Seoul slots: 08:07/27/47, 11:07/27/47, 14:07/27/47, 17:07/27/47.
+    # Retry each hourly slot away from the top-of-hour congestion window.
+    # Asia/Seoul slots: every hour from 08:07/27/47 through 18:07/27/47.
     # The slot guard below skips every retry after the first successful check.
-    - cron: "7,27,47 23,2,5,8 * * *"
+    - cron: "7,27,47 0-9,23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Check whether the latest three-hour subsidy slot was already verified
+      - name: Check whether the latest hourly subsidy slot was already verified
         id: slot
         env:
           EVENT_NAME: ${{ github.event_name }}
@@ -50,11 +50,11 @@ jobs:
           if os.environ.get("EVENT_NAME") == "schedule":
               seoul = ZoneInfo("Asia/Seoul")
               now = datetime.now(seoul)
-              slots = [
-                  now.replace(hour=hour, minute=0, second=0, microsecond=0)
-                  for hour in (8, 11, 14, 17)
-              ]
-              required_slot = max((slot for slot in slots if slot <= now), default=None)
+              required_slot = (
+                  now.replace(minute=0, second=0, microsecond=0)
+                  if 8 <= now.hour <= 18
+                  else None
+              )
               data = json.loads(Path("version.json").read_text(encoding="utf-8"))
               checked_at = data.get("subsidyCheckedAt")
               checked_time = (
@@ -104,7 +104,7 @@ jobs:
           assert all(
               all(field in region for field in (
                   "announced", "received", "selected", "delivered",
-                  "selectionRemaining", "remaining",
+                  "selectionRemaining", "remaining", "applicationDeadline",
               ))
               for region in data["regions"]
           )
@@ -120,6 +120,11 @@ jobs:
           }
           assert all(
               region["combinedMaxManwon"] > 0
+              for region in data["regions"]
+              if region["sido"] in key_regions
+          )
+          assert all(
+              region["applicationDeadline"]
               for region in data["regions"]
               if region["sido"] in key_regions
           )
