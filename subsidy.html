@@ -270,10 +270,10 @@ main>.panel .donut-chart{
 }
 main>.panel .donut-chart:before{
   background:
-    linear-gradient(180deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.025) 45%,rgba(34,55,70,.075) 100%),
+    linear-gradient(180deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.02) 45%,rgba(34,55,70,.05) 100%),
     conic-gradient(from 0deg,#E2815E 0%,var(--accent-coral) calc(var(--use-rate)*1%),var(--accent-teal) calc(var(--use-rate)*1%) 100%);
   background-blend-mode:normal,normal;
-  filter:none;
+  filter:saturate(1.025);
   box-shadow:none;
 }
 main>.panel .donut-chart:after{
