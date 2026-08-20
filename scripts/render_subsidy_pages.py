@@ -260,13 +260,16 @@ def collect_visible_selection_breakdowns(
                 break
             except (TimeoutException, WebDriverException, RuntimeError) as error:
                 last_error = error
-                driver.execute_script(
-                    """
-                    const modal = document.querySelector('.modal-container.is-active');
-                    const close = modal && modal.querySelector('.js-detail-close');
-                    if (close) close.click();
-                    """
-                )
+                try:
+                    driver.execute_script(
+                        """
+                        const modal = document.querySelector('.modal-container.is-active');
+                        const close = modal && modal.querySelector('.js-detail-close');
+                        if (close) close.click();
+                        """
+                    )
+                except WebDriverException:
+                    pass
                 time.sleep(attempt)
                 print(
                     f"Selection breakdown retry {attempt}/3: "
