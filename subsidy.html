@@ -58,9 +58,10 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .donut-stats{width:100%;max-width:150px;justify-self:end}
   .donut-stat{min-height:34px;padding:5px 7px}
   .donut-stat-copy{min-width:0;display:flex;align-items:center;gap:3px;line-height:1.05;white-space:nowrap}
-  .donut-stat-copy small{color:#a56e59;font-size:6.5px;font-weight:700;white-space:nowrap}
+  .donut-stat-copy small{color:#a56e59;font-size:7.5px;font-weight:700;white-space:nowrap}
   .donut-stat.remaining .donut-stat-copy small{color:#558978}
-  .donut-stat b{font-size:clamp(8px,.68vw,11px);line-height:1}
+  .donut-stat span{font-size:10px}
+  .donut-stat b{font-size:clamp(9px,.75vw,12px);line-height:1}
 }
 @media(min-width:960px) and (max-height:900px){
   main{grid-template-rows:105px minmax(0,3fr) minmax(0,7fr)}
@@ -73,7 +74,8 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .donut-center b{font-size:11px}
   .donut-stats{max-width:136px}
   .donut-stat{min-height:28px;padding:3px 6px}
-  .donut-stat-copy small{font-size:5.8px}
+  .donut-stat span{font-size:9.5px}
+  .donut-stat-copy small{font-size:6.8px}
 }
 @media(min-width:960px) and (max-height:700px){
   .trim-card{--trim-price-size:15px}
@@ -88,8 +90,9 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .donut-stats{max-width:128px}
   .donut-stat{min-height:24px;padding:2px 5px}
   .donut-stat-copy{gap:1px}
-  .donut-stat-copy small{font-size:5.2px}
-  .donut-stat b{font-size:8px}
+  .donut-stat span{font-size:8.2px}
+  .donut-stat-copy small{font-size:6.2px}
+  .donut-stat b{font-size:9px}
   .trim-equation{gap:1px;margin-top:4px;font-size:6.2px}
   .equation-row{grid-template-columns:minmax(0,1fr) auto;gap:3px}
   .equation-row b{font-size:6.2px}
