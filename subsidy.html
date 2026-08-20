@@ -108,12 +108,15 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .city-map{width:37px;height:48px;padding:2px 4px}
 }
 @media(min-width:960px) and (max-height:700px){
-  main{grid-template-rows:85px minmax(0,2.4fr) minmax(0,7.6fr)}
-  .city-card{grid-template-rows:44px minmax(0,1fr) 28px}
-  .city-map{width:31px;height:40px;padding:1px 3px}
-  .customer-choice{top:24px;height:13px;padding:0 5px;font-size:5.9px}
+  main{grid-template-rows:85px minmax(0,2.65fr) minmax(0,7.35fr)}
+  main>.panel:not(.city-panel) .panel-head{height:28px}
+  .trim-grid{height:calc(100% - 28px);padding:4px}
+  .trim-card{padding:5px 6px}
+  .city-card{grid-template-rows:48px minmax(0,1fr) 28px}
+  .city-map{width:34px;height:44px;padding:1px 3px}
+  .customer-choice{top:22px;height:12px;padding:0 5px;font-size:5.9px}
   .customer-choice-icon{font-size:7px}
-  .trim-card.customer-selected .trim-equation{padding-top:11px}
+  .trim-card.customer-selected .trim-equation{padding-top:9px}
 }
 </style>
 </head>
