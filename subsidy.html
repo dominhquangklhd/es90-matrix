@@ -296,7 +296,22 @@ main>.panel .rates .rate.remain b{color:var(--accent-teal)}
 main>.panel .counts{border-color:var(--border-soft);background:var(--bg-subtle)}
 main>.panel .count b,
 main>.panel .count.remaining b{color:var(--text-primary)}
-main>.panel .selection-counts .count{border-color:var(--border-soft)}
+main>.panel .selection-counts .count{position:relative;border-right:0}
+main>.panel .selection-counts .count:not(.total):nth-child(-n+3)::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  right:0;
+  width:1px;
+  height:60%;
+  min-height:12px;
+  border-radius:0;
+  background:var(--border-soft);
+  opacity:.72;
+  transform:translate(50%,-50%) scaleX(.55);
+  transform-origin:center;
+  pointer-events:none;
+}
 main>.panel .selection-counts .count.total{background:var(--bg-subtle)}
 main>.panel .selection-counts .count.total span{color:var(--text-secondary)}
 main>.panel .selection-counts .count.total b{color:var(--title-navy)}
