@@ -39,7 +39,7 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
 @media(min-width:960px) and (max-height:700px){.city-map{width:40px;height:29px;padding:1px 4px}}
 .trim-name,.trim-card.performance .trim-name{font-family:VolvoCentum,sans-serif;font-size:clamp(9.8px,.9vw,11px);line-height:1.2;letter-spacing:-.38px}
 .trim-card{--trim-price-size:20px;grid-template-rows:auto minmax(0,1fr)}.trim-benefits{position:absolute;z-index:1;top:26px;left:7px;max-width:calc(100% - 14px);display:grid;justify-items:start;gap:3px}.trim-benefit{min-width:0;height:14px;display:flex;align-items:center;gap:4px;color:#637b89;font-size:6.5px;font-weight:700;line-height:1;white-space:nowrap}.trim-benefit-icon{flex:0 0 auto;display:grid;place-items:center;width:20px;height:14px;border:1px solid #8eb8d1;border-radius:5px;background:#eef7fc;color:#2e6685;font-size:6px;font-weight:950;letter-spacing:-.25px}.trim-benefit.eco .trim-benefit-icon{border-color:#8bc4a9;background:#edf8f2;color:#27805e}.trim-benefit-icon svg{display:block;width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.trim-equation{align-self:stretch;min-width:0;display:grid;align-content:end;gap:3px;margin-top:5px;color:#506b7b;font-size:7px}.equation-row{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:5px;white-space:nowrap}.equation-row span{font-size:7px;text-align:left;overflow:hidden;text-overflow:ellipsis}.equation-row.result span{text-align:left!important}.equation-row b{text-align:right;color:#294d63;font-size:7px;font-weight:800;font-variant-numeric:tabular-nums}.equation-row.price,.equation-row.result{color:#153f57;font-weight:900}.equation-row.price b,.equation-row.result b{font-size:calc(var(--trim-price-size) * .8);font-weight:950}.equation-row.price b{color:#111820}.equation-row.result b{color:#0d6f53}.equation-row.deduction{color:#667d8a}.equation-row.deduction b{color:#5f7887;font-size:8.45px;font-weight:650}.equation-divider{margin:2px 0;border-top:1px solid #aebdc5}.trim-card.performance .equation-row.price b{color:#111820}.trim-card.performance .equation-row.result b,.trim-card.performance .equation-row.deduction b{color:#bd4a24}.trim-card.performance .equation-divider{border-color:#e6b5a5}
-.trim-card{position:relative;overflow:visible}.trim-card.customer-selected{border:2px solid #f36b37;background:linear-gradient(145deg,#fffaf7 0%,#fff 58%,#fff4ee 100%);box-shadow:0 0 0 2px rgba(243,107,55,.12),0 5px 14px rgba(34,62,77,.1)}.customer-choice{position:absolute;z-index:3;top:-8px;right:7px;display:inline-flex;align-items:center;height:15px;padding:0 6px;border:1px solid rgba(255,255,255,.92);border-radius:999px;background:#f36b37;color:#fff;font-size:6.5px;font-weight:950;line-height:1;box-shadow:0 2px 5px rgba(202,76,28,.2);white-space:nowrap}
+.trim-card{position:relative;overflow:visible}.trim-card.customer-selected{border:2px solid #f36b37;background:linear-gradient(145deg,#fffaf7 0%,#fff 58%,#fff4ee 100%);box-shadow:0 0 0 2px rgba(243,107,55,.12),0 5px 14px rgba(34,62,77,.1)}.trim-card.customer-selected:before{content:"";position:absolute;z-index:2;top:-2px;left:7px;right:7px;height:2px;background:#f36b37;pointer-events:none}.customer-choice{position:absolute;z-index:3;top:-9px;right:7px;display:inline-flex;align-items:center;height:16px;padding:0 6px;border:1px solid #f36b37;border-radius:999px;background:#f36b37;color:#fff;font-size:6.5px;font-weight:950;line-height:1;box-shadow:0 2px 5px rgba(202,76,28,.2);white-space:nowrap}
 @media(max-width:1100px){.trim-card{--trim-price-size:13px}}
 @media(min-width:960px) and (max-height:800px){.trim-card{--trim-price-size:17px}}
 /* Final iPad/desktop composition: trim summary 30%, metropolitan status 70%. */
@@ -107,7 +107,7 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .trim-equation{align-content:space-evenly;gap:clamp(4px,.8vh,7px);margin-top:3px;line-height:1.12}
   .equation-row,.equation-row b{line-height:1}
   .equation-divider{margin:2px 0}
-  .customer-choice{top:-8px;right:6px}
+  .customer-choice{top:-9px;right:6px}
   .city-card{grid-template-rows:60px minmax(0,1fr) 44px}
   .city-map{width:42px;height:54px;padding:2px 4px;aspect-ratio:28/36}
   .city-map svg{width:100%;height:100%;aspect-ratio:28/36;object-fit:contain}
@@ -136,7 +136,7 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .equation-divider{margin:1px 0}
   .city-card{grid-template-rows:48px minmax(0,1fr) 28px}
   .city-map{width:34px;height:44px;padding:1px 3px}
-  .customer-choice{top:-7px;right:5px;height:12px;padding:0 5px;font-size:5.9px}
+  .customer-choice{top:-8px;right:5px;height:14px;padding:0 5px;font-size:5.9px}
 }
 /* Readable metro locator: nationwide context plus an enlarged administrative-area inset. */
 .city-map{position:relative;width:82px;height:52px;padding:3px 4px;grid-template-columns:30px minmax(0,1fr);gap:5px;background:linear-gradient(145deg,#fbfdfe 0%,#edf4f7 100%)}
