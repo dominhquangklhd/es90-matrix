@@ -243,6 +243,14 @@ def build_snapshot(
                         f"선정 세부 합계 불일치: {sido}: {normalized_breakdown}"
                     )
                 region["selectionBreakdown"] = normalized_breakdown
+                # The detail modal is the canonical source for the category
+                # breakdown. Keep the summary fields on the same snapshot basis
+                # so the displayed total, burn rate, and remaining rate cannot
+                # disagree when the portal changes between page requests.
+                region["selected"] = normalized_breakdown["total"]
+                region["selectionRemaining"] = max(
+                    0, announced - normalized_breakdown["total"]
+                )
         regions.append(region)
 
     if len(regions) < 150:

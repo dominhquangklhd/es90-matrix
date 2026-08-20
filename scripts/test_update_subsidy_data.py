@@ -130,11 +130,11 @@ class SubsidySnapshotTests(unittest.TestCase):
             }
             breakdowns = {
                 "서울특별시": {
-                    "general": 40,
+                    "general": 38,
                     "priority": 20,
                     "taxi": 7,
                     "corporate": 3,
-                    "total": 70,
+                    "total": 68,
                 }
             }
 
@@ -149,6 +149,8 @@ class SubsidySnapshotTests(unittest.TestCase):
                 breakdowns["서울특별시"],
                 snapshot["regions"][0]["selectionBreakdown"],
             )
+            self.assertEqual(68, snapshot["regions"][0]["selected"])
+            self.assertEqual(32, snapshot["regions"][0]["selectionRemaining"])
             self.assertNotIn("selectionBreakdown", snapshot["regions"][1])
             self.assertEqual(
                 "live-official",
