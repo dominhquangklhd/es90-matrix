@@ -242,15 +242,12 @@ def build_snapshot(
                     raise RuntimeError(
                         f"선정 세부 합계 불일치: {sido}: {normalized_breakdown}"
                     )
+                if normalized_breakdown["total"] != selected:
+                    raise RuntimeError(
+                        "공식 선정 합계와 세부 합계 불일치: "
+                        f"{sido}: 공식={selected}, 세부={normalized_breakdown['total']}"
+                    )
                 region["selectionBreakdown"] = normalized_breakdown
-                # The detail modal is the canonical source for the category
-                # breakdown. Keep the summary fields on the same snapshot basis
-                # so the displayed total, burn rate, and remaining rate cannot
-                # disagree when the portal changes between page requests.
-                region["selected"] = normalized_breakdown["total"]
-                region["selectionRemaining"] = max(
-                    0, announced - normalized_breakdown["total"]
-                )
         regions.append(region)
 
     if len(regions) < 150:

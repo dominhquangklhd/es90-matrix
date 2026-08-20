@@ -143,6 +143,15 @@ jobs:
               )) == region["selectionBreakdown"]["total"] > 0
               for region in metro_regions
           )
+          assert all(
+              region["selectionBreakdown"]["total"] == region["selected"]
+              for region in metro_regions
+          )
+          assert all(
+              region["selectionRemaining"]
+              == max(0, region["announced"] - region["selected"])
+              for region in metro_regions
+          )
           print(f"Validated {len(data['regions'])} official regions")
           PY
 

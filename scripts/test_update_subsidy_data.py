@@ -130,11 +130,11 @@ class SubsidySnapshotTests(unittest.TestCase):
             }
             breakdowns = {
                 "서울특별시": {
-                    "general": 38,
+                    "general": 40,
                     "priority": 20,
                     "taxi": 7,
                     "corporate": 3,
-                    "total": 68,
+                    "total": 70,
                 }
             }
 
@@ -149,13 +149,42 @@ class SubsidySnapshotTests(unittest.TestCase):
                 breakdowns["서울특별시"],
                 snapshot["regions"][0]["selectionBreakdown"],
             )
-            self.assertEqual(68, snapshot["regions"][0]["selected"])
-            self.assertEqual(32, snapshot["regions"][0]["selectionRemaining"])
+            self.assertEqual(70, snapshot["regions"][0]["selected"])
+            self.assertEqual(30, snapshot["regions"][0]["selectionRemaining"])
             self.assertNotIn("selectionBreakdown", snapshot["regions"][1])
             self.assertEqual(
                 "live-official",
                 snapshot["collection"]["selectionBreakdowns"],
             )
+
+    def test_mismatched_official_and_breakdown_totals_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            payment = temp / "payment.html"
+            price = temp / "price.html"
+            source = payment_html(150).replace(
+                "<td>서울</td><td>지역0</td>",
+                "<td>서울</td><td>서울특별시</td>",
+                1,
+            )
+            payment.write_text(source, encoding="utf-8")
+            price.write_text(new_price_html(), encoding="utf-8")
+            breakdowns = {
+                "서울특별시": {
+                    "general": 38,
+                    "priority": 20,
+                    "taxi": 7,
+                    "corporate": 3,
+                    "total": 68,
+                }
+            }
+
+            with self.assertRaisesRegex(RuntimeError, "공식 선정 합계와 세부 합계"):
+                build_snapshot(
+                    payment,
+                    price,
+                    selection_breakdowns=breakdowns,
+                )
 
 
 if __name__ == "__main__":

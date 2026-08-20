@@ -159,6 +159,7 @@ def selection_breakdown_from_rows(region_name: str, rows: list[dict]) -> dict:
 def collect_visible_selection_breakdowns(
     driver: webdriver.Chrome,
     breakdowns: dict[str, dict],
+    page_rows: list[dict],
 ) -> None:
     # The official portal redraws both AG Grids immediately after opening a
     # detail modal.  Holding Selenium WebElement objects across that redraw
@@ -179,6 +180,27 @@ def collect_visible_selection_breakdowns(
     for region_name in visible_regions:
         if region_name in breakdowns:
             continue
+
+        summary_row = next(
+            (
+                row
+                for row in page_rows
+                if row.get("carNm") == "전기승용"
+                and region_name
+                in {
+                    str(row.get("sido", "")).strip(),
+                    str(row.get("localNm", "")).strip(),
+                }
+            ),
+            None,
+        )
+        if summary_row is None:
+            raise RuntimeError(f"공식 선정 요약행을 찾을 수 없음: {region_name}")
+        expected_total = first_int(category_text(summary_row, "choiceArr", "choice"))
+        if expected_total <= 0:
+            raise RuntimeError(
+                f"공식 선정 합계가 비어 있음: {region_name}: {summary_row.get('choice')}"
+            )
 
         last_error: Exception | None = None
         for attempt in range(1, 4):
@@ -206,37 +228,40 @@ def collect_visible_selection_breakdowns(
                 if not clicked:
                     raise RuntimeError(f"상세보기 버튼을 찾을 수 없음: {region_name}")
 
-                WebDriverWait(driver, 20, poll_frequency=0.2).until(
-                    lambda current, name=region_name: current.execute_script(
+                def matching_detail_rows(current: webdriver.Chrome) -> list[dict] | bool:
+                    detail_rows = current.execute_script(
                         """
                         const modal = document.querySelector('.modal-container.is-active');
-                        return Boolean(
-                          modal
-                          && modal.innerText.includes(arguments[0])
-                          && modal.querySelectorAll(
-                            '#myGrid3 [role="row"][row-index]'
-                          ).length
-                        );
-                        """,
-                        name,
+                        if (!modal) return [];
+                        return Array.from(
+                          modal.querySelectorAll('#myGrid3 [role="row"][row-index]')
+                        ).map(row => ({
+                          category: row.querySelector(
+                            '[role="gridcell"][col-id="category"]'
+                          )?.textContent?.trim() || '',
+                          selected: row.querySelector(
+                            '[role="gridcell"][col-id="choice"]'
+                          )?.textContent?.trim() || '',
+                        }));
+                        """
                     )
-                )
-                detail_rows = driver.execute_script(
-                    """
-                    const modal = document.querySelector('.modal-container.is-active');
-                    if (!modal) return [];
-                    return Array.from(
-                      modal.querySelectorAll('#myGrid3 [role="row"][row-index]')
-                    ).map(row => ({
-                      category: row.querySelector(
-                        '[role="gridcell"][col-id="category"]'
-                      )?.textContent?.trim() || '',
-                      selected: row.querySelector(
-                        '[role="gridcell"][col-id="choice"]'
-                      )?.textContent?.trim() || '',
-                    }));
-                    """
-                )
+                    if not detail_rows:
+                        return False
+                    try:
+                        breakdown = selection_breakdown_from_rows(
+                            region_name, detail_rows
+                        )
+                    except RuntimeError:
+                        return False
+                    return detail_rows if breakdown["total"] == expected_total else False
+
+                # The portal opens the modal shell before replacing the previous
+                # region's AG Grid rows.  Wait for the detail total to equal the
+                # already captured official summary total, not merely for rows to
+                # exist, otherwise the previous region can be assigned here.
+                detail_rows = WebDriverWait(
+                    driver, 20, poll_frequency=0.2
+                ).until(matching_detail_rows)
                 breakdowns[region_name] = selection_breakdown_from_rows(
                     region_name, detail_rows
                 )
@@ -332,7 +357,7 @@ def collect_new_payment_rows(
             rows_by_key[key] = row
 
         if breakdowns is not None:
-            collect_visible_selection_breakdowns(driver, breakdowns)
+            collect_visible_selection_breakdowns(driver, breakdowns, page_rows)
 
         next_button = driver.find_element(
             By.CSS_SELECTOR,
