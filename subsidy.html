@@ -269,8 +269,10 @@ main>.panel .donut-chart{
   box-shadow:0 2px 7px rgba(34,55,70,.09),0 0 0 1px rgba(185,197,205,.5);
 }
 main>.panel .donut-chart:before{
-  background:conic-gradient(from 0deg,#E2815E 0%,var(--accent-coral) calc(var(--use-rate)*1%),var(--accent-teal) calc(var(--use-rate)*1%) 100%);
-  background-blend-mode:normal;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,.025) 45%,rgba(34,55,70,.075) 100%),
+    conic-gradient(from 0deg,#E2815E 0%,var(--accent-coral) calc(var(--use-rate)*1%),var(--accent-teal) calc(var(--use-rate)*1%) 100%);
+  background-blend-mode:normal,normal;
   filter:none;
   box-shadow:none;
 }
