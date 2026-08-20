@@ -17609,6 +17609,7 @@ function openLiveSubsidyStatus(){
   const subsidyUrl = new URL('./subsidy.html', window.location.href);
   subsidyUrl.searchParams.set('es90Trim', STATE.es90Trim);
   subsidyUrl.searchParams.set('airSuspension', SELECTED_ES_AIR_SUSPENSION_TRIMS.has(STATE.es90Trim) ? '1' : '0');
+  subsidyUrl.searchParams.set('fresh', Date.now().toString());
   window.location.href = subsidyUrl.href;
 }
 function open350kwChargerNetwork(){
