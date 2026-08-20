@@ -168,6 +168,139 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
 }
 .trim-card.performance{border-color:var(--line);background:#fbfcfd}
 .trim-card.performance.customer-selected{border-color:#f36b37;background:linear-gradient(145deg,#fffaf7 0%,#fff 58%,#fff4ee 100%);box-shadow:0 0 0 2px rgba(243,107,55,.12),0 5px 14px rgba(34,62,77,.1)}
+/* Muted premium palette for the dashboard below the navy overview only. */
+:root{
+  --bg-main:#F3F6F8;
+  --bg-card:#FFFFFF;
+  --border-soft:#DCE4E9;
+  --text-primary:#223746;
+  --text-secondary:#71818D;
+  --accent-teal:#397D70;
+  --accent-teal-soft:#EAF4F1;
+  --accent-coral:#D97652;
+  --accent-coral-soft:#FAEEE9;
+  --chart-neutral:#B9C5CD;
+  --title-navy:#183B52;
+  --bg-subtle:#F6F8FA;
+  --shadow-soft:0 1px 4px rgba(34,55,70,.06);
+}
+html,body{background:var(--bg-main)}
+main>.panel{
+  --line:var(--border-soft);
+  --line2:var(--border-soft);
+  --orange:var(--accent-coral);
+  --orange-soft:var(--accent-coral-soft);
+  --green:var(--accent-teal);
+  --green-soft:var(--accent-teal-soft);
+  border-color:var(--border-soft);
+  background:var(--bg-card);
+  color:var(--text-primary);
+  box-shadow:var(--shadow-soft);
+}
+main>.panel .panel-head{border-color:var(--border-soft);background:var(--bg-card)}
+main>.panel .panel-title{color:var(--title-navy)}
+main>.panel .num{background:var(--bg-subtle);color:var(--title-navy)}
+main>.panel .panel-note{color:var(--text-secondary)}
+main>.panel .trim-card{
+  border-color:var(--border-soft);
+  background:var(--bg-card);
+  box-shadow:var(--shadow-soft);
+}
+main>.panel .trim-name{color:var(--title-navy)}
+main>.panel .trim-equation,
+main>.panel .equation-row,
+main>.panel .equation-row span{color:var(--text-secondary)}
+main>.panel .equation-row b{color:var(--text-primary)}
+main>.panel .equation-row.price b{color:var(--text-primary)}
+main>.panel .equation-row.result b{color:var(--accent-teal)}
+main>.panel .equation-row.deduction,
+main>.panel .equation-row.deduction b{color:var(--text-secondary)}
+main>.panel .equation-divider{border-color:var(--border-soft)}
+main>.panel .trim-card.performance,
+main>.panel .trim-card.performance:not(.customer-selected){border-color:var(--border-soft);background:var(--bg-card)}
+main>.panel .trim-card.performance .equation-row.price b{color:var(--text-primary)}
+main>.panel .trim-card.performance .equation-row.result b,
+main>.panel .trim-card.performance .equation-row.deduction b{color:var(--accent-coral)}
+main>.panel .trim-card.performance .equation-divider{border-color:var(--border-soft)}
+main>.panel .trim-card.customer-selected,
+main>.panel .trim-card.performance.customer-selected{
+  border-color:var(--accent-coral);
+  background:var(--bg-card);
+  box-shadow:0 0 0 2px rgba(217,118,82,.08),var(--shadow-soft);
+}
+main>.panel .trim-card.customer-selected:before{background:var(--accent-coral)}
+main>.panel .customer-choice{
+  border-color:var(--accent-coral);
+  background:var(--accent-coral-soft);
+  color:var(--accent-coral);
+  box-shadow:var(--shadow-soft);
+}
+main>.panel .city-card{
+  border-color:var(--border-soft);
+  background:var(--bg-card);
+  box-shadow:var(--shadow-soft);
+}
+main>.panel .city-head{border-color:var(--border-soft);background:var(--bg-card)}
+main>.panel .city-name{color:var(--title-navy)}
+main>.panel .deadline{color:var(--text-secondary)}
+main>.panel .availability-badge,
+main>.panel .availability-badge.closing{
+  background:var(--accent-coral-soft);
+  color:var(--accent-coral);
+  box-shadow:none;
+}
+main>.panel .availability-badge.available{background:var(--accent-teal-soft);color:var(--accent-teal)}
+main>.panel .deadline-status{background:var(--accent-coral-soft);color:var(--accent-coral)}
+main>.panel .deadline-status.remaining{background:var(--accent-teal-soft);color:var(--accent-teal)}
+main>.panel .deadline-status.today{background:var(--bg-subtle);color:var(--title-navy)}
+main>.panel .city-map{
+  border-color:var(--border-soft);
+  background:linear-gradient(145deg,var(--bg-card),var(--bg-subtle));
+}
+main>.panel .korea-land{fill:var(--border-soft);stroke:var(--chart-neutral)}
+main>.panel .korea-boundary{stroke:var(--chart-neutral)}
+main>.panel .region-highlight,
+main>.panel .region-focus{fill:var(--title-navy);stroke:var(--bg-card)}
+main>.panel .city-map-connectors line{stroke:var(--chart-neutral)}
+main>.panel .city-map-connector-fill{filter:drop-shadow(0 1px 1px rgba(34,55,70,.06))}
+main>.panel .city-map-label{background:var(--bg-subtle);color:var(--title-navy)}
+main>.panel .donut-chart{
+  background:linear-gradient(145deg,var(--bg-subtle),var(--chart-neutral));
+  box-shadow:0 2px 7px rgba(34,55,70,.09),0 0 0 1px rgba(185,197,205,.5);
+}
+main>.panel .donut-chart:before{
+  background:conic-gradient(from 0deg,#E2815E 0%,var(--accent-coral) calc(var(--use-rate)*1%),var(--accent-teal) calc(var(--use-rate)*1%) 100%);
+  background-blend-mode:normal;
+  filter:none;
+  box-shadow:none;
+}
+main>.panel .donut-chart:after{
+  border-color:var(--border-soft);
+  background:var(--bg-card);
+  box-shadow:0 1px 4px rgba(34,55,70,.06);
+}
+main>.panel .donut-center{color:var(--text-secondary)}
+main>.panel .donut-center b{color:var(--text-primary)}
+main>.panel .donut-stat{background:var(--accent-coral-soft)}
+main>.panel .donut-stat.remaining{background:var(--accent-teal-soft)}
+main>.panel .donut-stat span,
+main>.panel .donut-stat b{color:var(--accent-coral)}
+main>.panel .donut-stat.remaining span,
+main>.panel .donut-stat.remaining b{color:var(--accent-teal)}
+main>.panel .donut-stat-copy small,
+main>.panel .donut-stat.remaining .donut-stat-copy small{color:var(--text-secondary)}
+main>.panel .rates .rate span,
+main>.panel .count span{color:var(--text-secondary)}
+main>.panel .rates .rate b{color:var(--accent-coral)}
+main>.panel .rates .rate.remain b{color:var(--accent-teal)}
+main>.panel .counts{border-color:var(--border-soft);background:var(--bg-subtle)}
+main>.panel .count b,
+main>.panel .count.remaining b{color:var(--text-primary)}
+main>.panel .selection-counts .count{border-color:var(--border-soft)}
+main>.panel .selection-counts .count.total{background:var(--bg-subtle)}
+main>.panel .selection-counts .count.total span{color:var(--text-secondary)}
+main>.panel .selection-counts .count.total b{color:var(--title-navy)}
+main>.panel .loading{color:var(--text-secondary)}
 </style>
 </head>
 <body>
