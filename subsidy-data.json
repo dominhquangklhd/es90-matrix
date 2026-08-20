@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-20T21:04:04+09:00",
+  "checkedAt": "2026-08-20T22:07:12+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -129,9 +129,9 @@
       "sigungu": "광주광역시",
       "announced": 2606,
       "received": 2779,
-      "selected": 2333,
+      "selected": 2361,
       "delivered": 2241,
-      "selectionRemaining": 273,
+      "selectionRemaining": 245,
       "remaining": 365,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -140,11 +140,11 @@
       "applicationDeadline": "2026.08.20 13:46",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1",
       "selectionBreakdown": {
-        "general": 1752,
-        "priority": 308,
-        "taxi": 221,
-        "corporate": 52,
-        "total": 2333
+        "general": 1772,
+        "priority": 314,
+        "taxi": 222,
+        "corporate": 53,
+        "total": 2361
       }
     },
     {
@@ -198,9 +198,9 @@
       "sigungu": "세종특별자치시",
       "announced": 1221,
       "received": 1109,
-      "selected": 786,
+      "selected": 800,
       "delivered": 752,
-      "selectionRemaining": 435,
+      "selectionRemaining": 421,
       "remaining": 469,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -209,11 +209,11 @@
       "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3",
       "selectionBreakdown": {
-        "general": 475,
-        "priority": 292,
+        "general": 484,
+        "priority": 297,
         "taxi": 13,
         "corporate": 6,
-        "total": 786
+        "total": 800
       }
     },
     {
@@ -1468,10 +1468,10 @@
       "sido": "전북특별자치도",
       "sigungu": "정읍시",
       "announced": 388,
-      "received": 547,
-      "selected": 363,
+      "received": 552,
+      "selected": 375,
       "delivered": 199,
-      "selectionRemaining": 25,
+      "selectionRemaining": 13,
       "remaining": 189,
       "nationalMaxManwon": 648,
       "localMaxManwon": 703,
@@ -2285,7 +2285,7 @@
       "sigungu": "예천군",
       "announced": 120,
       "received": 315,
-      "selected": 249,
+      "selected": 251,
       "delivered": 161,
       "selectionRemaining": 0,
       "remaining": 0,
