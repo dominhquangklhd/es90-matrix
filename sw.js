@@ -1,5 +1,5 @@
-const CACHE_NAME = 'es90-sales-app-v245';
-const APP_SHELL = ['./', './index.html', './app.html', './charger.html', './administrative-dongs.json', './administrative-centers.json', './manifest.webmanifest', './icons/es90-icon.svg', './assets/charger-marker-350kw-v1.png', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png', './assets/es90-trim-plus.png', './assets/es90-trim-ultra.png', './assets/es90-trim-performance-ultra.png', './assets/dolby-atmos.png', './assets/es90-bnw-dolby-atmos-thumb.png', './assets/es90-digital-key-plus-thumb.png'];
+const CACHE_NAME = 'es90-sales-app-v246';
+const APP_SHELL = ['./', './index.html', './app.html', './charger.html', './administrative-dongs.json', './administrative-centers.json', './manifest.webmanifest', './icons/es90-icon.svg', './assets/charger-marker-350kw-v1.png', './assets/es90-login-cover-lights-on-v3-led.png', './assets/es90-headlight-shape-mask-v1.png', './assets/es90-trim-plus.webp?v=20260820-1', './assets/es90-trim-ultra.webp?v=20260820-1', './assets/es90-trim-performance-ultra.webp?v=20260820-1', './assets/dolby-atmos.png', './assets/es90-bnw-dolby-atmos-thumb.png', './assets/es90-digital-key-plus-thumb.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
