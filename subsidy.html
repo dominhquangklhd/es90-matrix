@@ -36,6 +36,27 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
 .city-map{width:52px;height:43px;padding:1px 3px;border:1px solid #e3ebf0;background:linear-gradient(145deg,#fbfdfe,#edf4f7)}.city-map svg{filter:drop-shadow(0 1px 1px rgba(15,52,74,.13))}.korea-land{fill:#e2eaee;stroke:#819aa8;stroke-width:.34}.korea-boundary{fill:none;stroke:#91a8b5;stroke-width:.32;stroke-linecap:round;stroke-linejoin:round}.region-highlight{fill:#123d59;stroke:#fff;stroke-width:.5;stroke-linejoin:round}
 @media(min-width:960px) and (max-height:700px){.city-map{width:40px;height:29px;padding:1px 4px}}
 .trim-name{font-size:clamp(10.5px,.98vw,12px);line-height:1.2;letter-spacing:-.22px}.trim-card.performance .trim-name{font-size:clamp(9.8px,.9vw,11px);letter-spacing:-.38px}
+/* Final iPad/desktop composition: trim summary 30%, metropolitan status 70%. */
+@media(min-width:960px){
+  main{grid-template-rows:130px minmax(0,3fr) minmax(0,7fr)}
+  .city-card{grid-template-rows:58px minmax(0,1fr) 44px}
+  .city-head{padding:4px 8px}
+  .city-map{width:50px;height:54px;padding:2px 6px}
+  .city-map svg{width:auto;height:100%;aspect-ratio:28/36}
+  .region-highlight{fill:#0a3551;stroke:#0a3551;stroke-width:.72;paint-order:stroke fill;filter:drop-shadow(0 0 .35px rgba(10,53,81,.8))}
+  .donut-stat b{font-size:clamp(8px,.68vw,11px);line-height:1}
+}
+@media(min-width:960px) and (max-height:900px){
+  main{grid-template-rows:105px minmax(0,3fr) minmax(0,7fr)}
+  .city-card{grid-template-rows:48px minmax(0,1fr) 36px}
+  .city-map{width:43px;height:45px;padding:1px 5px}
+}
+@media(min-width:960px) and (max-height:700px){
+  main{grid-template-rows:85px minmax(0,3fr) minmax(0,7fr)}
+  .city-card{grid-template-rows:40px minmax(0,1fr) 28px}
+  .city-map{width:37px;height:38px;padding:1px 4px}
+  .donut-stat b{font-size:8px}
+}
 </style>
 </head>
 <body>
