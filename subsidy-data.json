@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "source": {
     "name": "무공해차 통합누리집",
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
@@ -11,6 +11,7 @@
   "allocationBasis": "전기승용 전체",
   "collection": {
     "payment": "live-official",
+    "selectionBreakdowns": "live-official",
     "prices": "live-selected-regions-with-last-known-good-fallback",
     "priceRegionsLive": [
       "서울특별시",
@@ -37,6 +38,13 @@
       "announced": 15430,
       "received": 15353,
       "selected": 15190,
+      "selectionBreakdown": {
+        "general": 9079,
+        "priority": 4426,
+        "taxi": 1199,
+        "corporate": 486,
+        "total": 15190
+      },
       "delivered": 14114,
       "selectionRemaining": 240,
       "remaining": 1316,
@@ -53,6 +61,13 @@
       "announced": 7467,
       "received": 7466,
       "selected": 7449,
+      "selectionBreakdown": {
+        "general": 4108,
+        "priority": 2171,
+        "taxi": 1013,
+        "corporate": 157,
+        "total": 7449
+      },
       "delivered": 7106,
       "selectionRemaining": 18,
       "remaining": 361,
@@ -69,6 +84,13 @@
       "announced": 4087,
       "received": 4374,
       "selected": 4373,
+      "selectionBreakdown": {
+        "general": 2571,
+        "priority": 1323,
+        "taxi": 393,
+        "corporate": 86,
+        "total": 4373
+      },
       "delivered": 4229,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -85,6 +107,13 @@
       "announced": 6533,
       "received": 6966,
       "selected": 6964,
+      "selectionBreakdown": {
+        "general": 4318,
+        "priority": 2278,
+        "taxi": 254,
+        "corporate": 114,
+        "total": 6964
+      },
       "delivered": 6816,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -101,6 +130,13 @@
       "announced": 2606,
       "received": 2343,
       "selected": 2241,
+      "selectionBreakdown": {
+        "general": 1686,
+        "priority": 293,
+        "taxi": 211,
+        "corporate": 51,
+        "total": 2241
+      },
       "delivered": 2241,
       "selectionRemaining": 365,
       "remaining": 365,
@@ -117,6 +153,13 @@
       "announced": 1726,
       "received": 2401,
       "selected": 2396,
+      "selectionBreakdown": {
+        "general": 1470,
+        "priority": 719,
+        "taxi": 150,
+        "corporate": 57,
+        "total": 2396
+      },
       "delivered": 2260,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -133,6 +176,13 @@
       "announced": 2786,
       "received": 3363,
       "selected": 3363,
+      "selectionBreakdown": {
+        "general": 2018,
+        "priority": 1134,
+        "taxi": 160,
+        "corporate": 51,
+        "total": 3363
+      },
       "delivered": 3363,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -149,6 +199,13 @@
       "announced": 1221,
       "received": 775,
       "selected": 761,
+      "selectionBreakdown": {
+        "general": 452,
+        "priority": 285,
+        "taxi": 13,
+        "corporate": 6,
+        "total": 756
+      },
       "delivered": 752,
       "selectionRemaining": 460,
       "remaining": 469,
