@@ -34,6 +34,18 @@ main{max-width:1280px;margin:auto;padding:22px 20px 42px}.hero{position:relative
 @media screen and (min-width:768px) and (orientation:landscape){.top-in{transform:translateY(7px)}}
 @media screen and (min-width:1024px) and (max-width:1366px) and (orientation:landscape) and (max-height:1100px){html,body{height:100%;overflow:hidden;overscroll-behavior:none}main{height:calc(100dvh - 76px);max-width:1280px;padding:22px 20px 14px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr);overflow:hidden}.grid{height:100%;min-height:0}.panel{height:100%;min-height:0}.panel-head{height:43px;min-height:43px;padding:9px 13px}.waterfall-wrap,.region-card{height:calc(100% - 43px);min-height:0}.waterfall-wrap{padding:8px 12px}.selection-line{margin-bottom:5px;padding:7px 10px}.price-range{margin-bottom:5px;padding:5px 8px}.wf-box{min-height:150px}.formula{margin-top:5px}.formula-card{padding:5px 7px}.region-card{padding:10px 12px}.region-status{padding:9px 10px}.progress-label{margin-top:9px}.stats{margin-top:8px;gap:6px}.stat{padding:7px 9px}.method{margin-top:7px;padding:7px 9px}.source-links,.preview-source{margin-top:7px}.source-links a,.preview-source span,.preview-source a{padding:6px}.legal-note,.preview-legal{margin-top:6px;font-size:7.8px;line-height:1.4}}
 @media screen and (min-width:1024px) and (max-width:1366px) and (orientation:landscape) and (max-height:1100px){.selection-line{height:42px}.price-range{height:38px}.region-status{height:54px}.method{height:42px}.source-links,.preview-source{height:26px}.legal-note,.preview-legal{height:22px}}
+.waterfall-wrap,.region-card{height:520px}
+.region-metrics{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px}
+.region-metric{min-width:0;padding:7px 8px;border:1px solid var(--line2);border-radius:var(--step-area-radius);background:#fbfcfd}
+.region-metric-label{display:block;overflow:hidden;color:var(--muted);font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+.region-metric-value{display:block;margin-top:3px;color:var(--navy);font-size:12px;font-weight:700;line-height:1}
+.region-metric-value small{margin-left:2px;font-size:8px;font-weight:500}
+.region-metric.is-selection-remaining{background:#f7fbf8}
+.region-metric.is-delivery-remaining{border-color:#c9dbe6;background:#f5f9fc}
+.region-donut-block{margin-top:9px}
+.region-card.preview .region-metric{background:linear-gradient(145deg,#fbfcfd,#f2f6f8)}
+.region-card.preview .region-metric-value{color:#8b9ba6}
+@media screen and (min-width:1024px) and (max-width:1366px) and (orientation:landscape) and (max-height:1100px){.waterfall-wrap,.region-card{height:calc(100% - 43px)}.region-metrics{gap:4px;margin-top:6px}.region-metric{padding:5px 6px}.region-donut-block{min-height:112px;margin-top:6px;padding:7px}.region-donut{width:104px;height:104px}.region-donut:after{inset:24px}.region-donut-center{inset:28px}.method{margin-top:6px}}
 </style>
 </head>
 <body>
@@ -49,19 +61,19 @@ main{max-width:1280px;margin:auto;padding:22px 20px 42px}.hero{position:relative
     </div>
   </section>
   <section class="summary-block">
-    <div class="summary-title"><span>전국 보조금 진행 현황</span><span class="summary-title-note">무공해차 통합누리집 · 일반 승용 기준</span></div>
+    <div class="summary-title"><span>전국 보조금 진행 현황</span><span class="summary-title-note">무공해차 통합누리집 · 전기승용 전체 기준</span></div>
     <div class="summary">
-      <div class="metric"><span class="metric-code">A</span><div class="metric-label">전국 민간공고대수</div><div class="metric-value" id="nationalAnnounced">-</div><div class="metric-sub">일반 승용 기준</div></div>
-      <div class="metric"><span class="metric-code">B</span><div class="metric-label">전국 접수대수</div><div class="metric-value" id="nationalReceived">-</div><div class="metric-sub">일반 승용 기준</div></div>
-      <div class="metric"><span class="metric-code">C</span><div class="metric-label">전국 출고완료대수</div><div class="metric-value" id="nationalDelivered">-</div><div class="metric-sub">일반 승용 기준</div></div>
-      <div class="metric"><span class="metric-code">D</span><div class="metric-label">전국 출고잔여대수</div><div class="metric-value" id="nationalRemaining">-</div><div class="metric-sub"><b>D = A − C</b> · 일반 승용</div></div>
-      <div class="metric rate"><span class="metric-code">E</span><div class="metric-label">전국 출고 소진율</div><div class="metric-value" id="nationalUseRate">-</div><div class="metric-sub"><b>E = C ÷ A × 100</b></div></div>
-      <div class="metric remaining-rate"><span class="metric-code">F</span><div class="metric-label">전국 출고 잔여율</div><div class="metric-value" id="nationalRemainingRate">-</div><div class="metric-sub"><b>F = D ÷ A × 100</b></div></div>
+      <div class="metric"><span class="metric-code">A</span><div class="metric-label">전국 공고대수</div><div class="metric-value" id="nationalAnnounced">-</div><div class="metric-sub">공식 전체값</div></div>
+      <div class="metric"><span class="metric-code">B</span><div class="metric-label">전국 접수대수</div><div class="metric-value" id="nationalReceived">-</div><div class="metric-sub">공식 전체값</div></div>
+      <div class="metric"><span class="metric-code">C</span><div class="metric-label">전국 선정대수</div><div class="metric-value" id="nationalSelected">-</div><div class="metric-sub">공식 전체값</div></div>
+      <div class="metric"><span class="metric-code">D</span><div class="metric-label">전국 출고대수</div><div class="metric-value" id="nationalDelivered">-</div><div class="metric-sub">공식 전체값</div></div>
+      <div class="metric rate"><span class="metric-code">E</span><div class="metric-label">전국 선정잔여대수</div><div class="metric-value" id="nationalSelectionRemaining">-</div><div class="metric-sub">무공해차 통합누리집</div></div>
+      <div class="metric remaining-rate"><span class="metric-code">F</span><div class="metric-label">전국 출고잔여대수</div><div class="metric-value" id="nationalRemaining">-</div><div class="metric-sub">무공해차 통합누리집</div></div>
     </div>
   </section>
   <div class="grid">
     <section class="panel"><div class="panel-head"><div class="panel-title">ES90 예상 구매가 시뮬레이션</div><div class="panel-note">예상 구매가 = 출고가 − 국비 − 지방비</div></div><div class="waterfall-wrap" id="waterfallWrap"></div></section>
-    <section class="panel"><div class="panel-head"><div class="panel-title">선택지역 보조금 소진 현황</div><div class="panel-note">무공해차 통합누리집 · 일반 승용 기준</div></div><div class="region-card" id="regionCard"></div></section>
+    <section class="panel"><div class="panel-head"><div class="panel-title">선택지역 보조금 소진 현황</div><div class="panel-note">무공해차 통합누리집 · 전기승용 전체 기준</div></div><div class="region-card" id="regionCard"></div></section>
   </div>
 </main>
 <div class="toast" id="toast"></div>
