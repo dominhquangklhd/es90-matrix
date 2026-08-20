@@ -17977,8 +17977,6 @@ async function syncDeploymentUpdatedAt(){
       el.title = '예약정보 업데이트 시각';
       el.setAttribute('aria-label', `예약정보 업데이트 ${RESERVATION_UPDATED_AT}`);
     });
-    const matrixDate = document.getElementById('matrixUpdatedDate');
-    if(matrixDate) matrixDate.textContent = matrixUpdatedAt.split(' ')[0];
   }catch(_){
     // 로컬 파일이나 오프라인 환경에서는 HTML에 포함된 마지막 배포 시각을 유지한다.
   }

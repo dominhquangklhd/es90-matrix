@@ -17392,8 +17392,6 @@ async function syncDeploymentUpdatedAt(){
       el.title = '배포 업데이트 시각';
       el.setAttribute('aria-label', `배포 업데이트 ${deployedAt}`);
     });
-    const matrixDate = document.getElementById('matrixUpdatedDate');
-    if(matrixDate) matrixDate.textContent = deployedAt.split(' ')[0];
   }catch(_){
     // 로컬 파일이나 오프라인 환경에서는 HTML에 포함된 마지막 배포 시각을 유지한다.
   }
