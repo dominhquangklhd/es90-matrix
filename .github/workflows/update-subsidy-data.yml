@@ -80,6 +80,7 @@ jobs:
         run: |
           python scripts/render_subsidy_pages.py \
             --payment-output /tmp/subsidy-payment.html \
+            --breakdown-output /tmp/subsidy-breakdowns.json \
             --price-output /tmp/subsidy-price.html \
             --model-output /tmp/subsidy-model.html
 
@@ -88,6 +89,7 @@ jobs:
         run: |
           python scripts/update_subsidy_data.py \
             --payment-html /tmp/subsidy-payment.html \
+            --breakdown-json /tmp/subsidy-breakdowns.json \
             --price-html /tmp/subsidy-price.html \
             --model-html /tmp/subsidy-model.html \
             --output subsidy-data.json
@@ -105,6 +107,7 @@ jobs:
               for region in data["regions"]
           )
           assert data["collection"]["payment"] == "live-official"
+          assert data["collection"]["selectionBreakdowns"] == "live-official"
           assert all(
               region["remaining"]
               == max(0, region["announced"] - region["delivered"])
@@ -124,6 +127,18 @@ jobs:
               for region in data["regions"]
               if region["sido"] in key_regions
           )
+          metro_regions = [
+              region for region in data["regions"]
+              if region["sido"] in key_regions and region["sigungu"] == region["sido"]
+          ]
+          assert len(metro_regions) == 8
+          assert all("selectionBreakdown" in region for region in metro_regions)
+          assert all(
+              sum(region["selectionBreakdown"][key] for key in (
+                  "general", "priority", "taxi", "corporate"
+              )) == region["selectionBreakdown"]["total"] > 0
+              for region in metro_regions
+          )
           print(f"Validated {len(data['regions'])} official regions")
           PY
 
@@ -139,6 +154,7 @@ jobs:
             git reset --hard origin/main
             python scripts/update_subsidy_data.py \
               --payment-html /tmp/subsidy-payment.html \
+              --breakdown-json /tmp/subsidy-breakdowns.json \
               --price-html /tmp/subsidy-price.html \
               --model-html /tmp/subsidy-model.html \
               --output subsidy-data.json
@@ -163,6 +179,7 @@ jobs:
           name: subsidy-render-diagnostics-${{ github.run_id }}
           path: |
             /tmp/subsidy-payment.html
+            /tmp/subsidy-breakdowns.json
             /tmp/subsidy-price.html
             /tmp/subsidy-model.html
             subsidy-data.json

@@ -87,7 +87,7 @@ class SubsidySnapshotTests(unittest.TestCase):
                 "2026.12.04 18:00",
                 snapshot["regions"][0]["applicationDeadline"],
             )
-            self.assertEqual(3, snapshot["schemaVersion"])
+            self.assertEqual(4, snapshot["schemaVersion"])
             self.assertEqual("전기승용 전체", snapshot["allocationBasis"])
             self.assertEqual(842, snapshot["regions"][149]["combinedMaxManwon"])
             self.assertEqual(
@@ -105,6 +105,55 @@ class SubsidySnapshotTests(unittest.TestCase):
             price.write_text(new_price_html(), encoding="utf-8")
             with self.assertRaisesRegex(RuntimeError, "전국 데이터가 불완전"):
                 build_snapshot(payment, price)
+
+    def test_selection_breakdown_is_added_only_to_metropolitan_total_row(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp = Path(temp_dir)
+            payment = temp / "payment.html"
+            price = temp / "price.html"
+            source = payment_html(150).replace(
+                "<td>서울</td><td>지역0</td>",
+                "<td>서울</td><td>서울특별시</td>",
+                1,
+            )
+            payment.write_text(source, encoding="utf-8")
+            price.write_text(new_price_html(), encoding="utf-8")
+            fallback = {
+                "regions": [
+                    {
+                        "sido": "서울특별시",
+                        "sigungu": "서울특별시" if index == 0 else f"지역{index}",
+                        "combinedMaxManwon": 842,
+                    }
+                    for index in range(150)
+                ],
+            }
+            breakdowns = {
+                "서울특별시": {
+                    "general": 40,
+                    "priority": 20,
+                    "taxi": 7,
+                    "corporate": 3,
+                    "total": 70,
+                }
+            }
+
+            snapshot = build_snapshot(
+                payment,
+                price,
+                fallback_snapshot=fallback,
+                selection_breakdowns=breakdowns,
+            )
+
+            self.assertEqual(
+                breakdowns["서울특별시"],
+                snapshot["regions"][0]["selectionBreakdown"],
+            )
+            self.assertNotIn("selectionBreakdown", snapshot["regions"][1])
+            self.assertEqual(
+                "live-official",
+                snapshot["collection"]["selectionBreakdowns"],
+            )
 
 
 if __name__ == "__main__":

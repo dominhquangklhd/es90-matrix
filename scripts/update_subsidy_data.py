@@ -97,6 +97,17 @@ def fallback_deadlines(snapshot: dict | None) -> dict[tuple[str, str], str]:
     }
 
 
+def fallback_selection_breakdowns(snapshot: dict | None) -> dict[str, dict]:
+    if not snapshot:
+        return {}
+    return {
+        str(region.get("sido", "")): dict(region["selectionBreakdown"])
+        for region in snapshot.get("regions", [])
+        if region.get("sido") == region.get("sigungu")
+        and isinstance(region.get("selectionBreakdown"), dict)
+    }
+
+
 def new_price_data(path: Path) -> tuple[dict[tuple[str, str], int], list[dict], list[str]]:
     if not path.exists() or path.stat().st_size == 0:
         return {}, [], []
@@ -148,10 +159,13 @@ def build_snapshot(
     price_html: Path,
     model_html: Path | None = None,
     fallback_snapshot: dict | None = None,
+    selection_breakdowns: dict[str, dict] | None = None,
 ) -> dict:
     payments = table_rows(payment_html, "지자체별 무공해차 구매보조금 지급현황")
     price_by_region = fallback_prices(fallback_snapshot)
     deadline_by_region = fallback_deadlines(fallback_snapshot)
+    fallback_breakdowns = fallback_selection_breakdowns(fallback_snapshot)
+    live_breakdowns = selection_breakdowns or {}
     price_mode = "last-known-good"
     price_regions_live: list[str] = []
     official_models: list[dict] = []
@@ -197,7 +211,7 @@ def build_snapshot(
             selected = delivered
             selection_remaining = max(0, announced - selected)
             delivery_remaining = first_int(row[8])
-        regions.append({
+        region = {
             "sido": sido,
             "sigungu": row[1],
             "announced": announced,
@@ -212,7 +226,24 @@ def build_snapshot(
             "applicationMethod": row[4].lstrip("*"),
             "applicationDeadline": deadline,
             "notice": row[3],
-        })
+        }
+        if sido == row[1]:
+            breakdown = live_breakdowns.get(sido) or fallback_breakdowns.get(sido)
+            if breakdown:
+                normalized_breakdown = {
+                    key: int(breakdown.get(key, 0) or 0)
+                    for key in ("general", "priority", "taxi", "corporate", "total")
+                }
+                category_total = sum(
+                    normalized_breakdown[key]
+                    for key in ("general", "priority", "taxi", "corporate")
+                )
+                if category_total != normalized_breakdown["total"]:
+                    raise RuntimeError(
+                        f"선정 세부 합계 불일치: {sido}: {normalized_breakdown}"
+                    )
+                region["selectionBreakdown"] = normalized_breakdown
+        regions.append(region)
 
     if len(regions) < 150:
         raise RuntimeError(f"전국 데이터가 불완전합니다: {len(regions)}개 지역")
@@ -254,7 +285,7 @@ def build_snapshot(
 
     now = datetime.now(SEOUL).replace(microsecond=0).isoformat()
     return {
-        "schemaVersion": 3,
+        "schemaVersion": 4,
         "source": {
             "name": "무공해차 통합누리집",
             "paymentUrl": PAYMENT_URL,
@@ -266,6 +297,9 @@ def build_snapshot(
         "allocationBasis": "전기승용 전체",
         "collection": {
             "payment": "live-official",
+            "selectionBreakdowns": (
+                "live-official" if live_breakdowns else "last-known-good"
+            ),
             "prices": price_mode,
             "priceRegionsLive": price_regions_live,
             "model": model_mode,
@@ -280,14 +314,21 @@ def main() -> None:
     parser.add_argument("--payment-html", type=Path, required=True)
     parser.add_argument("--price-html", type=Path, required=True)
     parser.add_argument("--model-html", type=Path)
+    parser.add_argument("--breakdown-json", type=Path)
     parser.add_argument("--output", type=Path, default=Path("subsidy-data.json"))
     args = parser.parse_args()
     fallback_snapshot = load_fallback(args.output)
+    selection_breakdowns = (
+        load_fallback(args.breakdown_json)
+        if args.breakdown_json is not None
+        else None
+    )
     snapshot = build_snapshot(
         args.payment_html,
         args.price_html,
         args.model_html,
         fallback_snapshot=fallback_snapshot,
+        selection_breakdowns=selection_breakdowns,
     )
     args.output.write_text(
         json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n",
