@@ -10,6 +10,8 @@ table that keeps the downstream parser independent from AG Grid internals.
 from __future__ import annotations
 
 import argparse
+import json
+import re
 import time
 from html import escape
 from pathlib import Path
@@ -44,6 +46,13 @@ PRICE_REGIONS = (
     "울산광역시",
     "세종특별자치시",
 )
+
+BREAKDOWN_REGIONS = set(PRICE_REGIONS)
+
+
+def first_int(value: str) -> int:
+    match = re.search(r"-?[\d,]+", value or "")
+    return int(match.group(0).replace(",", "")) if match else 0
 
 
 def new_driver() -> webdriver.Chrome:
@@ -123,7 +132,84 @@ def category_text(row: dict, array_key: str, total_key: str) -> str:
     return str(row.get(total_key, ""))
 
 
-def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
+def collect_visible_selection_breakdowns(
+    driver: webdriver.Chrome,
+    breakdowns: dict[str, dict],
+) -> None:
+    detail_buttons = driver.find_elements(
+        By.XPATH,
+        "//span[normalize-space()='상세보기']/ancestor::button[1]",
+    )
+    for button in detail_buttons:
+        row = button.find_element(By.XPATH, "ancestor::*[@role='row'][1]")
+        row_text = row.text
+        region_name = next(
+            (
+                region
+                for region in PRICE_REGIONS
+                if region not in breakdowns and region in row_text
+            ),
+            None,
+        )
+        if not region_name:
+            continue
+
+        driver.execute_script("arguments[0].click()", button)
+        WebDriverWait(driver, 20, poll_frequency=0.2).until(
+            lambda current, name=region_name: current.execute_script(
+                """
+                const modal = document.querySelector('.modal-container.is-active');
+                return Boolean(
+                  modal
+                  && modal.innerText.includes(arguments[0])
+                  && modal.querySelectorAll('#myGrid3 [role="row"][row-index]').length
+                );
+                """,
+                name,
+            )
+        )
+        detail_rows = driver.find_elements(
+            By.CSS_SELECTOR,
+            ".modal-container.is-active #myGrid3 [role='row'][row-index]",
+        )
+        selected_by_category: dict[str, int] = {}
+        for detail_row in detail_rows:
+            category = detail_row.find_element(
+                By.CSS_SELECTOR, "[role='gridcell'][col-id='category']"
+            ).text.strip()
+            selected = detail_row.find_element(
+                By.CSS_SELECTOR, "[role='gridcell'][col-id='choice']"
+            ).text.strip()
+            selected_by_category[category] = first_int(selected)
+
+        breakdown = {
+            "general": selected_by_category.get("일반", 0),
+            "priority": selected_by_category.get("우선순위", 0),
+            "taxi": selected_by_category.get("택시", 0),
+            "corporate": selected_by_category.get("법인·기관", 0),
+            "total": selected_by_category.get("전체", 0),
+        }
+        if sum(
+            breakdown[key]
+            for key in ("general", "priority", "taxi", "corporate")
+        ) != breakdown["total"]:
+            raise RuntimeError(f"선정 세부 합계 불일치: {region_name}: {breakdown}")
+        breakdowns[region_name] = breakdown
+        driver.find_element(
+            By.CSS_SELECTOR,
+            ".modal-container.is-active .js-detail-close",
+        ).click()
+        WebDriverWait(driver, 10, poll_frequency=0.1).until(
+            lambda current: not current.find_elements(
+                By.CSS_SELECTOR, ".modal-container.is-active"
+            )
+        )
+
+
+def collect_new_payment_rows(
+    driver: webdriver.Chrome,
+    breakdowns: dict[str, dict] | None = None,
+) -> list[dict]:
     WebDriverWait(driver, 30, poll_frequency=0.25).until(
         lambda current: current.execute_script(
             """
@@ -169,6 +255,9 @@ def collect_new_payment_rows(driver: webdriver.Chrome) -> list[dict]:
                 continue
             key = (str(row.get("localCd", "")), str(row.get("carNm", "")))
             rows_by_key[key] = row
+
+        if breakdowns is not None:
+            collect_visible_selection_breakdowns(driver, breakdowns)
 
         next_button = driver.find_element(
             By.CSS_SELECTOR,
@@ -291,7 +380,7 @@ def write_payment_table(rows: list[dict], output: Path) -> None:
     )
 
 
-def render_payment(output: Path) -> str:
+def render_payment(output: Path, breakdown_output: Path | None = None) -> str:
     driver = open_rendered_page(
         PAYMENT_URL, (LEGACY_PAYMENT_TITLE, NEW_PAYMENT_TITLE)
     )
@@ -301,7 +390,20 @@ def render_payment(output: Path) -> str:
             output.write_text(driver.page_source, encoding="utf-8")
             mode = "legacy-table"
         else:
-            write_payment_table(collect_new_payment_rows(driver), output)
+            breakdowns: dict[str, dict] = {}
+            write_payment_table(
+                collect_new_payment_rows(driver, breakdowns), output
+            )
+            missing = BREAKDOWN_REGIONS.difference(breakdowns)
+            if missing:
+                raise RuntimeError(
+                    "선정 세부 데이터 누락: " + ", ".join(sorted(missing))
+                )
+            if breakdown_output is not None:
+                breakdown_output.write_text(
+                    json.dumps(breakdowns, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
             mode = "ag-grid-all-pages"
         print(f"Rendered payment data ({mode}) -> {output}")
         return mode
@@ -390,10 +492,11 @@ def render_legacy_model_optional(output: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--payment-output", type=Path, required=True)
+    parser.add_argument("--breakdown-output", type=Path)
     parser.add_argument("--price-output", type=Path, required=True)
     parser.add_argument("--model-output", type=Path, required=True)
     args = parser.parse_args()
-    render_payment(args.payment_output)
+    render_payment(args.payment_output, args.breakdown_output)
     price_mode = render_price(args.price_output)
     if price_mode == "legacy-table":
         render_legacy_model_optional(args.model_output)
