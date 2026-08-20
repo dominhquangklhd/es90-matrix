@@ -2,10 +2,10 @@ name: Update nationwide EV subsidy data
 
 on:
   schedule:
-    # Retry each hourly slot away from the top-of-hour congestion window.
-    # Asia/Seoul slots: every hour from 08:07/27/47 through 18:07/27/47.
+    # Retry every hourly slot away from the top-of-hour congestion window.
+    # Asia/Seoul slots: every hour at :07/:27/:47 (the first success closes the slot).
     # The slot guard below skips every retry after the first successful check.
-    - cron: "7,27,47 0-9,23 * * *"
+    - cron: "7,27,47 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -50,11 +50,7 @@ jobs:
           if os.environ.get("EVENT_NAME") == "schedule":
               seoul = ZoneInfo("Asia/Seoul")
               now = datetime.now(seoul)
-              required_slot = (
-                  now.replace(minute=0, second=0, microsecond=0)
-                  if 8 <= now.hour <= 18
-                  else None
-              )
+              required_slot = now.replace(minute=0, second=0, microsecond=0)
               data = json.loads(Path("version.json").read_text(encoding="utf-8"))
               checked_at = data.get("subsidyCheckedAt")
               checked_time = (
@@ -62,7 +58,7 @@ jobs:
                   if checked_at
                   else None
               )
-              should_run = required_slot is not None and (
+              should_run = (
                   checked_time is None or checked_time < required_slot
               )
 
