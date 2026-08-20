@@ -38,6 +38,7 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
 .city-map{width:52px;height:43px;padding:1px 3px;border:1px solid #e3ebf0;background:linear-gradient(145deg,#fbfdfe,#edf4f7)}.city-map svg{filter:drop-shadow(0 1px 1px rgba(15,52,74,.13))}.korea-land{fill:#e2eaee;stroke:#819aa8;stroke-width:.34}.korea-boundary{fill:none;stroke:#91a8b5;stroke-width:.32;stroke-linecap:round;stroke-linejoin:round}.region-highlight{fill:#123d59;stroke:#fff;stroke-width:.5;stroke-linejoin:round}
 @media(min-width:960px) and (max-height:700px){.city-map{width:40px;height:29px;padding:1px 4px}}
 .trim-name{font-size:clamp(10.5px,.98vw,12px);line-height:1.2;letter-spacing:-.22px}.trim-card.performance .trim-name{font-size:clamp(9.8px,.9vw,11px);letter-spacing:-.38px}
+.trim-equation{align-self:end;min-width:0;display:grid;gap:2px;margin-top:7px;color:#506b7b;font-size:7px}.equation-row{min-width:0;display:grid;grid-template-columns:8px minmax(0,1fr) auto;align-items:center;gap:2px;white-space:nowrap}.equation-row .operator{text-align:center;color:#6b7f8b;font-weight:900}.equation-row b{color:#294d63;font-size:7px;font-weight:800;font-variant-numeric:tabular-nums}.equation-divider{margin:2px 0;border-top:1px solid #aebdc5}.equation-row.result{color:#153f57;font-weight:900}.equation-row.result b{color:#0d6f53;font-size:9px;font-weight:950}.trim-card.performance .equation-row b,.trim-card.performance .equation-row.result b{color:#bd4a24}.trim-card.performance .equation-divider{border-color:#e6b5a5}
 /* Final iPad/desktop composition: trim summary 30%, metropolitan status 70%. */
 @media(min-width:960px){
   main{grid-template-rows:130px minmax(0,3fr) minmax(0,7fr)}
@@ -85,6 +86,11 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
   .donut-stat-copy{gap:1px}
   .donut-stat-copy small{font-size:5.2px}
   .donut-stat b{font-size:8px}
+  .trim-equation{gap:1px;margin-top:4px;font-size:6.2px}
+  .equation-row{grid-template-columns:7px minmax(0,1fr) auto;gap:1px}
+  .equation-row b{font-size:6.2px}
+  .equation-divider{margin:1px 0}
+  .equation-row.result b{font-size:7.5px}
 }
 </style>
 </head>
