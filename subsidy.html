@@ -98,6 +98,14 @@ main{grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}.trim-grid{padding:9px
 /* Give the metropolitan dashboard more vertical room while preserving the Korea map proportions. */
 @media(min-width:960px){
   main{grid-template-rows:130px minmax(0,2.4fr) minmax(0,7.6fr)}
+  main>.panel:not(.city-panel) .panel-head{height:30px}
+  .trim-grid{height:calc(100% - 30px);padding:5px}
+  .trim-card{padding:6px 7px}
+  .trim-equation{gap:1px;margin-top:2px;line-height:1}
+  .equation-row,.equation-row b{line-height:1}
+  .equation-divider{margin:1px 0}
+  .customer-choice{top:24px}
+  .trim-card.customer-selected .trim-equation{padding-top:11px}
   .city-card{grid-template-rows:60px minmax(0,1fr) 44px}
   .city-map{width:42px;height:54px;padding:2px 4px;aspect-ratio:28/36}
   .city-map svg{width:100%;height:100%;aspect-ratio:28/36;object-fit:contain}
