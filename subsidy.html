@@ -381,8 +381,11 @@ function trimNameLines(name){
   const prefixes=['Single Motor ER','Twin Motor','Twin Performance'];
   const prefix=prefixes.find(candidate=>value.startsWith(`${candidate} `));
   const first=prefix||value;
-  const second=prefix?value.slice(prefix.length).trim():'';
-  return `<span class="trim-name-line">${esc(first)}</span>${second?`<span class="trim-name-line">${esc(second)}</span>`:''}`;
+  const suffix=prefix?value.slice(prefix.length).trim():'';
+  const airSuspension=suffix.includes('Air Sus.');
+  const trimLabel=suffix.replace(' · Air Sus.','');
+  const suspension=airSuspension?'Air Sus.':'No Air Sus.';
+  return `<span class="trim-name-line">${esc(first)}</span>${suffix?`<span class="trim-name-line">${esc(trimLabel)} · <span class="trim-suspension">${suspension}</span></span>`:''}`;
 }
 function renderTrims(regions){
   const selectedIndex=selectedTrimIndex();
