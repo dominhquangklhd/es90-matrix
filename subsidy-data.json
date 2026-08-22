@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-22T16:40:12+09:00",
+  "checkedAt": "2026-08-22T17:02:33+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1469,7 +1469,7 @@
       "sigungu": "정읍시",
       "announced": 388,
       "received": 578,
-      "selected": 533,
+      "selected": 535,
       "delivered": 199,
       "selectionRemaining": 0,
       "remaining": 189,
