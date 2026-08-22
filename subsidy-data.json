@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-22T13:06:03+09:00",
+  "checkedAt": "2026-08-22T14:12:43+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -128,10 +128,10 @@
       "sido": "광주광역시",
       "sigungu": "광주광역시",
       "announced": 2606,
-      "received": 2778,
-      "selected": 2549,
+      "received": 2776,
+      "selected": 2572,
       "delivered": 2241,
-      "selectionRemaining": 57,
+      "selectionRemaining": 34,
       "remaining": 365,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -140,11 +140,11 @@
       "applicationDeadline": "2026.08.20 13:46",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1",
       "selectionBreakdown": {
-        "general": 1919,
-        "priority": 348,
-        "taxi": 228,
+        "general": 1936,
+        "priority": 353,
+        "taxi": 229,
         "corporate": 54,
-        "total": 2549
+        "total": 2572
       }
     },
     {
