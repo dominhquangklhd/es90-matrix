@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-22T14:12:43+09:00",
+  "checkedAt": "2026-08-22T15:55:23+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -129,9 +129,9 @@
       "sigungu": "광주광역시",
       "announced": 2606,
       "received": 2776,
-      "selected": 2572,
+      "selected": 2599,
       "delivered": 2241,
-      "selectionRemaining": 34,
+      "selectionRemaining": 7,
       "remaining": 365,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -140,11 +140,11 @@
       "applicationDeadline": "2026.08.20 13:46",
       "notice": "본공고 1 / 본공고 2 / 본공고 3 / 추경1차 1",
       "selectionBreakdown": {
-        "general": 1936,
-        "priority": 353,
-        "taxi": 229,
+        "general": 1952,
+        "priority": 363,
+        "taxi": 230,
         "corporate": 54,
-        "total": 2572
+        "total": 2599
       }
     },
     {
@@ -1469,7 +1469,7 @@
       "sigungu": "정읍시",
       "announced": 388,
       "received": 578,
-      "selected": 503,
+      "selected": 526,
       "delivered": 199,
       "selectionRemaining": 0,
       "remaining": 189,
