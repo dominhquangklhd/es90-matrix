@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-23T17:03:03+09:00",
+  "checkedAt": "2026-08-23T18:05:39+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1533,7 +1533,7 @@
       "sigungu": "진안군",
       "announced": 91,
       "received": 170,
-      "selected": 147,
+      "selected": 168,
       "delivered": 78,
       "selectionRemaining": 0,
       "remaining": 13,
