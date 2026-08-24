@@ -6,6 +6,13 @@ on:
     # Asia/Seoul slots: every hour at :07/:27/:47 (the first success closes the slot).
     # The slot guard below skips every retry after the first successful check.
     - cron: "7,27,47 * * * *"
+  workflow_call:
+    inputs:
+      check_required_slot:
+        description: Enforce the current Asia/Seoul hourly subsidy slot check.
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
 
 permissions:
@@ -36,6 +43,7 @@ jobs:
         id: slot
         env:
           EVENT_NAME: ${{ github.event_name }}
+          CHECK_REQUIRED_SLOT: ${{ github.event_name == 'schedule' || inputs.check_required_slot || false }}
         run: |
           python - <<'PY'
           import json
@@ -47,7 +55,7 @@ jobs:
           should_run = True
           checked_at = None
           required_slot = None
-          if os.environ.get("EVENT_NAME") == "schedule":
+          if os.environ.get("CHECK_REQUIRED_SLOT") == "true":
               seoul = ZoneInfo("Asia/Seoul")
               now = datetime.now(seoul)
               required_slot = now.replace(minute=0, second=0, microsecond=0)
