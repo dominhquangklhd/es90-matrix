@@ -412,7 +412,6 @@ async function load(){
   keepAppSessionAlive();
   pinSubsidyPageToTop();
   await refreshData(true);
-  requestAnimationFrame(pinSubsidyPageToTop);
   setInterval(()=>refreshData().catch(()=>{}),60000);
   addEventListener('focus',()=>refreshData(true).catch(()=>{}));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshData(true).catch(()=>{})});
