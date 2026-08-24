@@ -2,9 +2,10 @@ name: Nationwide EV subsidy watchdog
 
 on:
   schedule:
-    # Independent hourly fallback at :41. It verifies the same Seoul hour
-    # and calls the collector only when subsidyCheckedAt is still behind.
-    - cron: "41 * * * *"
+    # Check early in each hour after the primary :07 attempt. If GitHub's
+    # scheduler missed it, recover the same hourly slot at :12, then retry
+    # at :32 and :52 only while subsidyCheckedAt is still behind.
+    - cron: "12,32,52 * * * *"
   workflow_dispatch:
 
 permissions:
