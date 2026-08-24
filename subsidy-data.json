@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-24T20:15:37+09:00",
+  "checkedAt": "2026-08-24T21:03:34+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -2013,7 +2013,7 @@
       "sigungu": "경주시",
       "announced": 1161,
       "received": 1530,
-      "selected": 1529,
+      "selected": 1530,
       "delivered": 875,
       "selectionRemaining": 0,
       "remaining": 286,
