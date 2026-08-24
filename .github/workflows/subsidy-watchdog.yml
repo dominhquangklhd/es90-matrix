@@ -1,0 +1,18 @@
+name: Nationwide EV subsidy watchdog
+
+on:
+  schedule:
+    # Independent hourly fallback at :41. It verifies the same Seoul hour
+    # and calls the collector only when subsidyCheckedAt is still behind.
+    - cron: "41 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    uses: ./.github/workflows/update-subsidy-data.yml
+    with:
+      check_required_slot: true
+    secrets: inherit
