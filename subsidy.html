@@ -345,16 +345,6 @@ main>.panel .selection-counts .count:not(.total):nth-child(-n+3)::after{transfor
 main>.panel .city-map-connectors line{stroke-width:.34}
 main>.panel .region-highlight{stroke-width:.5px}
 main>.panel .region-focus{stroke-width:.65px}
-/* Keep the page entry fixed when iPad Safari changes its visual viewport height.
-   The dashboard header must not cross a height breakpoint as the browser chrome
-   expands or collapses. */
-@media(min-width:960px){
-  main{padding-top:22px;grid-template-rows:130px minmax(0,2fr) minmax(0,3fr)}
-  .overview{padding:26px 28px}
-  .overview h1{margin:7px 0 6px;font-size:clamp(25px,3.7vw,39px)}
-  .overview p{font-size:12px}
-  .overview-tools{right:26px;bottom:20px}
-}
 </style>
 </head>
 <body>
