@@ -345,14 +345,8 @@ main>.panel .selection-counts .count:not(.total):nth-child(-n+3)::after{transfor
 /* Keep each allocation type legible without competing with the completed total. */
 main>.panel .selection-counts .count:not(.total)::before{content:"";position:absolute;z-index:0;inset:1px 2px;border-radius:3px;pointer-events:none}
 main>.panel .selection-counts .count>*{position:relative;z-index:1}
-main>.panel .selection-counts .count-general::before{background:#f2f7fa}
-main>.panel .selection-counts .count-priority::before{background:#f2f8f5}
-main>.panel .selection-counts .count-taxi::before{background:#f6f4fa}
-main>.panel .selection-counts .count-corporate::before{background:#faf6ef}
-main>.panel .selection-counts .count-general span{color:#58778a}
-main>.panel .selection-counts .count-priority span{color:#5d7d6c}
-main>.panel .selection-counts .count-taxi span{color:#746987}
-main>.panel .selection-counts .count-corporate span{color:#876f50}
+main>.panel .selection-counts .count:not(.total)::before{background:#f4f8fa}
+main>.panel .selection-counts .count:not(.total) span{color:#607987}
 main>.panel .selection-counts .count.total{background:#eaf2f7}
 main>.panel .city-map-connectors line{stroke-width:.34}
 main>.panel .region-highlight{stroke-width:.5px}
