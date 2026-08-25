@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-25T20:38:01+09:00",
+  "checkedAt": "2026-08-25T21:04:55+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1357,9 +1357,9 @@
       "sigungu": "청양군",
       "announced": 195,
       "received": 151,
-      "selected": 100,
+      "selected": 106,
       "delivered": 77,
-      "selectionRemaining": 95,
+      "selectionRemaining": 89,
       "remaining": 118,
       "nationalMaxManwon": 648,
       "localMaxManwon": 600,
@@ -1477,7 +1477,7 @@
       "localMaxManwon": 703,
       "combinedMaxManwon": 1351,
       "applicationMethod": "일반: 지원가능확인요청순 / *우선: 지원가능확인요청순",
-      "applicationDeadline": "2026.12.31 18:00",
+      "applicationDeadline": "2026.08.25 18:00",
       "notice": "본공고 1 / 추경1차 1 / 추경2차 1"
     },
     {
