@@ -20689,14 +20689,23 @@ function initLoginCover(){
     savedValue.textContent = savedId;
     savedPopup.hidden = false;
   };
+  // iPad에서는 첫 터치에서 최근 로그인 CDSID만 선택하게 해 키보드가
+  // 로그인 표지를 밀어 올리지 않도록 한다. 메뉴가 열린 뒤의 다음 터치는
+  // 평소처럼 직접 입력을 위한 포커스를 허용한다.
+  input?.addEventListener('pointerdown', event=>{
+    if(!input.value.trim() && getSavedId() && savedPopup.hidden){
+      event.preventDefault();
+      showSavedId();
+      input.blur();
+    }
+  });
   input?.addEventListener('focus', showSavedId);
   input?.addEventListener('click', showSavedId);
   savedButton?.addEventListener('pointerdown', event=>event.preventDefault());
   savedButton?.addEventListener('click', ()=>{
     input.value = getSavedId();
     savedPopup.hidden = true;
-    input.focus();
-    input.setSelectionRange(input.value.length,input.value.length);
+    input.blur();
   });
   document.addEventListener('pointerdown', event=>{
     if(!savedPopup.contains(event.target) && event.target !== input) savedPopup.hidden = true;
