@@ -1,24 +1,24 @@
 {
   "observationDate": "2026-08-29",
-  "observedAt": "2026-08-29T15:04:12+09:00",
-  "total": 2500,
+  "observedAt": "2026-08-29T16:04:10+09:00",
+  "total": 2511,
   "previousDayTotal": 2483,
   "finalUpdateDate": "2026-08-29",
-  "finalUpdateTotal": 2500,
+  "finalUpdateTotal": 2511,
   "byTrim": [
     {
       "trim": "Single Motor Ultra",
-      "count": 1353,
+      "count": 1360,
       "airSuspension": true
     },
     {
       "trim": "Twin Motor Ultra",
-      "count": 808,
+      "count": 811,
       "airSuspension": true
     },
     {
       "trim": "Twin Motor Performance Ultra",
-      "count": 139
+      "count": 140
     },
     {
       "trim": "Single Motor Ultra",
