@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-08-31T20:44:28+09:00",
+  "checkedAt": "2026-09-01T00:02:41+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1229,7 +1229,7 @@
       "sigungu": "아산시",
       "announced": 1154,
       "received": 1826,
-      "selected": 1299,
+      "selected": 1300,
       "delivered": 854,
       "selectionRemaining": 0,
       "remaining": 300,
