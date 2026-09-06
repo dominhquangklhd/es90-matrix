@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-06T07:22:45+09:00",
+  "checkedAt": "2026-09-06T09:08:21+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1677,7 +1677,7 @@
       "sigungu": "순천시",
       "announced": 494,
       "received": 682,
-      "selected": 508,
+      "selected": 509,
       "delivered": 474,
       "selectionRemaining": 0,
       "remaining": 20,
@@ -1685,7 +1685,7 @@
       "localMaxManwon": 453,
       "combinedMaxManwon": 1101,
       "applicationMethod": "일반: 지원가능확인요청순 / *우선: 지원가능확인요청순",
-      "applicationDeadline": "2026.09.04 09:00",
+      "applicationDeadline": "2026.09.04 10:01",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2"
     },
     {
