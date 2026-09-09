@@ -1,11 +1,13 @@
 {
-  "checkedAt": "2026-09-08T09:24:53+09:00",
+  "checkedAt": "2026-09-09T09:13:47+09:00",
   "expectedTrimCount": 21,
   "matchedTrimCount": 21,
   "unmatchedTrimCount": 0,
   "unmatchedTrims": [],
-  "priceChangedTrimCount": 1,
+  "priceChangedTrimCount": 3,
   "priceChangedTrims": [
-    "Audi / Performance S-line+"
+    "BMW i5 / eDrive40 M Sport",
+    "BMW i5 / xDrive40 M Sport Pro",
+    "BMW i5 / M60 xDrive Pro"
   ]
 }
