@@ -1,13 +1,9 @@
 {
-  "checkedAt": "2026-09-09T09:13:47+09:00",
+  "checkedAt": "2026-09-10T09:14:36+09:00",
   "expectedTrimCount": 21,
   "matchedTrimCount": 21,
   "unmatchedTrimCount": 0,
   "unmatchedTrims": [],
-  "priceChangedTrimCount": 3,
-  "priceChangedTrims": [
-    "BMW i5 / eDrive40 M Sport",
-    "BMW i5 / xDrive40 M Sport Pro",
-    "BMW i5 / M60 xDrive Pro"
-  ]
+  "priceChangedTrimCount": 0,
+  "priceChangedTrims": []
 }
