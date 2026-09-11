@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-12T00:17:00+09:00",
+  "checkedAt": "2026-09-12T02:51:07+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1437,7 +1437,7 @@
       "sigungu": "군산시",
       "announced": 774,
       "received": 1346,
-      "selected": 1206,
+      "selected": 1220,
       "delivered": 487,
       "selectionRemaining": 0,
       "remaining": 287,
