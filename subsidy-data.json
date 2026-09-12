@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-13T06:02:19+09:00",
+  "checkedAt": "2026-09-13T08:02:30+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -715,7 +715,7 @@
     {
       "sido": "강원특별자치도",
       "sigungu": "춘천시",
-      "announced": 800,
+      "announced": 500,
       "received": 822,
       "selected": 822,
       "delivered": 822,
@@ -726,7 +726,7 @@
       "combinedMaxManwon": 972,
       "applicationMethod": "일반: 출고등록순 / *우선: -",
       "applicationDeadline": "2026.05.08 18:00",
-      "notice": "본공고 1 / 본공고 2"
+      "notice": "본공고 1 / 본공고 2 / 추경1차 1"
     },
     {
       "sido": "강원특별자치도",
@@ -2349,9 +2349,9 @@
       "sigungu": "창원시",
       "announced": 4300,
       "received": 3614,
-      "selected": 2631,
+      "selected": 2636,
       "delivered": 2507,
-      "selectionRemaining": 1669,
+      "selectionRemaining": 1664,
       "remaining": 1793,
       "nationalMaxManwon": 648,
       "localMaxManwon": 195,
