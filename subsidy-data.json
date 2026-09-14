@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-14T22:25:17+09:00",
+  "checkedAt": "2026-09-15T01:57:52+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -2028,7 +2028,7 @@
       "sido": "경상북도",
       "sigungu": "김천시",
       "announced": 960,
-      "received": 1041,
+      "received": 1040,
       "selected": 1032,
       "delivered": 924,
       "selectionRemaining": 0,
