@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-17T01:48:52+09:00",
+  "checkedAt": "2026-09-17T04:47:08+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -2092,7 +2092,7 @@
       "sido": "경상북도",
       "sigungu": "영천시",
       "announced": 735,
-      "received": 505,
+      "received": 499,
       "selected": 282,
       "delivered": 170,
       "selectionRemaining": 453,
