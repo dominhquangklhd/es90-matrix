@@ -1,9 +1,12 @@
 {
-  "checkedAt": "2026-09-21T09:16:14+09:00",
+  "checkedAt": "2026-09-22T09:50:04+09:00",
   "expectedTrimCount": 21,
   "matchedTrimCount": 21,
   "unmatchedTrimCount": 0,
   "unmatchedTrims": [],
-  "priceChangedTrimCount": 0,
-  "priceChangedTrims": []
+  "priceChangedTrimCount": 2,
+  "priceChangedTrims": [
+    "BMW iX3 / 50 xDrive M Sport",
+    "BMW iX3 / 50 xDrive M Sport Pro"
+  ]
 }
