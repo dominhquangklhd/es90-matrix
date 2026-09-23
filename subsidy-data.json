@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-23T18:57:48+09:00",
+  "checkedAt": "2026-09-23T21:20:25+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -37,9 +37,9 @@
       "sigungu": "서울특별시",
       "announced": 19648,
       "received": 18182,
-      "selected": 16103,
+      "selected": 16112,
       "delivered": 15056,
-      "selectionRemaining": 3545,
+      "selectionRemaining": 3536,
       "remaining": 4592,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -50,9 +50,9 @@
       "selectionBreakdown": {
         "general": 9553,
         "priority": 4683,
-        "taxi": 1365,
+        "taxi": 1374,
         "corporate": 502,
-        "total": 16103
+        "total": 16112
       }
     },
     {
@@ -60,10 +60,10 @@
       "sigungu": "부산광역시",
       "announced": 7467,
       "received": 7329,
-      "selected": 7329,
-      "delivered": 7327,
-      "selectionRemaining": 138,
-      "remaining": 140,
+      "selected": 7328,
+      "delivered": 7326,
+      "selectionRemaining": 139,
+      "remaining": 141,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
       "combinedMaxManwon": 842,
@@ -71,11 +71,11 @@
       "applicationDeadline": "2026.07.22 18:00",
       "notice": "본공고 1 / 본공고 2 / 본공고 3",
       "selectionBreakdown": {
-        "general": 4063,
+        "general": 4062,
         "priority": 2161,
         "taxi": 952,
         "corporate": 153,
-        "total": 7329
+        "total": 7328
       }
     },
     {
@@ -1020,7 +1020,7 @@
       "sido": "충청북도",
       "sigungu": "충주시",
       "announced": 1020,
-      "received": 959,
+      "received": 958,
       "selected": 934,
       "delivered": 931,
       "selectionRemaining": 86,
@@ -1294,9 +1294,9 @@
       "announced": 721,
       "received": 938,
       "selected": 774,
-      "delivered": 522,
+      "delivered": 523,
       "selectionRemaining": 0,
-      "remaining": 199,
+      "remaining": 198,
       "nationalMaxManwon": 648,
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
@@ -1661,7 +1661,7 @@
       "sigungu": "여수시",
       "announced": 950,
       "received": 1082,
-      "selected": 1082,
+      "selected": 1081,
       "delivered": 1067,
       "selectionRemaining": 0,
       "remaining": 0,
