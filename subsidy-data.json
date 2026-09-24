@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-24T10:37:07+09:00",
+  "checkedAt": "2026-09-24T14:32:28+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -106,9 +106,9 @@
       "sigungu": "인천광역시",
       "announced": 9306,
       "received": 9011,
-      "selected": 7414,
+      "selected": 7474,
       "delivered": 6816,
-      "selectionRemaining": 1892,
+      "selectionRemaining": 1832,
       "remaining": 2490,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -117,11 +117,11 @@
       "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2",
       "selectionBreakdown": {
-        "general": 4587,
-        "priority": 2433,
-        "taxi": 273,
-        "corporate": 121,
-        "total": 7414
+        "general": 4619,
+        "priority": 2456,
+        "taxi": 275,
+        "corporate": 124,
+        "total": 7474
       }
     },
     {
@@ -151,8 +151,8 @@
       "sido": "대전광역시",
       "sigungu": "대전광역시",
       "announced": 1726,
-      "received": 2378,
-      "selected": 2378,
+      "received": 2377,
+      "selected": 2377,
       "delivered": 2335,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -163,11 +163,11 @@
       "applicationDeadline": "2026.07.07 18:00",
       "notice": "추경1차 1 / 추경1차 2",
       "selectionBreakdown": {
-        "general": 1459,
+        "general": 1458,
         "priority": 714,
         "taxi": 148,
         "corporate": 57,
-        "total": 2378
+        "total": 2377
       }
     },
     {
@@ -348,7 +348,7 @@
       "sido": "경기도",
       "sigungu": "안산시",
       "announced": 1389,
-      "received": 1293,
+      "received": 1294,
       "selected": 909,
       "delivered": 909,
       "selectionRemaining": 480,
@@ -358,7 +358,7 @@
       "combinedMaxManwon": 907,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
       "applicationDeadline": "2026.12.04 18:00",
-      "notice": "본공고 1 / 추경1차 1 / 추경2차 1 / 추경2차 2"
+      "notice": "본공고 1 / 추경1차 1 / 추경2차 1 / 추경2차 2 / 추경2차 3"
     },
     {
       "sido": "경기도",
