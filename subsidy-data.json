@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-24T08:15:18+09:00",
+  "checkedAt": "2026-09-24T09:44:06+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -105,7 +105,7 @@
       "sido": "인천광역시",
       "sigungu": "인천광역시",
       "announced": 9306,
-      "received": 9010,
+      "received": 9011,
       "selected": 7414,
       "delivered": 6816,
       "selectionRemaining": 1892,
