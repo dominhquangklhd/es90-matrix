@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-09-27T09:59:07+09:00",
+  "checkedAt": "2026-09-27T15:36:07+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -37,9 +37,9 @@
       "sigungu": "서울특별시",
       "announced": 19648,
       "received": 18182,
-      "selected": 16112,
+      "selected": 16118,
       "delivered": 15056,
-      "selectionRemaining": 3536,
+      "selectionRemaining": 3530,
       "remaining": 4592,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -50,9 +50,9 @@
       "selectionBreakdown": {
         "general": 9553,
         "priority": 4683,
-        "taxi": 1374,
+        "taxi": 1380,
         "corporate": 502,
-        "total": 16112
+        "total": 16118
       }
     },
     {
@@ -106,9 +106,9 @@
       "sigungu": "인천광역시",
       "announced": 9306,
       "received": 9012,
-      "selected": 7977,
+      "selected": 8124,
       "delivered": 6816,
-      "selectionRemaining": 1329,
+      "selectionRemaining": 1182,
       "remaining": 2490,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -117,11 +117,11 @@
       "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2",
       "selectionBreakdown": {
-        "general": 4958,
-        "priority": 2593,
-        "taxi": 294,
+        "general": 5060,
+        "priority": 2627,
+        "taxi": 305,
         "corporate": 132,
-        "total": 7977
+        "total": 8124
       }
     },
     {
@@ -462,9 +462,9 @@
       "announced": 730,
       "received": 733,
       "selected": 724,
-      "delivered": 711,
+      "delivered": 712,
       "selectionRemaining": 6,
-      "remaining": 19,
+      "remaining": 18,
       "nationalMaxManwon": 648,
       "localMaxManwon": 313,
       "combinedMaxManwon": 961,
@@ -1038,9 +1038,9 @@
       "announced": 751,
       "received": 1105,
       "selected": 755,
-      "delivered": 724,
+      "delivered": 727,
       "selectionRemaining": 0,
-      "remaining": 27,
+      "remaining": 24,
       "nationalMaxManwon": 648,
       "localMaxManwon": 648,
       "combinedMaxManwon": 1296,
@@ -2059,7 +2059,7 @@
     {
       "sido": "경상북도",
       "sigungu": "구미시",
-      "announced": 778,
+      "announced": 998,
       "received": 1080,
       "selected": 1080,
       "delivered": 1080,
@@ -2069,7 +2069,7 @@
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
       "applicationMethod": "일반: 출고등록순 / *우선: 출고등록순",
-      "applicationDeadline": "2026.06.05 18:00",
+      "applicationDeadline": "2026.10.01 18:00",
       "notice": "추경1차 1 / 추경1차 2 / 추경1차 3"
     },
     {
@@ -2094,9 +2094,9 @@
       "announced": 735,
       "received": 497,
       "selected": 494,
-      "delivered": 208,
+      "delivered": 209,
       "selectionRemaining": 241,
-      "remaining": 527,
+      "remaining": 526,
       "nationalMaxManwon": 648,
       "localMaxManwon": 667,
       "combinedMaxManwon": 1315,
@@ -2349,9 +2349,9 @@
       "sigungu": "창원시",
       "announced": 4300,
       "received": 3912,
-      "selected": 3246,
+      "selected": 3271,
       "delivered": 2696,
-      "selectionRemaining": 1054,
+      "selectionRemaining": 1029,
       "remaining": 1604,
       "nationalMaxManwon": 648,
       "localMaxManwon": 195,
