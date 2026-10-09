@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-10-09T19:31:02+09:00",
+  "checkedAt": "2026-10-09T23:43:57+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -317,7 +317,7 @@
       "sigungu": "평택시",
       "announced": 165,
       "received": 2647,
-      "selected": 2347,
+      "selected": 2346,
       "delivered": 2221,
       "selectionRemaining": 0,
       "remaining": 0,
