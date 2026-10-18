@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-10-19T06:57:15+09:00",
+  "checkedAt": "2026-10-19T07:39:09+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -325,7 +325,7 @@
       "announced": 165,
       "received": 2600,
       "selected": 2344,
-      "delivered": 2241,
+      "delivered": 2242,
       "selectionRemaining": 0,
       "remaining": 0,
       "nationalMaxManwon": 648,
