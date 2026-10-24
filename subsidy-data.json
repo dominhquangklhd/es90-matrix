@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-10-24T11:02:16+09:00",
+  "checkedAt": "2026-10-24T15:15:22+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -1284,7 +1284,7 @@
       "sigungu": "계룡시",
       "announced": 257,
       "received": 387,
-      "selected": 269,
+      "selected": 270,
       "delivered": 228,
       "selectionRemaining": 0,
       "remaining": 29,
