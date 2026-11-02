@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-11-02T18:24:03+09:00",
+  "checkedAt": "2026-11-03T04:41:54+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -44,9 +44,9 @@
       "sigungu": "서울특별시",
       "announced": 19648,
       "received": 19501,
-      "selected": 19181,
+      "selected": 19186,
       "delivered": 18114,
-      "selectionRemaining": 467,
+      "selectionRemaining": 462,
       "remaining": 1534,
       "nationalMaxManwon": 648,
       "localMaxManwon": 194,
@@ -57,9 +57,9 @@
       "selectionBreakdown": {
         "general": 11339,
         "priority": 5603,
-        "taxi": 1642,
+        "taxi": 1647,
         "corporate": 597,
-        "total": 19181
+        "total": 19186
       }
     },
     {
@@ -112,8 +112,8 @@
       "sido": "인천광역시",
       "sigungu": "인천광역시",
       "announced": 9036,
-      "received": 9171,
-      "selected": 9124,
+      "received": 9168,
+      "selected": 9122,
       "delivered": 9018,
       "selectionRemaining": 0,
       "remaining": 18,
@@ -124,11 +124,11 @@
       "applicationDeadline": "2026.11.30 18:00",
       "notice": "본공고 1 / 본공고 2 / 추경1차 1 / 추경1차 2",
       "selectionBreakdown": {
-        "general": 5646,
+        "general": 5644,
         "priority": 2983,
         "taxi": 346,
         "corporate": 149,
-        "total": 9124
+        "total": 9122
       }
     },
     {
@@ -1029,7 +1029,7 @@
       "announced": 1020,
       "received": 1341,
       "selected": 1032,
-      "delivered": 1031,
+      "delivered": 1032,
       "selectionRemaining": 0,
       "remaining": 0,
       "nationalMaxManwon": 648,
@@ -1252,10 +1252,10 @@
       "sigungu": "서산시",
       "announced": 553,
       "received": 820,
-      "selected": 819,
-      "delivered": 553,
+      "selected": 818,
+      "delivered": 552,
       "selectionRemaining": 0,
-      "remaining": 0,
+      "remaining": 1,
       "nationalMaxManwon": 648,
       "localMaxManwon": 600,
       "combinedMaxManwon": 1248,
@@ -1651,8 +1651,8 @@
       "sido": "전라남도",
       "sigungu": "목포시",
       "announced": 201,
-      "received": 286,
-      "selected": 285,
+      "received": 285,
+      "selected": 284,
       "delivered": 167,
       "selectionRemaining": 0,
       "remaining": 34,
