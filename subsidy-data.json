@@ -5,7 +5,7 @@
     "paymentUrl": "https://ev.or.kr/nportal/buySupprt/initSubsidyPaymentCheckAction.do",
     "priceUrl": "https://ev.or.kr/nportal/buySupprt/initPsLocalCarPirceAction.do"
   },
-  "checkedAt": "2026-11-11T19:49:11+09:00",
+  "checkedAt": "2026-11-12T00:31:16+09:00",
   "year": 2026,
   "vehicleType": "전기승용",
   "allocationBasis": "전기승용 전체",
@@ -72,8 +72,8 @@
       "sido": "부산광역시",
       "sigungu": "부산광역시",
       "announced": 8629,
-      "received": 8760,
-      "selected": 8760,
+      "received": 8759,
+      "selected": 8759,
       "delivered": 8748,
       "selectionRemaining": 0,
       "remaining": 0,
@@ -84,11 +84,11 @@
       "applicationDeadline": "2026.10.23 16:13",
       "notice": "본공고 1 / 본공고 2 / 본공고 3",
       "selectionBreakdown": {
-        "general": 4792,
+        "general": 4791,
         "priority": 2550,
         "taxi": 1226,
         "corporate": 192,
-        "total": 8760
+        "total": 8759
       }
     },
     {
